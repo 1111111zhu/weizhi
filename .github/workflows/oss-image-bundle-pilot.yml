@@ -1,0 +1,533 @@
+name: OSS image bundle delivery
+
+on:
+  workflow_call:
+    inputs:
+      systems:
+        required: true
+        type: string
+      operation:
+        required: true
+        type: string
+      image_source_sha:
+        required: true
+        type: string
+      source_commit_sha:
+        required: true
+        type: string
+      build_run_id:
+        required: false
+        default: 0
+        type: number
+      build_run_attempt:
+        required: false
+        default: 0
+        type: number
+      apply_pending_migrations:
+        required: false
+        default: true
+        type: boolean
+      edge_ha_bootstrap:
+        required: false
+        default: false
+        type: boolean
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: projectwing-oss-image-bundle
+  cancel-in-progress: false
+
+jobs:
+  package-and-upload:
+    name: Package OCI images for OSS
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 180
+    outputs:
+      bundle-object-key: ${{ steps.retained_bundle.outputs.bundle_object_key || steps.publish.outputs.bundle_object_key }}
+      bundle-sha256: ${{ steps.retained_bundle.outputs.bundle_sha256 || steps.publish.outputs.bundle_sha256 }}
+      bundle_size: ${{ steps.retained_bundle.outputs.bundle_size || steps.publish.outputs.bundle_size }}
+      bundle_uncompressed_size: ${{ steps.retained_bundle.outputs.bundle_uncompressed_size || steps.publish.outputs.bundle_uncompressed_size }}
+      gotenberg-image: ${{ steps.retained_bundle.outputs.gotenberg_image || steps.image_delivery.outputs.gotenberg_image }}
+      traefik-image: ${{ steps.foundations.outputs.traefik_image }}
+      image-source-sha: ${{ steps.source.outputs.image_source_sha }}
+    env:
+      REGISTRY: ghcr.io
+      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+      OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+      OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Validate immutable image reuse contracts
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test scripts/ci/blue-green-capacity-integration.test.mjs
+          bash scripts/ci/image-bundle-provenance.test.sh
+          bash scripts/ci/remote-oss-image-bundle-deploy.test.sh
+
+      - name: Resolve image source
+        id: source
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          source_sha="${{ inputs.image_source_sha }}"
+          [[ "${source_sha}" =~ ^[a-f0-9]{40}$ ]]
+          echo "image_source_sha=${source_sha}" >> "${GITHUB_OUTPUT}"
+          echo "PROJECTWING_IMAGE_SOURCE_SHA=${source_sha}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_API_IMAGE=projectwing-api:${source_sha}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_EMP_IMAGE=projectwing-emp:${source_sha}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_CMP_IMAGE=projectwing-cmp:${source_sha}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_SHOWROOM_IMAGE=projectwing-showroom:${source_sha}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_TMS_IMAGE=projectwing-tms:${source_sha}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_INTRANET_IMAGE=projectwing-intranet:${source_sha}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_IB_IMAGE=projectwing-ib:${source_sha}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_IB_API_IMAGE=projectwing-ib-api:${source_sha}" >> "${GITHUB_ENV}"
+
+      - name: Resolve pinned foundation images
+        id: foundations
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          set -a
+          . deploy/images/foundations.env
+          set +a
+          gotenberg_fingerprint="$({ printf '%s\n' "${PROJECTWING_GOTENBERG_BASE_IMAGE}"; sha256sum deploy/docker/Dockerfile.gotenberg deploy/fonts/projectwing-font-substitutions.conf; } | sha256sum | cut -d ' ' -f1)"
+          traefik_fingerprint="${PROJECTWING_TRAEFIK_SOURCE_IMAGE##*@sha256:}"
+          [[ "${gotenberg_fingerprint}" =~ ^[a-f0-9]{64}$ && "${traefik_fingerprint}" =~ ^[a-f0-9]{64}$ ]]
+          [[ "${PROJECTWING_TRAEFIK_IMAGE_ID}" =~ ^sha256:[a-f0-9]{64}$ ]]
+          echo "PROJECTWING_TRAEFIK_SOURCE_IMAGE=${PROJECTWING_TRAEFIK_SOURCE_IMAGE}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_TRAEFIK_IMAGE_ID=${PROJECTWING_TRAEFIK_IMAGE_ID}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_TRAEFIK_IMAGE=projectwing-traefik:${traefik_fingerprint}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_GOTENBERG_IMAGE=projectwing-gotenberg:${gotenberg_fingerprint}" >> "${GITHUB_ENV}"
+          echo "traefik_image=projectwing-traefik:${traefik_fingerprint}" >> "${GITHUB_OUTPUT}"
+          echo "gotenberg_image=projectwing-gotenberg:${gotenberg_fingerprint}" >> "${GITHUB_OUTPUT}"
+
+      - name: Connect WARP only for runner to OSS transfer
+        env:
+          PROJECTWING_WARP_CHECK_URL: ${{ secrets.OSS_ENDPOINT }}
+        run: bash scripts/ci/ensure-warp-proxy.sh
+
+      - name: Reuse a retained OSS image bundle
+        id: retained_bundle
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          object_root="ci-images/${PROJECTWING_IMAGE_SOURCE_SHA}"
+          manifest_key="${object_root}/manifest.json"
+          bundle_key="${object_root}/images.tar.gz"
+          manifest="${RUNNER_TEMP}/retained-oss-bundle-manifest.json"
+          headers="${RUNNER_TEMP}/retained-oss-bundle-headers"
+          replay_from_ghcr() {
+            echo 'found=false' >> "${GITHUB_OUTPUT}"
+            echo "$1"
+            exit 0
+          }
+          oss_request() {
+            local method="$1" key="$2" output="$3" headers_file="$4" date_value signature endpoint curl_status http_status
+            local -a curl_args
+            date_value="$(LC_ALL=C TZ=GMT date '+%a, %d %b %Y %H:%M:%S GMT')"
+            signature="$(printf '%s\n\n\n%s\n/%s/%s' "${method}" "${date_value}" "${OSS_BUCKET}" "${key}" | openssl dgst -sha1 -hmac "${OSS_ACCESS_KEY_SECRET}" -binary | base64)"
+            endpoint="${OSS_ENDPOINT#https://}"
+            endpoint="${endpoint#http://}"
+            endpoint="${endpoint%/}"
+            curl_args=(--silent --show-error --location --connect-timeout 15 --max-time 60 --retry 3 --retry-all-errors --retry-delay 2 --header "Date: ${date_value}" --header "Authorization: OSS ${OSS_ACCESS_KEY_ID}:${signature}")
+            if [[ "${method}" == HEAD ]]; then curl_args+=(--head --output /dev/null); else curl_args+=(--request "${method}"); fi
+            [[ -z "${headers_file}" ]] || curl_args+=(--dump-header "${headers_file}")
+            [[ -z "${output}" ]] || curl_args+=(--output "${output}")
+            if http_status="$(ALL_PROXY='socks5h://127.0.0.1:40000' NO_PROXY='127.0.0.1,localhost' curl "${curl_args[@]}" --write-out '%{http_code}' "https://${OSS_BUCKET}.${endpoint}/${key}")"; then
+              printf '%s' "${http_status}"
+              return
+            fi
+            curl_status="$?"
+            echo "OSS ${method} request failed before an HTTP response for ${key} (curl exit ${curl_status})." >&2
+            return "${curl_status}"
+          }
+          manifest_status="$(oss_request GET "${manifest_key}" "${manifest}" '')"
+          [[ "${manifest_status}" =~ ^[1-5][0-9]{2}$ ]] || { echo "Malformed OSS manifest response: ${manifest_status}." >&2; exit 1; }
+          if [[ "${manifest_status}" == 404 ]]; then
+            replay_from_ghcr "No retained OSS image bundle manifest exists for ${PROJECTWING_IMAGE_SOURCE_SHA}; replaying its immutable GHCR images through OSS."
+          fi
+          [[ "${manifest_status}" == 200 ]] || { echo "Unexpected OSS manifest response: ${manifest_status}." >&2; exit 1; }
+          if ! jq -e --arg commit "${PROJECTWING_IMAGE_SOURCE_SHA}" \
+            --argjson systems '["api","emp","cmp","showroom","tms","intranet","ib","ib-api","reverse-proxy"]' \
+            '.schemaVersion == 2 and .commit == $commit and .systems == $systems and (.bundle.uncompressedSize | type == "number" and . > 0 and floor == .)' "${manifest}" >/dev/null; then
+            replay_from_ghcr "Retained OSS manifest contract does not match ${PROJECTWING_IMAGE_SOURCE_SHA}; replaying immutable GHCR images through OSS."
+          fi
+          declared_bundle_key="$(jq -er '.bundle.key' "${manifest}")"
+          bundle_sha256="$(jq -er '.bundle.sha256' "${manifest}")"
+          bundle_size="$(jq -er '.bundle.size' "${manifest}")"
+          bundle_uncompressed_size="$(jq -er '.bundle.uncompressedSize' "${manifest}")"
+          [[ "${declared_bundle_key}" == "${bundle_key}" ]]
+          [[ "${bundle_sha256}" =~ ^[a-f0-9]{64}$ && "${bundle_size}" =~ ^[1-9][0-9]*$ && "${bundle_uncompressed_size}" =~ ^[1-9][0-9]*$ ]]
+          required_images=("${PROJECTWING_TRAEFIK_IMAGE}" "${PROJECTWING_GOTENBERG_IMAGE}")
+          for name in api emp cmp showroom tms intranet ib ib-api; do
+            required_images+=("projectwing-${name}:${PROJECTWING_IMAGE_SOURCE_SHA}")
+          done
+          for image in "${required_images[@]}"; do
+            if ! jq -e --arg image "${image}" '.images | index($image) != null' "${manifest}" >/dev/null; then
+              replay_from_ghcr "Retained OSS manifest is missing ${image}; replaying immutable GHCR images through OSS."
+            fi
+          done
+          bundle_status="$(oss_request HEAD "${bundle_key}" '' "${headers}")"
+          [[ "${bundle_status}" =~ ^[1-5][0-9]{2}$ ]] || { echo "Malformed OSS bundle response: ${bundle_status}." >&2; exit 1; }
+          [[ "${bundle_status}" == 200 ]] || { echo "Retained OSS bundle is unavailable: HTTP ${bundle_status}." >&2; exit 1; }
+          object_size="$(grep -i '^content-length:' "${headers}" | cut -d ':' -f 2- | tr -d '\r ' | tail -n 1)"
+          object_sha256="$(grep -i '^x-oss-meta-sha256:' "${headers}" | cut -d ':' -f 2- | tr -d '\r ' | tail -n 1)"
+          if [[ "${object_size}" != "${bundle_size}" || "${object_sha256}" != "${bundle_sha256}" ]]; then
+            replay_from_ghcr 'Retained OSS bundle metadata does not match its manifest; replaying immutable GHCR images through OSS.'
+          fi
+          {
+            echo 'found=true'
+            echo "bundle_object_key=${bundle_key}"
+            echo "bundle_sha256=${bundle_sha256}"
+            echo "bundle_size=${bundle_size}"
+            echo "bundle_uncompressed_size=${bundle_uncompressed_size}"
+            echo "gotenberg_image=${PROJECTWING_GOTENBERG_IMAGE}"
+          } >> "${GITHUB_OUTPUT}"
+          echo "Reusing retained OSS image bundle: ${bundle_key} (${bundle_size} bytes)."
+
+      - name: Log in to GHCR
+        if: steps.retained_bundle.outputs.found != 'true'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Replay immutable GHCR images when no OSS bundle exists
+        if: steps.retained_bundle.outputs.found != 'true'
+        id: image_delivery
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          images=(api emp cmp showroom tms intranet ib ib-api)
+          gotenberg_image="${PROJECTWING_GOTENBERG_IMAGE}"
+          missing=0
+          for name in "${images[@]}"; do
+            if ! docker manifest inspect "${REGISTRY}/${GITHUB_REPOSITORY_OWNER}/projectwing-${name}:${PROJECTWING_IMAGE_SOURCE_SHA}" >/dev/null; then
+              missing=1
+              echo "GHCR image missing: projectwing-${name}:${PROJECTWING_IMAGE_SOURCE_SHA}"
+            fi
+          done
+          if ! docker manifest inspect "${REGISTRY}/${GITHUB_REPOSITORY_OWNER}/${gotenberg_image}" >/dev/null; then
+            missing=1
+            echo "GHCR image missing: ${gotenberg_image}"
+          fi
+          if (( missing == 0 )); then
+            echo "PROJECTWING_GOTENBERG_IMAGE=${gotenberg_image}" >> "${GITHUB_ENV}"
+            for name in "${images[@]}"; do
+              docker pull "${REGISTRY}/${GITHUB_REPOSITORY_OWNER}/projectwing-${name}:${PROJECTWING_IMAGE_SOURCE_SHA}"
+              docker tag "${REGISTRY}/${GITHUB_REPOSITORY_OWNER}/projectwing-${name}:${PROJECTWING_IMAGE_SOURCE_SHA}" "projectwing-${name}:${PROJECTWING_IMAGE_SOURCE_SHA}"
+            done
+            docker pull "${REGISTRY}/${GITHUB_REPOSITORY_OWNER}/${gotenberg_image}"
+            docker tag "${REGISTRY}/${GITHUB_REPOSITORY_OWNER}/${gotenberg_image}" "${gotenberg_image}"
+            echo "mode=replay" >> "${GITHUB_OUTPUT}"
+            echo "gotenberg_image=${gotenberg_image}" >> "${GITHUB_OUTPUT}"
+            echo "Replaying the immutable GHCR generation through OSS; no application image build runs."
+          else
+            echo "Immutable GHCR image generation is incomplete for ${PROJECTWING_IMAGE_SOURCE_SHA}; refusing to build during deployment." >&2
+            exit 1
+          fi
+
+      - name: Pack Docker images
+        if: steps.retained_bundle.outputs.found != 'true'
+        id: package
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          docker pull "${PROJECTWING_TRAEFIK_SOURCE_IMAGE}"
+          actual_traefik_id="$(docker image inspect --format '{{.Id}}' "${PROJECTWING_TRAEFIK_SOURCE_IMAGE}")"
+          [[ "${actual_traefik_id}" == "${PROJECTWING_TRAEFIK_IMAGE_ID}" ]] || {
+            echo 'Pinned Traefik source does not match PROJECTWING_TRAEFIK_IMAGE_ID.' >&2
+            exit 1
+          }
+          docker tag "${PROJECTWING_TRAEFIK_SOURCE_IMAGE}" "${PROJECTWING_TRAEFIK_IMAGE}"
+          images=(
+            "${PROJECTWING_TRAEFIK_IMAGE}"
+            "${PROJECTWING_GOTENBERG_IMAGE}"
+            "${PROJECTWING_API_IMAGE}"
+            "${PROJECTWING_EMP_IMAGE}"
+            "${PROJECTWING_CMP_IMAGE}"
+            "${PROJECTWING_SHOWROOM_IMAGE}"
+            "${PROJECTWING_TMS_IMAGE}"
+            "${PROJECTWING_INTRANET_IMAGE}"
+            "${PROJECTWING_IB_IMAGE}"
+            "${PROJECTWING_IB_API_IMAGE}"
+          )
+          for image in "${images[@]}"; do docker image inspect "${image}" >/dev/null; done
+          bundle="${RUNNER_TEMP}/projectwing-images-${PROJECTWING_IMAGE_SOURCE_SHA}.tar.gz"
+          docker save "${images[@]}" | gzip -1 > "${bundle}"
+          gzip -t "${bundle}"
+          bundle_uncompressed_size="$(gzip -dc "${bundle}" | wc -c)"
+          bundle_uncompressed_size="${bundle_uncompressed_size//[[:space:]]/}"
+          [[ "${bundle_uncompressed_size}" =~ ^[1-9][0-9]*$ ]]
+          printf 'bundle=%s\n' "${bundle}" >> "${GITHUB_OUTPUT}"
+          printf 'images=%s\n' "$(IFS=,; echo "${images[*]}")" >> "${GITHUB_OUTPUT}"
+          printf 'bundle_uncompressed_size=%s\n' "${bundle_uncompressed_size}" >> "${GITHUB_OUTPUT}"
+
+      - uses: actions/setup-node@v6
+        if: steps.retained_bundle.outputs.found != 'true'
+        with:
+          node-version: "22"
+
+      - name: Install OSS publisher dependencies
+        if: steps.retained_bundle.outputs.found != 'true'
+        run: npm install --global --prefix "${RUNNER_TEMP}/projectwing-oss-node" --no-save "ali-oss@6.23.0" "proxy-agent@5.0.0"
+
+      - name: Publish bundle to OSS
+        id: publish
+        if: steps.retained_bundle.outputs.found != 'true'
+        env:
+          BUNDLE: ${{ steps.package.outputs.bundle }}
+          IMAGES: ${{ steps.package.outputs.images }}
+          BUNDLE_UNCOMPRESSED_SIZE: ${{ steps.package.outputs.bundle_uncompressed_size }}
+          PROJECTWING_WARP_CHECK_URL: ${{ secrets.OSS_ENDPOINT }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          IFS=',' read -r -a images <<< "${IMAGES}"
+          arguments=()
+          for image in "${images[@]}"; do arguments+=(--image "${image}"); done
+          published=false
+          for upload_session in 1 2 3; do
+            if ALL_PROXY='socks5h://127.0.0.1:40000' NO_PROXY='127.0.0.1,localhost' \
+              OSS_NODE_MODULES="${RUNNER_TEMP}/projectwing-oss-node/lib/node_modules" \
+              node scripts/ci/publish-image-bundle-to-oss.mjs \
+              --bundle "${BUNDLE}" \
+              --commit "${PROJECTWING_IMAGE_SOURCE_SHA}" \
+              --systems "api,emp,cmp,showroom,tms,intranet,ib,ib-api,reverse-proxy" \
+              --uncompressed-size "${BUNDLE_UNCOMPRESSED_SIZE}" \
+              --output "${RUNNER_TEMP}/oss-bundle-output" \
+              "${arguments[@]}"; then
+              published=true
+              break
+            fi
+            if [ "${upload_session}" -lt 3 ]; then
+              echo "OSS bundle upload failed; reconnecting WARP before session $((upload_session + 1))/3." >&2
+              scripts/ci/ensure-warp-proxy.sh
+            fi
+          done
+          [ "${published}" = true ] || { echo "OSS bundle upload failed after 3 WARP sessions." >&2; exit 1; }
+          cat "${RUNNER_TEMP}/oss-bundle-output" >> "${GITHUB_OUTPUT}"
+
+      - name: Remove replay image tags from the runner
+        if: always() && steps.retained_bundle.outputs.found != 'true'
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          images=(api emp cmp showroom tms intranet ib ib-api)
+          for name in "${images[@]}"; do
+            docker image rm \
+              "projectwing-${name}:${PROJECTWING_IMAGE_SOURCE_SHA}" \
+              "${REGISTRY}/${GITHUB_REPOSITORY_OWNER}/projectwing-${name}:${PROJECTWING_IMAGE_SOURCE_SHA}" \
+              >/dev/null 2>&1 || true
+          done
+          docker image rm \
+            "${PROJECTWING_GOTENBERG_IMAGE}" \
+            "${REGISTRY}/${GITHUB_REPOSITORY_OWNER}/${PROJECTWING_GOTENBERG_IMAGE}" \
+            "${PROJECTWING_TRAEFIK_IMAGE}" \
+            "${PROJECTWING_TRAEFIK_SOURCE_IMAGE}" \
+            >/dev/null 2>&1 || true
+
+      - name: Disconnect WARP
+        if: always()
+        run: warp-cli --accept-tos disconnect || true
+
+  deploy-blue-green:
+    name: Stage and verify the inactive candidate
+    if: inputs.operation == 'deploy'
+    needs: package-and-upload
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 90
+    env:
+      PROJECTWING_VERSION: ${{ inputs.source_commit_sha }}
+      PROJECTWING_SOURCE_COMMIT_SHA: ${{ inputs.source_commit_sha }}
+      PROJECTWING_IMAGE_SOURCE_SHA: ${{ needs.package-and-upload.outputs.image-source-sha }}
+      PROJECTWING_BUILD_RUN_ID: ${{ inputs.build_run_id }}
+      PROJECTWING_BUILD_RUN_ATTEMPT: ${{ inputs.build_run_attempt }}
+      PROJECTWING_DEPLOY_RUN_ID: ${{ github.run_id }}
+      PROJECTWING_DEPLOY_RUN_ATTEMPT: ${{ github.run_attempt }}
+      PROJECTWING_RELEASE_KEY: ${{ inputs.source_commit_sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+      PROJECTWING_BLUE_NETBIRD_HOST: ${{ vars.PROJECTWING_BLUE_NETBIRD_HOST }}
+      PROJECTWING_GREEN_NETBIRD_HOST: ${{ vars.PROJECTWING_GREEN_NETBIRD_HOST }}
+      PROJECTWING_HAVIP_ADDRESS: ${{ vars.PROJECTWING_HAVIP_ADDRESS }}
+      PROJECTWING_EDGE_HA_BOOTSTRAP: ${{ inputs.edge_ha_bootstrap && 'true' || 'false' }}
+      PROJECTWING_BLUE_NETBIRD_SSH_KNOWN_HOSTS: ${{ secrets.PROJECTWING_BLUE_NETBIRD_SSH_KNOWN_HOSTS }}
+      PROJECTWING_GREEN_NETBIRD_SSH_KNOWN_HOSTS: ${{ secrets.PROJECTWING_GREEN_NETBIRD_SSH_KNOWN_HOSTS }}
+      PROJECTWING_DEPLOY_USER: ${{ vars.PROJECTWING_DEPLOY_USER || 'ops' }}
+      PROJECTWING_DEPLOY_SSH_PORT: ${{ vars.PROJECTWING_NETBIRD_OPENSSH_PORT || '2222' }}
+      PROJECTWING_DEPLOY_SSH_CONFIGURE_ATTEMPTS: 6
+      PROJECTWING_APPLY_PENDING_MIGRATIONS: "true"
+      PROJECTWING_OSS_IMAGE_BUNDLE_OBJECT_KEY: ${{ needs.package-and-upload.outputs.bundle-object-key }}
+      PROJECTWING_OSS_IMAGE_BUNDLE_SHA256: ${{ needs.package-and-upload.outputs.bundle-sha256 }}
+      PROJECTWING_OSS_IMAGE_BUNDLE_SIZE_BYTES: ${{ needs.package-and-upload.outputs.bundle_size }}
+      PROJECTWING_OSS_IMAGE_BUNDLE_UNCOMPRESSED_SIZE_BYTES: ${{ needs.package-and-upload.outputs.bundle_uncompressed_size }}
+      PROJECTWING_TRAEFIK_IMAGE: ${{ needs.package-and-upload.outputs.traefik-image }}
+      PROJECTWING_GOTENBERG_IMAGE: ${{ needs.package-and-upload.outputs.gotenberg-image }}
+      PROJECTWING_API_IMAGE: projectwing-api:${{ needs.package-and-upload.outputs.image-source-sha }}
+      PROJECTWING_EMP_IMAGE: projectwing-emp:${{ needs.package-and-upload.outputs.image-source-sha }}
+      PROJECTWING_CMP_IMAGE: projectwing-cmp:${{ needs.package-and-upload.outputs.image-source-sha }}
+      PROJECTWING_SHOWROOM_IMAGE: projectwing-showroom:${{ needs.package-and-upload.outputs.image-source-sha }}
+      PROJECTWING_TMS_IMAGE: projectwing-tms:${{ needs.package-and-upload.outputs.image-source-sha }}
+      PROJECTWING_INTRANET_IMAGE: projectwing-intranet:${{ needs.package-and-upload.outputs.image-source-sha }}
+      PROJECTWING_IB_IMAGE: projectwing-ib:${{ needs.package-and-upload.outputs.image-source-sha }}
+      PROJECTWING_IB_API_IMAGE: projectwing-ib-api:${{ needs.package-and-upload.outputs.image-source-sha }}
+      PROJECTWING_TRAEFIK_ACME_EMAIL: ${{ secrets.PROJECTWING_TRAEFIK_ACME_EMAIL }}
+      PROJECTWING_TRAEFIK_ALIDNS_ACCESS_KEY: ${{ secrets.PROJECTWING_TRAEFIK_ALIDNS_ACCESS_KEY }}
+      PROJECTWING_TRAEFIK_ALIDNS_SECRET_KEY: ${{ secrets.PROJECTWING_TRAEFIK_ALIDNS_SECRET_KEY }}
+      OSS_REGION: ${{ secrets.OSS_REGION }}
+      OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+      OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
+      OSS_INTERNAL_ENDPOINT: ${{ secrets.OSS_INTERNAL_ENDPOINT }}
+      OSS_USE_INTERNAL_ENDPOINT: ${{ secrets.OSS_USE_INTERNAL_ENDPOINT }}
+      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+      STORAGE_DRIVER: ${{ secrets.STORAGE_DRIVER }}
+      UPLOAD_DIR: ${{ secrets.UPLOAD_DIR }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      CMP_HKMA_PROXY_URL: ${{ secrets.CMP_HKMA_PROXY_URL }}
+      NETBIRD_MANAGEMENT_URL: https://netbird.superfx.cn
+      NETBIRD_VERSION: "0.77.1"
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Join the NetBird overlay
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if ! command -v netbird >/dev/null; then
+            curl -fL --retry 5 --retry-all-errors --retry-delay 3 --connect-timeout 15 --max-time 300 \
+              -o /tmp/netbird.tar.gz "https://github.com/netbirdio/netbird/releases/download/v${NETBIRD_VERSION}/netbird_${NETBIRD_VERSION}_linux_amd64.tar.gz"
+            tar -xzf /tmp/netbird.tar.gz -C /tmp netbird
+            sudo install -m 0755 /tmp/netbird /usr/local/bin/netbird
+          fi
+          if [[ ! -f /etc/systemd/system/netbird.service ]]; then sudo netbird service install; fi
+          sudo netbird service start
+          if netbird_status="$(sudo netbird status --json 2>/dev/null)" \
+            && jq -e '.management.connected == true and .signal.connected == true' <<<"${netbird_status}" >/dev/null; then
+            echo 'Reusing the existing NetBird overlay connection.'
+          else
+            echo 'Existing NetBird connection is not healthy; reconnecting before deployment.'
+            sudo netbird down || true
+            sudo netbird up --setup-key "${{ secrets.NETBIRD_SETUP_KEY }}" --management-url "${NETBIRD_MANAGEMENT_URL}"
+          fi
+          for attempt in $(seq 1 12); do
+            netbird_status="$(sudo netbird status --json 2>/dev/null || true)"
+            if jq -e '.management.connected == true and .signal.connected == true' <<<"${netbird_status}" >/dev/null; then
+              jq '{cliVersion, daemonVersion, daemonStatus, netbirdIp, management, signal}' <<<"${netbird_status}"
+              exit 0
+            fi
+            echo "Waiting for a healthy NetBird overlay connection (${attempt}/12)..."
+            sleep 5
+          done
+          echo 'NetBird overlay did not reconnect; refusing deployment before any host access.' >&2
+          jq '{cliVersion, daemonVersion, daemonStatus, netbirdIp, management, signal}' <<<"${netbird_status}" >&2
+          exit 1
+
+      - name: Configure pinned OpenSSH over NetBird
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          export PROJECTWING_DEPLOY_SSH_DIR="${RUNNER_TEMP}/projectwing-deploy-ssh"
+          mkdir -p "${PROJECTWING_DEPLOY_SSH_DIR}"
+          chmod 700 "${PROJECTWING_DEPLOY_SSH_DIR}"
+          printf '%s\n' "${{ secrets.PROJECTWING_CI_NETBIRD_SSH_PRIVATE_KEY }}" > "${PROJECTWING_DEPLOY_SSH_DIR}/projectwing_deploy"
+          chmod 600 "${PROJECTWING_DEPLOY_SSH_DIR}/projectwing_deploy"
+          echo "PROJECTWING_DEPLOY_SSH_DIR=${PROJECTWING_DEPLOY_SSH_DIR}" >> "${GITHUB_ENV}"
+
+      - name: Resolve development runtime URLs
+        run: PROJECTWING_ENVIRONMENT=development bash scripts/ci/resolve-deploy-env.sh
+
+      - name: Inherit only missing runtime secrets from the active API
+        if: env.DATABASE_URL == '' || env.BETTER_AUTH_SECRET == ''
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          resolver_output="$(
+            PROJECTWING_RUNTIME_SECRETS_OUTPUT_FILE="${RUNNER_TEMP}/inherited-runtime.env" \
+              bash scripts/ci/resolve-edge-runtime-secrets.sh
+          )"
+          while IFS= read -r line; do
+            case "${line}" in
+              PROJECTWING_SINGLE_HOST_COLOR=blue|PROJECTWING_SINGLE_HOST_COLOR=green)
+                printf '%s\n' "${line}" >> "${GITHUB_ENV}"
+                ;;
+              PROJECTWING_RUNTIME_SECRETS_FILE=*) ;;
+              '') ;;
+              *) echo 'Runtime secret resolver returned an unexpected status field.' >&2; exit 1 ;;
+            esac
+          done <<< "${resolver_output}"
+          test -r "${RUNNER_TEMP}/inherited-runtime.env"
+          [[ "$(stat -c '%a' "${RUNNER_TEMP}/inherited-runtime.env")" == 600 ]]
+          echo 'Runtime deployment secrets were inherited without exposing their values.'
+
+      - name: Stage release and activate the inactive color
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          echo 'Checking Traefik deployment credentials.'
+          test -n "${PROJECTWING_TRAEFIK_ACME_EMAIL}"
+          test -n "${PROJECTWING_TRAEFIK_ALIDNS_ACCESS_KEY}"
+          test -n "${PROJECTWING_TRAEFIK_ALIDNS_SECRET_KEY}"
+          echo 'Checking OSS deployment credentials.'
+          for name in STORAGE_DRIVER UPLOAD_DIR OSS_REGION OSS_BUCKET OSS_ENDPOINT OSS_INTERNAL_ENDPOINT OSS_USE_INTERNAL_ENDPOINT OSS_ACCESS_KEY_ID OSS_ACCESS_KEY_SECRET; do test -n "${!name}"; done
+          umask 077
+          if [[ -z "${DATABASE_URL}" || -z "${BETTER_AUTH_SECRET}" ]]; then
+            echo 'Loading inherited runtime secrets from the active API.'
+            test -r "${RUNNER_TEMP}/inherited-runtime.env"
+            set -a
+            . "${RUNNER_TEMP}/inherited-runtime.env"
+            set +a
+          fi
+          echo 'Runtime deployment secrets are ready.'
+          printf '%s' "${PROJECTWING_TRAEFIK_ALIDNS_ACCESS_KEY}" > projectwing-traefik-alidns-access-key
+          printf '%s' "${PROJECTWING_TRAEFIK_ALIDNS_SECRET_KEY}" > projectwing-traefik-alidns-secret-key
+          printf 'STORAGE_DRIVER=%s\nUPLOAD_DIR=%s\nOSS_REGION=%s\nOSS_BUCKET=%s\nOSS_ENDPOINT=%s\nOSS_INTERNAL_ENDPOINT=%s\nOSS_USE_INTERNAL_ENDPOINT=%s\nOSS_ACCESS_KEY_ID=%s\nOSS_ACCESS_KEY_SECRET=%s\n' "${STORAGE_DRIVER}" "${UPLOAD_DIR}" "${OSS_REGION}" "${OSS_BUCKET}" "${OSS_ENDPOINT}" "${OSS_INTERNAL_ENDPOINT}" "${OSS_USE_INTERNAL_ENDPOINT}" "${OSS_ACCESS_KEY_ID}" "${OSS_ACCESS_KEY_SECRET}" > projectwing-oss.env
+          printf 'DATABASE_URL=%s\nBETTER_AUTH_SECRET=%s\nBETTER_AUTH_URL=%s\nBETTER_AUTH_COOKIE_DOMAIN=%s\nBETTER_AUTH_TRUSTED_ORIGINS=%s\nFRONTEND_URLS=%s\nAPI_PORT=3000\nGOTENBERG_URL=http://gotenberg:3000\n' "${DATABASE_URL}" "${BETTER_AUTH_SECRET}" "${BETTER_AUTH_URL}" "${BETTER_AUTH_COOKIE_DOMAIN}" "${BETTER_AUTH_TRUSTED_ORIGINS}" "${FRONTEND_URLS}" > projectwing.env
+          if [[ -n "${CMP_HKMA_PROXY_URL:-}" ]]; then printf 'CMP_HKMA_PROXY_URL=%s\n' "${CMP_HKMA_PROXY_URL}" >> projectwing.env; fi
+          if ! grep -q '^DATABASE_URL=.' projectwing.env; then echo 'Generated runtime environment is missing DATABASE_URL.' >&2; exit 1; fi
+          if ! grep -q '^BETTER_AUTH_SECRET=.' projectwing.env; then echo 'Generated runtime environment is missing BETTER_AUTH_SECRET.' >&2; exit 1; fi
+          echo 'Prepared runtime environment files.'
+          printf 'PROJECTWING_TRAEFIK_IMAGE=%q\nPROJECTWING_API_IMAGE=%q\nPROJECTWING_GOTENBERG_IMAGE=%q\nPROJECTWING_EMP_IMAGE=%q\nPROJECTWING_CMP_IMAGE=%q\nPROJECTWING_SHOWROOM_IMAGE=%q\nPROJECTWING_TMS_IMAGE=%q\nPROJECTWING_INTRANET_IMAGE=%q\nPROJECTWING_IB_IMAGE=%q\nPROJECTWING_IB_API_IMAGE=%q\n' "${PROJECTWING_TRAEFIK_IMAGE}" "${PROJECTWING_API_IMAGE}" "${PROJECTWING_GOTENBERG_IMAGE}" "${PROJECTWING_EMP_IMAGE}" "${PROJECTWING_CMP_IMAGE}" "${PROJECTWING_SHOWROOM_IMAGE}" "${PROJECTWING_TMS_IMAGE}" "${PROJECTWING_INTRANET_IMAGE}" "${PROJECTWING_IB_IMAGE}" "${PROJECTWING_IB_API_IMAGE}" > projectwing-registry.env
+          echo 'Prepared immutable image reference file.'
+          stage="$(mktemp -d)"
+          trap 'rm -rf "${stage}"' EXIT
+          mkdir -p "${stage}/deploy" "${stage}/scripts/ci"
+          cp docker-compose.development.yml "${stage}/"
+          cp -R deploy/traefik deploy/downloads deploy/blue-green deploy/edge-ha deploy/images "${stage}/deploy/"
+          sed "s|__PROJECTWING_TRAEFIK_ACME_EMAIL__|${PROJECTWING_TRAEFIK_ACME_EMAIL}|" deploy/traefik/traefik.yml > "${stage}/deploy/traefik/traefik.yml"
+          cp scripts/ci/deployment-health.sh scripts/ci/deployment-order-guard.sh scripts/ci/deployment-lock-remote.sh scripts/ci/deployment-lock-holder.mjs scripts/ci/blue-green-controller.sh scripts/ci/blue-green-schema.sh scripts/ci/blue-green-remote-functions.sh scripts/ci/promote-edge-color.sh scripts/ci/render-edge-routing.sh scripts/ci/render-candidate-admin-route.sh scripts/ci/verify-protected-edge-route.sh scripts/ci/remote-oss-image-bundle-deploy.sh scripts/ci/image-bundle-provenance.sh scripts/ci/reclaim-blue-green-capacity.sh scripts/ci/validate-blue-green-release-tree.sh scripts/ci/cleanup-blue-green-candidate.sh scripts/ci/cleanup-blue-green-staged-inputs.sh scripts/ci/edge-ha-node.sh scripts/ci/edge-ha-image.sh scripts/ci/edge-ha-state.sh scripts/ci/edge-ha-health.sh scripts/ci/edge-ha-remote.sh scripts/ci/edge-ha-remote-state.sh scripts/ci/edge-maintenance-remote.sh scripts/ci/configure-edge-keepalived.sh "${stage}/scripts/ci/"
+          echo 'Assembled the remote release controller payload.'
+          tar -C "${stage}" -czf projectwing-oss-image-bundle-deploy.tar.gz docker-compose.development.yml deploy scripts
+          echo 'Packed the remote release controller payload.'
+          export PROJECTWING_DEPLOY_ARCHIVE_FILE="$PWD/projectwing-oss-image-bundle-deploy.tar.gz"
+          export PROJECTWING_APP_ENV_FILE="$PWD/projectwing.env"
+          export PROJECTWING_OSS_ENV_FILE="$PWD/projectwing-oss.env"
+          export PROJECTWING_REGISTRY_ENV_FILE="$PWD/projectwing-registry.env"
+          export PROJECTWING_TRAEFIK_ACME_ACCESS_KEY_FILE="$PWD/projectwing-traefik-alidns-access-key"
+          export PROJECTWING_TRAEFIK_ACME_SECRET_KEY_FILE="$PWD/projectwing-traefik-alidns-secret-key"
+          echo 'Invoking the Blue/Green candidate deployment controller.'
+          controller_log="${RUNNER_TEMP}/blue-green-remote-deploy.log"
+          if ! bash scripts/ci/blue-green-remote-deploy.sh 2>&1 | tee "${controller_log}"; then
+            exit 1
+          fi
+
+      - name: Remove deployment secret material from the runner
+        if: always()
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -f -- \
+            "${RUNNER_TEMP}/inherited-runtime.env" \
+            projectwing.env projectwing-oss.env projectwing-registry.env \
+            projectwing-traefik-alidns-access-key projectwing-traefik-alidns-secret-key
+          bash scripts/ci/cleanup-deploy-ssh.sh
+          echo 'Removed deployment runtime secrets, SSH credentials, and control connections.'

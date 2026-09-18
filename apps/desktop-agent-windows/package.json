@@ -1,0 +1,31 @@
+{
+  "name": "@project-wing/desktop-agent-windows",
+  "version": "0.2.1",
+  "private": true,
+  "scripts": {
+    "prestart": "corepack pnpm --filter @project-wing/desktop-agent bundle",
+    "start": "react-native start",
+    "prewindows": "corepack pnpm --filter @project-wing/desktop-agent bundle",
+    "windows": "react-native run-windows",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@project-wing/desktop-agent-ui": "workspace:*",
+    "react": "19.2.3",
+    "react-native": "0.84.1",
+    "react-native-windows": "0.84.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/runtime": "^7.25.0",
+    "@react-native-community/cli": "20.1.0",
+    "@react-native/babel-preset": "0.84.1",
+    "@react-native/metro-config": "0.84.1",
+    "@react-native/typescript-config": "0.84.1",
+    "@types/react": "^19.2.7",
+    "typescript": "^6.0.3"
+  },
+  "engines": {
+    "node": ">=22.11.0"
+  }
+}

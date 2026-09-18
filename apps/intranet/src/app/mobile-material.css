@@ -1,0 +1,221 @@
+@media (width < 48rem) {
+  /* Fluent portal's default million-level stack must share the mobile overlay layer. */
+  :root
+    .fui-FluentProvider[data-portal-node="true"]:has([data-responsive-dialog]) {
+    z-index: var(--md-sys-layer-overlay);
+  }
+  :root .fui-DialogSurface[data-responsive-dialog] {
+    /* Override the retained desktop publish-surface sizing contract. */
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0;
+  }
+  :root .knowledge-publish-dialog-surface[data-responsive-dialog] {
+    height: min(
+      90dvh,
+      calc(var(--pw-mobile-viewport-height, 100dvh) - var(--md-sys-space-4))
+    );
+    overflow: hidden;
+  }
+  :root .knowledge-publish-dialog-surface[data-responsive-dialog] > form,
+  :root
+    .knowledge-publish-dialog-surface[data-responsive-dialog]
+    .fui-DialogBody {
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+  }
+  :root
+    .knowledge-publish-dialog-surface[data-responsive-dialog]
+    .knowledge-publish-content {
+    max-height: none;
+  }
+  :root .fui-DialogSurface[data-responsive-dialog] .fui-DialogBody {
+    max-height: inherit;
+    min-width: 0;
+  }
+  :root .fui-DialogSurface[data-responsive-dialog] .fui-DialogContent {
+    min-height: 0;
+    overflow-y: auto;
+  }
+  :root .fui-DialogSurface[data-responsive-dialog] .fui-DialogTitle {
+    font-size: var(--md-sys-type-title-medium);
+  }
+  :root .knowledge-publish-content > .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root
+    .fui-DialogSurface[data-responsive-dialog]
+    :is(.fui-Input, .fui-Dropdown) {
+    min-width: 0;
+    min-height: var(--pw-control-target);
+    border-radius: var(--md-sys-shape-small);
+    font-size: var(--md-sys-type-body-large);
+  }
+  :root .fui-DialogSurface[data-responsive-dialog] .fui-DialogActions {
+    position: sticky;
+    bottom: 0;
+    background: var(--md-sys-color-surface-container-lowest);
+    padding-top: var(--md-sys-space-2);
+  }
+  :root
+    .knowledge-publish-dialog-surface[data-responsive-dialog]
+    .fui-DialogActions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--md-sys-space-3);
+    width: 100%;
+    justify-self: stretch;
+  }
+  :root
+    .knowledge-publish-dialog-surface[data-responsive-dialog]
+    .fui-DialogActions
+    > .fui-Button {
+    width: 100%;
+    min-width: 0;
+    min-height: var(--pw-control-target);
+  }
+  :root .fui-DialogSurface[data-responsive-dialog] [role="toolbar"] {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  :root .intranet-personal-settings {
+    width: 100%;
+    grid-template-columns: max-content var(--md-sys-space-4) minmax(0, 1fr);
+    row-gap: var(--md-sys-space-4);
+  }
+  :root .intranet-personal-settings > [aria-hidden="true"] {
+    display: none;
+  }
+  :root .intranet-personal-settings > .contents > :first-child {
+    text-align: start;
+    font-size: var(--md-sys-type-body-medium);
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  :root .intranet-personal-settings > .contents > :last-child {
+    width: 100%;
+    justify-self: stretch;
+  }
+  :root .intranet-personal-settings [data-slot="tabs"] {
+    width: 100%;
+    min-width: 0;
+  }
+  :root .intranet-personal-settings [data-slot="tabs-list"] {
+    width: 100%;
+    height: auto;
+    min-height: calc(var(--pw-control-target) + var(--md-sys-space-2));
+    padding: var(--md-sys-space-1);
+    gap: var(--md-sys-space-1);
+    align-items: stretch;
+    border-radius: var(--md-sys-shape-medium);
+    background: var(--md-sys-color-surface-container);
+  }
+  :root .intranet-personal-settings [data-slot="tabs-trigger"] {
+    display: inline-flex;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    height: auto;
+    min-height: var(--pw-control-target);
+    margin: 0;
+    padding-inline: var(--md-sys-space-2);
+    border-radius: var(--md-sys-shape-small);
+    text-align: center;
+    line-height: var(--md-sys-type-leading-body);
+  }
+  :root .intranet-home {
+    background: var(--md-sys-color-surface);
+  }
+  :root .intranet-mobile-systems {
+    gap: var(--md-sys-space-2);
+    padding-inline: var(--md-sys-space-4);
+  }
+  :root .intranet-mobile-systems > a {
+    flex: 1;
+    min-height: var(--pw-control-target);
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border: 0;
+  }
+  :root .intranet-mobile-systems > button {
+    min-height: var(--pw-control-target);
+  }
+  :root .intranet-knowledge {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--md-sys-color-surface);
+  }
+  :root .intranet-knowledge-toolbar {
+    padding: 0;
+    gap: var(--md-sys-space-2);
+    border: 0;
+    flex-wrap: nowrap;
+    margin-bottom: var(--md-sys-space-2);
+  }
+  :root .intranet-department-picker {
+    display: block;
+    flex: 1;
+    min-width: 0;
+  }
+  :root .intranet-knowledge-toolbar .intranet-department-tabs {
+    display: none;
+  }
+  :root .intranet-publish-actions {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+  }
+  :root .intranet-publish-actions .knowledge-pane-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--pw-control-target);
+    min-width: var(--pw-control-target);
+    min-height: var(--pw-control-target) !important;
+    height: var(--pw-control-target);
+    padding: 0;
+    border-radius: var(--md-sys-shape-full);
+  }
+  :root .intranet-publish-actions .fui-Button__icon {
+    margin: 0;
+  }
+  :root .intranet-publish-actions .knowledge-pane-action-label {
+    display: none;
+  }
+  :root .intranet-directory-filters {
+    padding: 0 0 var(--md-sys-space-2);
+    border: 0;
+  }
+  :root .intranet-directory-filters > div {
+    flex-basis: 100%;
+  }
+  :root .intranet-department-picker [data-slot="select-trigger"],
+  :root .intranet-directory-filters [data-slot="select-trigger"] {
+    min-height: var(--pw-control-target);
+    border-color: transparent;
+    background: var(--md-sys-color-surface-container-low);
+    box-shadow: none;
+  }
+  :root .intranet-knowledge .knowledge-pane-header {
+    display: none;
+  }
+  :root .intranet-knowledge-toolbar [role="tablist"] {
+    flex: 1 0 100%;
+    scrollbar-width: none;
+    background: var(--md-sys-color-surface-container-low);
+    border-radius: var(--md-sys-shape-medium);
+  }
+  :root .intranet-knowledge-toolbar [role="tab"] {
+    min-height: var(--pw-control-target);
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  :root .intranet-knowledge-toolbar [role="tab"][aria-selected="true"] {
+    color: var(--md-sys-color-primary);
+  }
+  :root .intranet-knowledge [data-slot="frame"] {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}

@@ -1,0 +1,21 @@
+/* Phone workspaces use domain presentations, not scaled desktop matrices. */
+@media (width < 48rem) {
+  :root body {
+    min-width: 0;
+    font-family: var(--md-sys-typeface);
+  }
+  /* Keep phone targets usable in narrow browser previews as well as touch devices. */
+  :root :is(.pw-button[data-size], [data-slot="button"]) {
+    min-height: var(--pw-control-target);
+  }
+  :root :is(.pw-button[data-size^="icon"], .pw-mobile-icon-action) {
+    min-width: var(--pw-control-target);
+  }
+  :root [data-testid="timesheet-workspace-shell"] {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: var(--md-sys-space-3) var(--md-sys-space-4);
+    background: var(--md-sys-color-surface);
+  }
+}

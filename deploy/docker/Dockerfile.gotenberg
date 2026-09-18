@@ -1,0 +1,26 @@
+ARG GOTENBERG_IMAGE=gotenberg/gotenberg:8@sha256:87c16b9f364279d321bc9772d31fa58aa6abe036423c270698bd636c3a8e9466
+
+FROM ${GOTENBERG_IMAGE}
+
+USER root
+
+RUN apt-get -o Acquire::Retries=5 update \
+  && apt-get install -y --no-install-recommends \
+    fonts-arphic-gbsn00lp \
+    fonts-arphic-gkai00mp \
+    fonts-arphic-ukai \
+    fonts-arphic-uming \
+    fonts-liberation2 \
+    fonts-noto-cjk \
+    fonts-noto-core \
+    fonts-urw-base35 \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY deploy/fonts/projectwing-font-substitutions.conf /etc/fonts/conf.d/99-projectwing-font-substitutions.conf
+
+RUN fc-cache -f \
+  && fc-match -f '%{family}' SimSun | grep -q '^AR PL SungtiL GB' \
+  && fc-match -f '%{family}' KaiTi | grep -q '^AR PL KaitiM GB' \
+  && fc-match -f '%{family}' 'Times New Roman' | grep -q '^Liberation Serif'
+
+USER gotenberg

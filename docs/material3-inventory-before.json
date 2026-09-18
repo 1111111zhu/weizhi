@@ -1,0 +1,155 @@
+{
+  "summary": [
+    {
+      "scope": "apps/emp",
+      "sourceFiles": 312,
+      "routesAndLayouts": 30,
+      "cssFiles": 12,
+      "rawColorOccurrences": 87,
+      "rawColorFiles": 14,
+      "largestStyleFiles": [
+        {
+          "file": "apps/emp/src/styles.css",
+          "lines": 1590
+        },
+        {
+          "file": "apps/emp/src/components/confirmations/project-confirmation-editor.module.css",
+          "lines": 223
+        },
+        {
+          "file": "apps/emp/src/components/smart-form-v2-mobile-form.module.css",
+          "lines": 138
+        },
+        {
+          "file": "apps/emp/src/components/smart-form-v2-table.module.css",
+          "lines": 108
+        },
+        {
+          "file": "apps/emp/src/views/confirmations.module.css",
+          "lines": 106
+        }
+      ]
+    },
+    {
+      "scope": "apps/cmp",
+      "sourceFiles": 196,
+      "routesAndLayouts": 41,
+      "cssFiles": 1,
+      "rawColorOccurrences": 1,
+      "rawColorFiles": 1,
+      "largestStyleFiles": [
+        {
+          "file": "apps/cmp/src/app/styles.css",
+          "lines": 8406
+        }
+      ]
+    },
+    {
+      "scope": "apps/tms",
+      "sourceFiles": 55,
+      "routesAndLayouts": 5,
+      "cssFiles": 1,
+      "rawColorOccurrences": 7,
+      "rawColorFiles": 1,
+      "largestStyleFiles": [
+        {
+          "file": "apps/tms/src/styles.css",
+          "lines": 640
+        }
+      ]
+    },
+    {
+      "scope": "apps/intranet",
+      "sourceFiles": 57,
+      "routesAndLayouts": 7,
+      "cssFiles": 1,
+      "rawColorOccurrences": 1,
+      "rawColorFiles": 1,
+      "largestStyleFiles": [
+        {
+          "file": "apps/intranet/src/app/styles.css",
+          "lines": 328
+        }
+      ]
+    },
+    {
+      "scope": "apps/ib",
+      "sourceFiles": 9,
+      "routesAndLayouts": 2,
+      "cssFiles": 0,
+      "rawColorOccurrences": 0,
+      "rawColorFiles": 0,
+      "largestStyleFiles": []
+    },
+    {
+      "scope": "apps/ui-showroom",
+      "sourceFiles": 288,
+      "routesAndLayouts": 19,
+      "cssFiles": 9,
+      "rawColorOccurrences": 1940,
+      "rawColorFiles": 23,
+      "largestStyleFiles": [
+        {
+          "file": "apps/ui-showroom/styles/globals-motion.css",
+          "lines": 177
+        },
+        {
+          "file": "apps/ui-showroom/styles/themes-secondary.css",
+          "lines": 168
+        },
+        {
+          "file": "apps/ui-showroom/styles/themes-primary.css",
+          "lines": 167
+        },
+        {
+          "file": "apps/ui-showroom/styles/globals-tokens.css",
+          "lines": 139
+        },
+        {
+          "file": "apps/ui-showroom/styles/globals-code.css",
+          "lines": 124
+        }
+      ]
+    },
+    {
+      "scope": "packages/ui",
+      "sourceFiles": 108,
+      "routesAndLayouts": 0,
+      "cssFiles": 8,
+      "rawColorOccurrences": 347,
+      "rawColorFiles": 8,
+      "largestStyleFiles": [
+        {
+          "file": "packages/ui/src/styles.css",
+          "lines": 2658
+        },
+        {
+          "file": "packages/ui/src/guided-form.css",
+          "lines": 992
+        },
+        {
+          "file": "packages/ui/src/mobile-workspace.css",
+          "lines": 548
+        },
+        {
+          "file": "packages/ui/src/mobile-message.css",
+          "lines": 106
+        },
+        {
+          "file": "packages/ui/src/color-palette.css",
+          "lines": 102
+        }
+      ]
+    },
+    {
+      "scope": "packages/document-viewer",
+      "sourceFiles": 27,
+      "routesAndLayouts": 0,
+      "cssFiles": 0,
+      "rawColorOccurrences": 43,
+      "rawColorFiles": 4,
+      "largestStyleFiles": []
+    }
+  ],
+  "repeatedDeclarations": 161
+}

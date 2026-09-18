@@ -1,0 +1,3 @@
+node scripts/repository-policy-guardrails.mjs
+corepack pnpm exec lint-staged
+corepack pnpm test:precommit

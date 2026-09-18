@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/design-first/design-first-boundary.schema.json",
+  "title": "DesignFirst Boundary Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "scanRoots",
+    "designSystemRoots",
+    "showroomChromeRoots",
+    "excludeGlobs",
+    "fileExtensions",
+    "publicImports",
+    "underlyingUiPackages",
+    "nativeInteractiveTags",
+    "suspiciousComponentNames",
+    "rules",
+    "exceptions"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "scanRoots": { "$ref": "#/$defs/nonEmptyStrings" },
+    "designSystemRoots": { "$ref": "#/$defs/nonEmptyStrings" },
+    "showroomChromeRoots": { "$ref": "#/$defs/strings" },
+    "excludeGlobs": { "$ref": "#/$defs/strings" },
+    "fileExtensions": { "$ref": "#/$defs/nonEmptyStrings" },
+    "publicImports": { "$ref": "#/$defs/nonEmptyStrings" },
+    "underlyingUiPackages": { "$ref": "#/$defs/strings" },
+    "nativeInteractiveTags": { "$ref": "#/$defs/nonEmptyStrings" },
+    "suspiciousComponentNames": { "$ref": "#/$defs/strings" },
+    "rules": {
+      "type": "object",
+      "additionalProperties": { "enum": ["off", "warning", "error"] }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rule", "glob", "reason", "owner", "expiresOn"],
+        "properties": {
+          "rule": { "type": "string", "minLength": 1 },
+          "glob": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "expiresOn": { "type": "string", "format": "date" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "strings": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "nonEmptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    }
+  }
+}

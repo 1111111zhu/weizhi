@@ -1,0 +1,32 @@
+{
+  "name": "@project-wing/pdf-template-designer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles.css"
+  },
+  "scripts": {
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@pdfme/common": "6.1.12",
+    "@pdfme/schemas": "6.1.12",
+    "@pdfme/ui": "6.1.12"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "happy-dom": "^20.11.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.0.15"
+  },
+  "peerDependencies": {
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}

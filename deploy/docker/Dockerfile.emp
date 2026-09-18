@@ -1,0 +1,23 @@
+FROM node:24.16.0-bookworm-slim
+
+ENV PNPM_HOME=/pnpm
+ENV PATH=/pnpm:$PATH
+ENV NEXT_TELEMETRY_DISABLED=1
+
+WORKDIR /app
+
+RUN corepack enable
+
+COPY . .
+
+RUN corepack pnpm install --frozen-lockfile
+RUN corepack pnpm --filter @project-wing/shared build
+RUN corepack pnpm --filter @project-wing/emp build
+
+RUN chown -R node:node /app
+
+USER node
+
+EXPOSE 3001
+
+CMD ["corepack", "pnpm", "--filter", "@project-wing/emp", "preview"]

@@ -1,0 +1,74 @@
+services:
+  gotenberg:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+  api:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+    networks:
+      default: {}
+      proxy:
+        aliases: ["api-${PROJECTWING_COLOR}"]
+  prisma-studio:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+    networks:
+      proxy:
+        aliases: ["prisma-studio-${PROJECTWING_COLOR}"]
+  emp:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+    networks:
+      default: {}
+      proxy:
+        aliases: ["emp-${PROJECTWING_COLOR}"]
+  cmp:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+    networks:
+      default: {}
+      proxy:
+        aliases: ["cmp-${PROJECTWING_COLOR}"]
+  showroom:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+    networks:
+      default: {}
+      proxy:
+        aliases: ["showroom-${PROJECTWING_COLOR}"]
+  tms:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+    networks:
+      default: {}
+      proxy:
+        aliases: ["tms-${PROJECTWING_COLOR}"]
+  intranet:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+    networks:
+      default: {}
+      proxy:
+        aliases: ["intranet-${PROJECTWING_COLOR}"]
+  ib:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+    networks:
+      default: {}
+      proxy:
+        aliases: ["ib-${PROJECTWING_COLOR}"]
+  ib-api:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+    networks:
+      default: {}
+      proxy:
+        aliases: ["ib-api-${PROJECTWING_COLOR}"]
+  backend-gateway:
+    restart: "no"
+    dns: [100.100.2.136, 100.100.2.138]
+
+volumes:
+  api_uploads:
+    external: true
+    name: ${PROJECTWING_API_UPLOADS_VOLUME:-projectwing_api_uploads}

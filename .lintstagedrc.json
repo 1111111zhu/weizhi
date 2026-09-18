@@ -1,0 +1,6 @@
+{
+  "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx,yaml,yml}": [
+    "corepack pnpm exec ultracite fix --no-error-on-unmatched-pattern",
+    "corepack pnpm exec oxfmt --config oxfmt.config.ts --no-error-on-unmatched-pattern"
+  ]
+}

@@ -1,0 +1,98 @@
+@media (width < 48rem) {
+  .root {
+    padding: 0;
+    background: var(--md-sys-color-surface);
+  }
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+  }
+  .workspace > main {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .libraryHeading {
+    padding: var(--md-sys-space-3) var(--md-sys-space-4) 0;
+  }
+  .root :global([data-testid="confirmation-detail-toolbar-primary"]),
+  .root :global([data-testid="confirmation-detail-toolbar-actions"]) {
+    flex-wrap: wrap;
+    min-width: 0;
+    gap: var(--md-sys-space-2);
+  }
+  .root :global([data-testid="confirmation-detail-toolbar"]) {
+    padding: var(--md-sys-space-3);
+  }
+  .root :global([data-testid="confirmation-detail-toolbar-primary"]) {
+    padding: 0;
+  }
+  .root
+    :global([data-testid="confirmation-detail-toolbar-primary"])
+    > :last-child {
+    flex-basis: 100%;
+    width: 100%;
+  }
+  .stageTabs {
+    width: 100%;
+    gap: var(--md-sys-space-2);
+  }
+  .stageTabs > :global([data-slot="tabs"]) {
+    flex: 1;
+    min-width: 0;
+  }
+  .root .stageTabs :global([data-slot="tabs-list"]) {
+    display: flex;
+    width: 100%;
+    border-radius: var(--md-sys-shape-medium);
+    background: var(--md-sys-color-surface-container);
+  }
+  .root .stageTabs :global([data-slot="tabs-trigger"]) {
+    flex: 1 1 0;
+    justify-content: center;
+    min-width: 0;
+    border-radius: var(--md-sys-shape-small);
+    font-size: var(--md-sys-type-label-large);
+  }
+  .root .stageTabs :global([data-slot="tabs-trigger"])::after {
+    display: none;
+  }
+  .root :global([data-slot="tabs-list"]) {
+    height: auto;
+    min-height: calc(var(--pw-control-target) + var(--md-sys-space-2));
+    padding: var(--md-sys-space-1);
+  }
+  .root :global([data-slot="tabs-trigger"]) {
+    height: auto;
+    min-height: var(--pw-control-target);
+  }
+  .root :global(.confirmation-workflow-tracker) {
+    padding: var(--md-sys-space-4) 0;
+  }
+  .root :global(.confirmation-workflow-tracker) > div {
+    gap: var(--md-sys-space-3);
+  }
+  .root :global(.confirmation-workflow-milestone) {
+    grid-template-columns: var(--pw-control-target) minmax(0, 1fr);
+    justify-items: start;
+    gap: var(--md-sys-space-3);
+    text-align: start;
+    align-items: center;
+  }
+  .root :global(.confirmation-workflow-marker) {
+    width: var(--pw-control-target);
+    height: var(--pw-control-target);
+  }
+  .root :global(.confirmation-workflow-milestone) p {
+    justify-content: flex-start;
+  }
+  .root :global([data-testid="confirmation-tracking-content"]) {
+    padding: var(--md-sys-space-4);
+  }
+}

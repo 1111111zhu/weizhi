@@ -1,0 +1,46 @@
+! ProjectWing Edge HaVip Keepalived template
+! Render every deployment token before activation; do not commit secrets.
+
+global_defs {
+    script_user root
+    enable_script_security
+}
+
+vrrp_script projectwing_edge_health {
+    script "__KEEPALIVED_TRACK_SCRIPT__"
+    interval __KEEPALIVED_CHECK_INTERVAL__
+    timeout __KEEPALIVED_CHECK_TIMEOUT__
+    fall __KEEPALIVED_CHECK_FALL__
+    rise __KEEPALIVED_CHECK_RISE__
+    weight __KEEPALIVED_CHECK_WEIGHT__
+}
+
+vrrp_instance PROJECTWING_EDGE {
+    state __KEEPALIVED_STATE__
+    interface __KEEPALIVED_INTERFACE__
+    virtual_router_id __KEEPALIVED_ROUTER_ID__
+    priority __KEEPALIVED_PRIORITY__
+    advert_int __KEEPALIVED_ADVERT_INT__
+    nopreempt
+
+    authentication {
+        auth_type PASS
+        auth_pass __KEEPALIVED_AUTH_PASS__
+    }
+
+    unicast_src_ip __KEEPALIVED_SOURCE_IP__
+    unicast_peer {
+        __KEEPALIVED_PEER_IP__
+    }
+
+    virtual_ipaddress {
+        __PROJECTWING_HAVIP__
+    }
+
+    garp_master_delay 1
+    garp_master_refresh 5
+
+    track_script {
+        projectwing_edge_health
+    }
+}

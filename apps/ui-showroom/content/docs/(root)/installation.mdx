@@ -1,0 +1,35 @@
+---
+title: Installation
+description: How to inspect and install ProjectWing UI Showroom registry items.
+---
+
+## Inspect the Registry
+
+ProjectWing UI Showroom registry items are defined in `apps/ui-showroom/registry.json` and published as source files. Start with the item's documentation and provenance, then inspect its dependencies before installing it.
+
+## Install a Published Item
+
+Use the public Showroom registry endpoint with the shadcn CLI:
+
+<RegistryInstallCommand name="button" />
+
+The command copies the item's source into your project. Review the resulting files and adapt imports, tokens, and dependencies to your application's conventions.
+
+## Contribute a Registry Item
+
+1. Add or update the source under `apps/ui-showroom/registry/new-york/`.
+2. Add the item and its dependencies to `apps/ui-showroom/registry.json`.
+3. Run the registry build from `apps/ui-showroom`:
+
+```bash
+corepack pnpm registry:build
+```
+
+4. Update the item's documentation and provenance when its implementation or ownership changes.
+5. Open a pull request in the [ProjectWing repository](https://github.com/fin-agent-lab/ProjectWing) with focused verification evidence.
+
+The generated files under `apps/ui-showroom/public/r/` are distribution artifacts. Keep them synchronized with the source registry and review the generated diff before submitting a change.
+
+## Review Before Adoption
+
+An installable registry item is not automatically a shared product contract. Check its provenance, dependency boundary, accessibility evidence, interaction states, and the design-system registry status before using it in a product surface.

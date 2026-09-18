@@ -1,0 +1,39 @@
+{
+  "name": "project-wing",
+  "homepage": "https://github.com/fin-agent-lab/ProjectWing",
+  "items": [
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Displays a button or a component that looks like a button with Base UI primitives and optional tooltip support.",
+      "dependencies": ["@base-ui/react"],
+      "files": [
+        {
+          "path": "registry/new-york/button.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/button.tsx"
+        },
+        {
+          "path": "registry/new-york/tooltip.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/tooltip.tsx"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "title": "Badge",
+      "description": "Displays a status badge or indicator using Base UI render props.",
+      "dependencies": ["@base-ui/react"],
+      "files": [
+        {
+          "path": "registry/new-york/badge.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/badge.tsx"
+        }
+      ]
+    }
+  ]
+}

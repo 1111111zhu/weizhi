@@ -1,0 +1,105 @@
+name: Inspect Edge state
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: projectwing-development
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 12
+    env:
+      PROJECTWING_BLUE_NETBIRD_HOST: ${{ vars.PROJECTWING_BLUE_NETBIRD_HOST }}
+      PROJECTWING_GREEN_NETBIRD_HOST: ${{ vars.PROJECTWING_GREEN_NETBIRD_HOST }}
+      PROJECTWING_HAVIP_ADDRESS: ${{ vars.PROJECTWING_HAVIP_ADDRESS }}
+      PROJECTWING_BLUE_NETBIRD_SSH_KNOWN_HOSTS: ${{ secrets.PROJECTWING_BLUE_NETBIRD_SSH_KNOWN_HOSTS }}
+      PROJECTWING_GREEN_NETBIRD_SSH_KNOWN_HOSTS: ${{ secrets.PROJECTWING_GREEN_NETBIRD_SSH_KNOWN_HOSTS }}
+      PROJECTWING_DEPLOY_USER: ${{ vars.PROJECTWING_DEPLOY_USER || 'ops' }}
+      PROJECTWING_DEPLOY_SSH_PORT: ${{ vars.PROJECTWING_NETBIRD_OPENSSH_PORT || '2222' }}
+      NETBIRD_MANAGEMENT_URL: https://netbird.superfx.cn
+      NETBIRD_VERSION: "0.77.1"
+    steps:
+      - uses: actions/checkout@v6
+      - name: Join the NetBird overlay
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if ! command -v netbird >/dev/null; then
+            curl -fL --retry 5 --retry-all-errors --retry-delay 3 --connect-timeout 15 --max-time 300 \
+              -o /tmp/netbird.tar.gz "https://github.com/netbirdio/netbird/releases/download/v${NETBIRD_VERSION}/netbird_${NETBIRD_VERSION}_linux_amd64.tar.gz"
+            tar -xzf /tmp/netbird.tar.gz -C /tmp netbird
+            sudo install -m 0755 /tmp/netbird /usr/local/bin/netbird
+          fi
+          if [[ ! -f /etc/systemd/system/netbird.service ]]; then sudo netbird service install; fi
+          sudo netbird service start
+          netbird_status="$(sudo netbird status --json 2>/dev/null || true)"
+          if ! jq -e '.management.connected == true and .signal.connected == true' <<<"${netbird_status}" >/dev/null; then
+            sudo netbird down || true
+            sudo netbird up --setup-key "${{ secrets.NETBIRD_SETUP_KEY }}" --management-url "${NETBIRD_MANAGEMENT_URL}"
+          fi
+      - name: Configure pinned deployment SSH
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          dir="${RUNNER_TEMP}/projectwing-deploy-ssh"
+          mkdir -p "${dir}"; chmod 700 "${dir}"
+          printf '%s\n' "${{ secrets.PROJECTWING_CI_NETBIRD_SSH_PRIVATE_KEY }}" >"${dir}/projectwing_deploy"
+          chmod 600 "${dir}/projectwing_deploy"
+          echo "PROJECTWING_DEPLOY_SSH_DIR=${dir}" >>"${GITHUB_ENV}"
+      - name: Inspect both Edge nodes without changing state
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          ssh_dir="${PROJECTWING_DEPLOY_SSH_DIR}"
+          run_helper() { [[ -x scripts/ci/deploy-ssh.sh ]] && scripts/ci/deploy-ssh.sh "$@" || bash scripts/ci/deploy-ssh.sh "$@"; }
+          inspect() {
+            local color="$1" host known
+            if [[ "${color}" == blue ]]; then
+              host="${PROJECTWING_BLUE_NETBIRD_HOST}"
+              known="${PROJECTWING_BLUE_NETBIRD_SSH_KNOWN_HOSTS}"
+            else
+              host="${PROJECTWING_GREEN_NETBIRD_HOST}"
+              known="${PROJECTWING_GREEN_NETBIRD_SSH_KNOWN_HOSTS}"
+            fi
+            echo "### ${color^} (${host})"
+            DEPLOY_HOST="${host}" DEPLOY_USER="${PROJECTWING_DEPLOY_USER}" \
+              PROJECTWING_DEPLOY_SSH_KNOWN_HOSTS="${known}" \
+              PROJECTWING_DEPLOY_KNOWN_HOSTS_FILE="${ssh_dir}/known-hosts-${host}" \
+              PROJECTWING_DEPLOY_SSH_DIR="${ssh_dir}" run_helper configure
+            DEPLOY_HOST="${host}" DEPLOY_USER="${PROJECTWING_DEPLOY_USER}" \
+              PROJECTWING_DEPLOY_SSH_KNOWN_HOSTS="${known}" \
+              PROJECTWING_DEPLOY_KNOWN_HOSTS_FILE="${ssh_dir}/known-hosts-${host}" \
+              PROJECTWING_DEPLOY_SSH_DIR="${ssh_dir}" run_helper ssh bash -s -- "${PROJECTWING_HAVIP_ADDRESS}" <<'REMOTE'
+          set -Eeuo pipefail
+          havip="$1"
+          echo "vip_holder=$(ip -4 -o addr show | grep -Fq " ${havip}/" && echo true || echo false)"
+          if [[ -r /opt/projectwing/edge/release.json ]]; then
+            echo 'release_state='
+            jq -cS '{schemaVersion,activeColor,activeGateway,releaseKey,version,sourceCommitSha,imageSourceSha,generation,degraded,routeMode,previousColor,previousGateway,previousReleaseKey,previousVersion,previousGeneration,transactionId,pendingReleaseKey,pendingSourceCommitSha,pendingImageSourceSha}' /opt/projectwing/edge/release.json
+          else
+            echo 'release_state=missing'
+          fi
+          if [[ -r /opt/projectwing/edge/config/dynamic/edge-routing.yml ]]; then
+            echo 'route_file=present'
+            sha256sum /opt/projectwing/edge/config/dynamic/edge-routing.yml
+            grep -E 'url: "http://172\.19\.143\.(157|158):18080"' /opt/projectwing/edge/config/dynamic/edge-routing.yml || true
+          else
+            echo 'route_file=missing'
+          fi
+          echo "keepalived=$(systemctl is-active keepalived.service || true)"
+          docker ps --filter 'label=com.docker.compose.project=projectwing-edge' --filter 'label=com.docker.compose.service=reverse-proxy' --format 'proxy={{.ID}} {{.Status}} {{.Image}}'
+          flock -n /opt/projectwing/deployment.lock -c true && echo 'deployment_lock=free' || echo 'deployment_lock=held'
+          REMOTE
+          }
+          inspect blue
+          inspect green
+      - name: Remove deployment SSH credentials
+        if: always()
+        run: bash scripts/ci/cleanup-deploy-ssh.sh

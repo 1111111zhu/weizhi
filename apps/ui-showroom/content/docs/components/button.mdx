@@ -1,0 +1,33 @@
+---
+title: Button
+description: Displays a button or a component that looks like a button with Base UI primitives and optional tooltip support.
+---
+
+import { ButtonDemo } from "@/registry/new-york/button-demo";
+
+<ComponentPreview name="button">
+  <ButtonDemo />
+</ComponentPreview>
+
+## Installation
+
+<RegistryInstallCommand name="button" />
+
+## Usage
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+export function Example() {
+  return <Button variant="default">Click me</Button>;
+}
+```
+
+## Variants
+
+- `default` - Primary action button
+- `secondary` - Secondary action button
+- `outline` - Bordered button
+- `ghost` - Borderless hover-state button
+- `destructive` - Destructive / delete action
+- `link` - Inline hyperlink appearance

@@ -1,0 +1,31 @@
+services:
+  backend-gateway:
+    image: ${PROJECTWING_TRAEFIK_IMAGE:-traefik:v3.7.1@sha256:6b9cbca6fac42ab0075f5437d8dc1685cfd188626d8d515839ea94f8b6271c42}
+    restart: unless-stopped
+    ports:
+      - "${PROJECTWING_BACKEND_BIND_ADDRESS:?PROJECTWING_BACKEND_BIND_ADDRESS is required}:${PROJECTWING_BACKEND_HTTP_PORT:-18080}:80"
+    volumes:
+      - ${PROJECTWING_BACKEND_TRAEFIK_CONFIG_FILE:-./deploy/blue-green/traefik-backend.yml}:/etc/traefik/traefik.yml:ro
+      - ${PROJECTWING_TRAEFIK_DYNAMIC_DIR:-./deploy/traefik/dynamic}:/etc/traefik/dynamic:ro
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "5"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

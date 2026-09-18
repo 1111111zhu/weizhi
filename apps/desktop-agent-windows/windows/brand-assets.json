@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "source": "apps/emp/public/brand/icon-white-green.svg",
+  "sourceSha256": "c3664e90bae63bdc5be0d1c500623d27c222cb84e9019424a19f4e5ae19259e5",
+  "assets": {
+    "ProjectWingDesktopAgent.Package/Images/StoreLogo.png": "3c04aac504b2be0e59f72f73a222da73ec3f96e9ec49696ca2045e1b1045d0ba",
+    "ProjectWingDesktopAgent.Package/Images/Square44x44Logo.targetsize-24_altform-unplated.png": "1dfdf7f74875c26741d9d01490bfc884c6ed90ec6a0c507a38e704e0e305f52c",
+    "ProjectWingDesktopAgent.Package/Images/Square44x44Logo.scale-200.png": "b6edd289fe75741d19e2a75f4608020f178b4704485cf09fc1e086bedcc89111",
+    "ProjectWingDesktopAgent.Package/Images/Square150x150Logo.scale-200.png": "3585add8cfc38504e5fd292f4f3353bfc7a80199d9681d5cb9cd55bfc72f944c",
+    "ProjectWingDesktopAgent.Package/Images/LockScreenLogo.scale-200.png": "58ef2fe6ab63bb294d9c8978edd83de9544b8f1329c7394a61e3a76ffffd748b",
+    "ProjectWingDesktopAgent.Package/Images/Wide310x150Logo.scale-200.png": "d5116b5895a67e4eedad0adf3be40d4a1641a7e55df497b7aed43b65e9806e32",
+    "ProjectWingDesktopAgent.Package/Images/SplashScreen.scale-200.png": "8acddb1a9083bb1a181d3a50b9fbc398a8ba5cc0e5f4771dc8ca4ee0ec08941f",
+    "ProjectWingDesktopAgent/small.ico": "ed145f7f9c0d093c34f2179b9757e235ce69a431afa989596737ae0e5deb0acd",
+    "ProjectWingDesktopAgent/ProjectWingDesktopAgent.ico": "ed145f7f9c0d093c34f2179b9757e235ce69a431afa989596737ae0e5deb0acd"
+  }
+}

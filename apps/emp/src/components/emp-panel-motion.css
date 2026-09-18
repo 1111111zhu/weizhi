@@ -1,0 +1,35 @@
+.emp-panel-motion {
+  transition-property: opacity, transform, box-shadow;
+  transition-duration: var(--emp-motion-enter);
+  transition-timing-function: var(--emp-motion-ease);
+}
+
+.emp-panel-motion[data-panel-state="closed"] {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(1rem);
+  box-shadow: none;
+  transition-duration: var(--emp-motion-exit);
+  will-change: opacity, transform;
+}
+
+.emp-panel-motion[data-panel-state="open"] {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emp-panel-motion {
+    transition: opacity 120ms linear !important;
+    transform: none !important;
+    will-change: opacity;
+  }
+
+  .emp-panel-motion[data-panel-state="closed"] {
+    opacity: 0;
+  }
+
+  .emp-panel-motion[data-panel-state="open"] {
+    opacity: 1;
+  }
+}

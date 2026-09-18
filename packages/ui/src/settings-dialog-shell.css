@@ -1,0 +1,54 @@
+/* Opt-in touch navigation; all desktop and legacy selector consumers retain their styles. */
+@media (width < 48rem) {
+  .pw-settings-shell[data-mobile-navigation="pages"] {
+    --pw-mobile-target: 2.75rem;
+    --pw-mobile-control-height: 2.5rem;
+  }
+  .pw-settings-shell[data-mobile-navigation="pages"]
+    [data-slot="settings-mobile-index"]
+    ul {
+    border: 0;
+    border-radius: 0;
+  }
+  .pw-settings-shell[data-mobile-navigation="pages"]
+    [data-slot="settings-mobile-index"]
+    .pw-button {
+    min-height: var(--pw-mobile-target, 3rem);
+    height: auto;
+    justify-content: flex-start;
+    text-align: start;
+    border-radius: 0;
+    padding-block: 0.875rem;
+  }
+  .pw-settings-shell[data-mobile-navigation="pages"]
+    [data-slot="settings-mobile-index"]
+    .pw-button-label {
+    flex: 1;
+    justify-content: flex-start;
+  }
+  .pw-settings-shell[data-mobile-navigation="pages"]
+    [data-slot="settings-mobile-back"] {
+    min-height: var(--pw-mobile-target, 3rem);
+    min-width: var(--pw-mobile-target, 3rem);
+  }
+  .pw-settings-shell[data-mobile-navigation="pages"]
+    [data-slot="settings-scroll-content"]
+    :is(
+      .pw-button,
+      [data-slot="select-trigger"],
+      input:not([type="checkbox"]):not([type="radio"]),
+      textarea
+    ) {
+    min-height: var(--pw-mobile-target, 3rem);
+    font-size: 1rem;
+  }
+  .pw-settings-shell[data-mobile-navigation="pages"]
+    [data-slot="settings-scroll-content"]
+    :is(
+      input:not([type="checkbox"]):not([type="radio"]),
+      [data-slot="select-trigger"]
+    ) {
+    min-height: var(--pw-mobile-control-height);
+    height: var(--pw-mobile-control-height);
+  }
+}

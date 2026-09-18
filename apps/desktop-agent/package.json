@@ -1,0 +1,47 @@
+{
+  "name": "@project-wing/desktop-agent",
+  "version": "0.2.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./tray": {
+      "types": "./src/tray/index.ts",
+      "import": "./dist/tray/index.js",
+      "default": "./dist/tray/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "corepack pnpm --filter @project-wing/shared build && tsc -p tsconfig.json && dotnet build watcher/ProjectWing.ExcelWatcher/ProjectWing.ExcelWatcher.csproj -c Debug && dotnet build runtime/ProjectWing.DesktopAgent.Runtime/ProjectWing.DesktopAgent.Runtime.csproj -c Debug && dotnet build manager/ProjectWing.AgentManager/ProjectWing.AgentManager.csproj -c Debug",
+    "bundle": "corepack pnpm --filter @project-wing/shared build && tsc -p tsconfig.json",
+    "build:runtime": "dotnet build runtime/ProjectWing.DesktopAgent.Runtime/ProjectWing.DesktopAgent.Runtime.csproj -c Debug",
+    "build:manager": "dotnet build manager/ProjectWing.AgentManager/ProjectWing.AgentManager.csproj -c Debug",
+    "build:watcher": "dotnet build watcher/ProjectWing.ExcelWatcher/ProjectWing.ExcelWatcher.csproj -c Debug",
+    "build:installer:win": "pwsh -File ../../scripts/desktop-agent/build-windows-installer.ps1",
+    "build:runtime:mac": "bash ../../scripts/desktop-agent/build-macos-runtime.sh",
+    "build:app:mac": "bash ../../scripts/desktop-agent/build-macos-app.sh",
+    "test": "corepack pnpm --filter @project-wing/shared build && vitest run",
+    "test:ci": "vitest run",
+    "verify:runtime": "corepack pnpm --filter @project-wing/shared build && node scripts/verify-runtime.mjs",
+    "verify:manager": "node scripts/verify-manager-runtime.mjs",
+    "verify:macos-package": "node scripts/verify-macos-package-script.mjs",
+    "verify:native-bundles": "node scripts/verify-native-bundles.mjs",
+    "verify:native-hosts": "node scripts/verify-native-hosts.mjs",
+    "verify:trimmed-runtime": "bash ../../scripts/desktop-agent/verify-trimmed-runtime.sh",
+    "verify:publisher": "node scripts/verify-release-publisher.mjs",
+    "verify:update": "corepack pnpm --filter @project-wing/shared build && node scripts/verify-update-runtime.mjs",
+    "lint": "corepack pnpm --filter @project-wing/shared build && tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@project-wing/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.2",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "plist": "^3.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.0.15"
+  }
+}

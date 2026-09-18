@@ -1,0 +1,15 @@
+ALTER TABLE "project_confirmations"
+  ADD COLUMN "prepared_dispatch_method" "ConfirmationDispatchMethod",
+  ADD COLUMN "prepared_sender_name" TEXT,
+  ADD COLUMN "prepared_applicant_name" TEXT,
+  ADD COLUMN "prepared_courier_name" TEXT,
+  ADD COLUMN "prepared_tracking_number" TEXT,
+  ADD COLUMN "prepared_dispatch_reference" TEXT,
+  ADD COLUMN "prepared_recipient_name" TEXT,
+  ADD COLUMN "prepared_recipient_contact" TEXT,
+  ADD COLUMN "prepared_recipient_phone" TEXT,
+  ADD COLUMN "prepared_follow_up_date" TIMESTAMP(3),
+  ADD COLUMN "prepared_attachment_name" TEXT,
+  ADD COLUMN "prepared_dispatch_notes" TEXT,
+  ADD COLUMN "prepared_dispatch_ready_by" TEXT,
+  ADD COLUMN "prepared_dispatch_ready_at" TIMESTAMP(3);

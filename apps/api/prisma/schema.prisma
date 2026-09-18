@@ -1,0 +1,3644 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum GlobalRole {
+  SUPER_ADMIN
+  HR
+  CONFIRMATION_OFFICER
+  PARTNER
+  PRINCIPAL
+  SENIOR_MANAGER
+  MANAGER
+  SENIOR
+  STAFF
+  ASSISTANT
+  EQCR
+  TAX_EXPERT
+}
+
+enum ProjectRole {
+  PARTNER
+  REVIEWER
+  PREPARER
+  EQCR
+  TAX_REVIEWER
+}
+
+enum InChargeRole {
+  PARTNER_IN_CHARGE
+  MANAGER_IN_CHARGE
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum RoleScope {
+  GLOBAL
+  PROJECT
+}
+
+enum ProjectStatus {
+  ACTIVE
+  PENDING_FINAL_CHECK
+  ARCHIVED
+  DELETED
+}
+
+enum CmpMasterStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+  PROSPECT
+  LEAD
+  FILES_ARCHIVED
+}
+
+enum CmpClientStatus {
+  ACTIVE
+  INACTIVE
+  RESIGNED
+}
+
+enum CmpClientRelationshipType {
+  SUBSIDIARY
+  ASSOCIATE
+  JOINT_VENTURE
+}
+
+enum CmpClientAddressType {
+  REGISTERED
+  PRINCIPAL
+  OTHER
+}
+
+enum CmpEngagementServiceType {
+  AUDIT
+  TAX
+  RISK
+  ACCOUNTING
+  COM_SEC
+  OTHERS
+  ANNUAL_AUDIT
+  REVIEW
+  SPECIAL_AUDIT_PRIVATE_CO
+}
+
+enum CmpEngagementStatus {
+  ACTIVE
+  INACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum CmpEngagementArchiveWorkflowStatus {
+  DRAFT
+  PENDING_PIC
+  RETURNED
+}
+
+enum CmpEngagementFeePlanGrade {
+  MANAGING_PARTNER
+  PARTNER
+  PRINCIPAL
+  SENIOR_MANAGER
+  MANAGER
+  EQ_REVIEWER
+  ASSISTANT_MANAGER
+  SENIOR_ACCOUNTANT_II
+  SENIOR_ACCOUNTANT_I
+  STAFF_ACCOUNTANT_II
+  STAFF_ACCOUNTANT_I
+  TRAINEE
+  SENIOR
+  STAFF
+  ASSISTANT
+}
+
+enum CmpAcceptanceRequestType {
+  CLIENT
+  CLIENT_CHANGE
+  ENGAGEMENT
+  ENGAGEMENT_CHANGE
+}
+
+enum CmpAcceptanceStatus {
+  DRAFT
+  STAFF_EDITING
+  PENDING_MIC
+  PENDING_PIC
+  PENDING_IT
+  APPROVED
+  RETURNED
+  CANCELLED
+}
+
+enum CmpAcceptanceStep {
+  MIC
+  PIC
+  IT
+  DONE
+}
+
+enum CmpAcceptanceStepStatus {
+  PENDING
+  APPROVED
+  RETURNED
+}
+
+enum CmpAmlBatchStatus {
+  RUNNING
+  COMPLETED
+  PARTIAL_FAILED
+  FAILED
+}
+
+enum CmpAmlScreeningStatus {
+  APPROVED
+  IN_REVIEW
+  DECLINED
+  ERROR
+}
+
+enum CmpAmlEntityType {
+  PERSON
+  COMPANY
+}
+
+enum CmpAmlReviewStatus {
+  UNREVIEWED
+  CONFIRMED_MATCH
+  FALSE_POSITIVE
+  INCONCLUSIVE
+}
+
+enum ProjectTemplateStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum SmartFormTemplateStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum SmartFormInstanceStatus {
+  INCOMPLETE
+  COMPLETE
+}
+
+enum InvitationStatus {
+  PENDING
+  USED
+  EXPIRED
+}
+
+enum WorkflowNodeType {
+  PHASE
+  ACCOUNT
+  WORKING_PAPER
+}
+
+enum PaperType {
+  WORKING_PAPER
+  SUPPLEMENT
+}
+
+enum WorkingPaperBucket {
+  CURRENT
+  PRIOR
+  TEMPORARY
+}
+
+enum WorkingPaperSignoffType {
+  PREPARER
+  REVIEWER
+}
+
+enum ReviewQuestionStatus {
+  OPEN
+  REPLIED
+  CLEARED
+}
+
+enum WorkingPaperQuestionMessageType {
+  QUESTION
+  REPLY
+  FOLLOW_UP
+  REOPEN
+}
+
+enum AttachmentFileKind {
+  SPREADSHEET
+  SUPPORTING
+  SMART_FORM
+}
+
+enum AttachmentPlaceholderType {
+  GENERIC
+  WORD
+  SPREADSHEET
+  PRESENTATION
+  PDF
+  IMAGE
+  ZIP
+  TEXT
+}
+
+enum ConfirmationType {
+  BANK
+  BALANCE
+  RELATED_PARTY
+  LAWYER
+  INVENTORY
+  INTERMEDIARY
+  OTHER
+  UNCLASSIFIED
+}
+
+enum ConfirmationStatus {
+  DRAFT
+  PREPARED
+  AWAITING_RESPONSE
+  RESPONSE_RECEIVED
+  CLOSED
+  VOIDED
+}
+
+enum ConfirmationTemplateDesignStatus {
+  DRAFT
+  ENABLED
+  DISABLED
+}
+
+enum ConfirmationFollowUpEventType {
+  CONFIRMATION_CREATED
+  CONFIRMATION_FROZEN
+  CONFIRMATION_UNFROZEN
+  COUNTERPARTY_RECEIVED
+  COUNTERPARTY_SENT_RESPONSE
+  REDISPATCH_REQUESTED
+  RESPONSE_RECEIVED
+  RESPONSE_WITHDRAWN
+  PROGRAM_COMPLETED
+  REVIEW_RECORDED
+  REVIEW_RETRACTED
+  IMPORT_TARGET_CHANGED
+  IMPORT_WITHDRAWN
+}
+
+enum ConfirmationResponseStatus {
+  NOT_RECEIVED
+  RECEIVED
+  UNIDENTIFIED
+  ASSIGNED
+}
+
+enum ConfirmationResponseLibraryRoutingStatus {
+  UNASSIGNED_PROJECT
+  PENDING_MATCH
+  MATCHED
+  NO_SOURCE_REQUEST
+}
+
+enum ConfirmationTeamConfirmStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+}
+
+enum ConfirmationDifferenceStatus {
+  MATCHED
+  EXCEPTION
+  PENDING_FOLLOW_UP
+  NO_RESPONSE
+}
+
+enum ConfirmationDispatchMethod {
+  COURIER
+  POST
+  EMAIL
+  PLATFORM
+  BANK_PORTAL
+  HAND_DELIVERY
+  OTHER
+}
+
+enum UserMailProvider {
+  WECOM_EXMAIL
+}
+
+enum UserMailConnectionStatus {
+  CONNECTED
+  ERROR
+}
+
+enum SystemConnectionProvider {
+  TRACKING_17TRACK
+}
+
+enum SystemConnectionStatus {
+  CONNECTED
+  ERROR
+}
+
+enum ConfirmationArtifactDisposition {
+  ACTIVE
+  INVALIDATED
+  RETURNED
+}
+
+enum ConfirmationDispatchBatchStatus {
+  QUEUED
+  EXECUTING
+  COMPLETED
+  PARTIAL_FAILURE
+  FAILED
+  CANCELLED
+}
+
+enum ConfirmationDispatchBatchItemStatus {
+  QUEUED
+  CLAIMED
+  SENT
+  FAILED
+  RETURNED
+}
+
+enum ConfirmationDispatchExecutionStatus {
+  QUEUED
+  STARTED
+  SENT
+  DELIVERED
+  FAILED
+}
+
+enum ConfirmationDispatchEventType {
+  CREATED
+  QUEUED
+  CLAIMED
+  RETURNED
+  STARTED
+  SENT
+  DELIVERED
+  FAILED
+  DISPATCHED
+  RECEIVED
+  VOIDED
+}
+
+enum ConfirmationPhysicalPackageStatus {
+  CREATED
+  IN_CUSTODY
+  DISPATCHED
+  DELIVERED
+  RECEIVED
+  VOIDED
+  REPLACED
+}
+
+enum ConfirmationResponseChannel {
+  PAPER
+  EMAIL
+  PORTAL
+  ELECTRONIC
+  OTHER
+}
+
+enum ConfirmationResponseMatchMethod {
+  SCAN_TOKEN
+  PACKAGE_CODE
+  MANUAL
+}
+
+enum ConfirmationResponseRoutingStatus {
+  PENDING
+  ROUTED
+  CONCLUDED
+}
+
+enum ConfirmationIntakeExceptionReason {
+  UNKNOWN_SCAN_TOKEN
+  INVALID_PACKAGE_CODE
+  DUPLICATE_RESPONSE
+  UNMATCHED_RESPONSE
+  DAMAGED_RESPONSE
+  OTHER
+}
+
+enum ConfirmationIntakeExceptionStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum InboxMessageType {
+  PROJECT_INVITATION
+  REVIEW_QUESTION
+  REVIEW_REPLY
+  REVIEW_FOLLOW_UP
+  REVIEW_REOPENED
+  SIGNOFF
+  SYSTEM_NOTIFICATION
+  ATTACHMENT_CONFLICT
+}
+
+enum ZipMasterSessionState {
+  OPEN
+  DIRTY
+  CLOSING_WAITING_ENTRIES
+  CHECKING_IN
+  RELEASING
+  CHECKIN_FAILED
+  RELEASE_FAILED
+  RECOVERABLE
+  CLOSED
+  LOCK_REVOKED
+  BASE_VERSION_CONFLICT
+  DRAFT_EXPIRED
+}
+
+enum ZipMasterOperationType {
+  ADD_FILE
+  REPLACE_FILE
+  DELETE_ENTRY
+  RENAME_ENTRY
+  MOVE_ENTRY
+  COPY_ENTRY
+  CREATE_FOLDER
+}
+
+enum ProjectFileExportJobStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+  DOWNLOADED
+  EXPIRED
+}
+
+enum ProjectFileExportJobPhase {
+  COLLECTING
+  PACKAGING
+  UPLOADING
+  READY
+}
+
+enum ProjectFileExportJobScope {
+  ATTACHMENTS
+  WORKFLOW_NODE
+}
+
+enum ConfirmationEmpImportMode {
+  FLAT
+  GROUPED
+  ZIP
+}
+
+enum ConfirmationEmpImportJobStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  PARTIAL_FAILURE
+  FAILED
+}
+
+enum ConfirmationEmpImportItemStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+}
+
+enum ConfirmationEmpImportSourceKind {
+  OUTGOING_ARTIFACT
+  RESPONSE_ARTIFACT
+}
+
+enum CmpAmlRiskClassification {
+  HIGH
+  NOT_HIGH
+}
+
+enum CmpEngagementRiskClassification {
+  NORMAL
+  GREATER_THAN_NORMAL
+}
+
+// Billing is deliberately separate from the legacy one-to-one fee note.  A
+// single engagement can issue more than one bill and the immutable status
+// history below is the accounting source of truth.
+enum CmpBillingStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  SENT
+  CLIENT_PAID
+  RECONCILED
+}
+
+enum CmpBillingArtifactType {
+  INVOICE
+  CLIENT_PAYMENT_EVIDENCE
+  FINANCE_RECEIPT
+}
+
+enum CmpBillingTemplateStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum CmpClientSearchDocumentCategory {
+  AML_SEARCH
+  COMPANY_SEARCH
+}
+
+enum WorkItemRecordStatus {
+  ACTIVE
+  RESOLVED
+  CANCELLED
+  WAIVED
+}
+
+enum WorkItemResponsibilitySelector {
+  USER
+  PROJECT_ALL_MEMBERS
+  PROJECT_ROLE
+  PROJECT_IN_CHARGE_ROLE
+  GLOBAL_ROLE
+  ENGAGEMENT_PIC_MIC
+  SYSTEM_THEN
+}
+
+enum WorkItemEventType {
+  OPENED
+  UPDATED
+  REOPENED
+  RESOLVED
+  CANCELLED
+  WAIVED
+  RESPONSIBILITY_CHANGED
+}
+
+model User {
+  id                            String                            @id @default(cuid())
+  email                         String                            @unique
+  name                          String
+  staffNo                       String?                           @unique @map("staff_no")
+  hourlyRate                    Decimal?                          @map("hourly_rate") @db.Decimal(18, 2)
+  emailVerified                 Boolean                           @default(true) @map("email_verified")
+  image                         String?
+  globalRole                    GlobalRole                        @map("global_role")
+  status                        UserStatus                        @default(ACTIVE)
+  preferredLocale               String                            @default("zh-CN") @map("preferred_locale")
+  cmpCurrencyOrder              Json?                             @map("cmp_currency_order")
+  mailConnection                UserMailConnection?
+  systemConnectionsUpdated      SystemConnection[]                @relation("SystemConnectionUpdater")
+  createdAt                     DateTime                          @default(now()) @map("created_at")
+  updatedAt                     DateTime                          @updatedAt @map("updated_at")
+  ownedWorkspaces               Workspace[]                       @relation("WorkspaceOwner")
+  workspaceMembers              WorkspaceMember[]
+  ownedProjects                 Project[]                         @relation("ProjectOwner")
+  projectMembers                ProjectMember[]
+  projectWorkspacePlacements    ProjectWorkspacePlacement[]
+  desktopFolders                DesktopFolder[]                   @relation("DesktopFolderOwner")
+  desktopProjectPlacements      DesktopProjectPlacement[]         @relation("DesktopPlacementUser")
+  invitationsSent               ProjectInvitation[]               @relation("InvitationSender")
+  inboxMessages                 InboxMessage[]                    @relation("InboxRecipient")
+  sentInboxMessages             InboxMessage[]                    @relation("InboxSender")
+  independenceDeclarations      IndependenceDeclaration[]
+  workflowNodes                 WorkflowNode[]                    @relation("WorkflowNodeCreator")
+  workingPapers                 WorkingPaper[]                    @relation("WorkingPaperCreator")
+  preparedWorkingPapers         WorkingPaper[]                    @relation("WorkingPaperPreparer")
+  reviewedWorkingPapers         WorkingPaper[]                    @relation("WorkingPaperReviewer")
+  workingPaperSignoffs          WorkingPaperSignoff[]             @relation("WorkingPaperSignoffUser")
+  revokedWorkingPaperSignoffs   WorkingPaperSignoff[]             @relation("WorkingPaperSignoffRevokedBy")
+  reviewQuestionsAssigned       WorkingPaperQuestion[]            @relation("WorkingPaperQuestionAssignee")
+  reviewQuestionsCreated        WorkingPaperQuestion[]            @relation("WorkingPaperQuestionCreator")
+  reviewQuestionsReplied        WorkingPaperQuestion[]            @relation("WorkingPaperQuestionReplier")
+  reviewQuestionsCleared        WorkingPaperQuestion[]            @relation("WorkingPaperQuestionClearer")
+  reviewQuestionsReopened       WorkingPaperQuestion[]            @relation("WorkingPaperQuestionReopener")
+  reviewQuestionMessages        WorkingPaperQuestionMessage[]     @relation("WorkingPaperQuestionMessageAuthor")
+  cmpAcceptanceRequests         CmpAcceptanceRequest[]            @relation("CmpAcceptanceSubmitter")
+  cmpMicAcceptanceRequests      CmpAcceptanceRequest[]            @relation("CmpAcceptanceMicApprover")
+  cmpPicAcceptanceRequests      CmpAcceptanceRequest[]            @relation("CmpAcceptancePicApprover")
+  cmpItAcceptanceRequests       CmpAcceptanceRequest[]            @relation("CmpAcceptanceItApprover")
+  cmpAssignedAcceptanceDrafts   CmpAcceptanceRequest[]            @relation("CmpAcceptanceDraftAssignee")
+  cmpCompletedAcceptanceDrafts  CmpAcceptanceRequest[]            @relation("CmpAcceptanceDraftCompleter")
+  cmpAcceptanceApprovalSteps    CmpAcceptanceApprovalStep[]       @relation("CmpAcceptanceStepApprover")
+  cmpClientsAsPartnerPic        CmpClient[]                       @relation("CmpClientPartnerPic")
+  cmpClientsAsLeadingPartner    CmpClient[]                       @relation("CmpClientLeadingPartner")
+  cmpClientsAsManagerMic        CmpClient[]                       @relation("CmpClientManagerMic")
+  cmpClientsAsAlternativeMic    CmpClient[]                       @relation("CmpClientAlternativeMic")
+  cmpEngagementsAsPic           CmpEngagement[]                   @relation("CmpEngagementPic")
+  cmpEngagementsAsMic           CmpEngagement[]                   @relation("CmpEngagementMic")
+  cmpEngagementsAsEqReviewer    CmpEngagement[]                   @relation("CmpEngagementEqReviewer")
+  cmpEngagementFeePlanStaff     CmpEngagementFeePlanStaff[]       @relation("CmpEngagementFeePlanStaffUser")
+  cmpBillingsCreated            CmpBilling[]                      @relation("CmpBillingCreator")
+  cmpBillingsSubmitted          CmpBilling[]                      @relation("CmpBillingSubmitter")
+  cmpBillingsApproved           CmpBilling[]                      @relation("CmpBillingApprover")
+  cmpBillingsSent               CmpBilling[]                      @relation("CmpBillingSender")
+  cmpBillingsClientPaid         CmpBilling[]                      @relation("CmpBillingClientPaidBy")
+  cmpBillingsReconciled         CmpBilling[]                      @relation("CmpBillingReconciler")
+  cmpBillingStatusEvents        CmpBillingStatusEvent[]           @relation("CmpBillingStatusEventActor")
+  cmpBillingArtifactsUploaded   CmpBillingArtifact[]              @relation("CmpBillingArtifactUploader")
+  cmpBillingFinanceReceipts     CmpBillingFinanceReceipt[]        @relation("CmpBillingFinanceReceiptCreator")
+  cmpBillingFirmTemplatesCreated CmpBillingFirmTemplate[]         @relation("CmpBillingFirmTemplateCreator")
+  cmpBillingFirmTemplatesUpdated CmpBillingFirmTemplate[]         @relation("CmpBillingFirmTemplateUpdater")
+  cmpBillingBankTemplatesCreated CmpBillingBankTemplate[]         @relation("CmpBillingBankTemplateCreator")
+  cmpBillingBankTemplatesUpdated CmpBillingBankTemplate[]         @relation("CmpBillingBankTemplateUpdater")
+  cmpExchangeRateBatchesRefreshed CmpExchangeRateBatch[]          @relation("CmpExchangeRateBatchRefresher")
+  cmpExchangeRateFallbacksUpdated CmpBudgetExchangeRateFallback[] @relation("CmpExchangeRateFallbackUpdater")
+  cmpClientRelationshipsCreated CmpClientRelationship[]           @relation("CmpClientRelationshipCreator")
+  cmpClientSearchDocuments      CmpClientSearchDocument[]         @relation("CmpClientSearchDocumentUploader")
+  cmpAmlScreeningBatches          CmpAmlScreeningBatch[]            @relation("CmpAmlBatchTrigger")
+  cmpAmlConfigurationUpdates     CmpAmlConfiguration[]             @relation("CmpAmlConfigurationUpdater")
+  cmpAmlHitsReviewed              CmpAmlHit[]                       @relation("CmpAmlHitReviewer")
+  attachments                   Attachment[]                      @relation("AttachmentUploader")
+  preparedAttachments           Attachment[]                      @relation("AttachmentPreparer")
+  reviewedAttachments           Attachment[]                      @relation("AttachmentReviewer")
+  lockedAttachments             Attachment[]                      @relation("AttachmentLockHolder")
+  deletedAttachments            Attachment[]                      @relation("AttachmentDeletedBy")
+  restoredAttachments           Attachment[]                      @relation("AttachmentRestoredBy")
+  lastModifiedAttachments       Attachment[]                      @relation("AttachmentLastModifier")
+  archivedAttachmentVersions    AttachmentVersion[]               @relation("AttachmentVersionArchivedBy")
+  uploadedAttachmentVersions    AttachmentVersion[]               @relation("AttachmentVersionUploader")
+  desktopMasterGrants           DesktopMasterGrant[]
+  zipMasterSessions             ZipMasterSession[]
+  zipEntryMasterSessions        ZipEntryMasterSession[]
+  projectArchiveArtifacts       ProjectArchiveArtifact[]          @relation("ProjectArchiveArtifactCreator")
+  projectArchiveJobs            ProjectArchiveJob[]               @relation("ProjectArchiveJobCreator")
+  projectFileExportJobs         ProjectFileExportJob[]            @relation("ProjectFileExportJobCreator")
+  knowledgeDocumentsUploaded    KnowledgeDocument[]               @relation("KnowledgeDocumentUploader")
+  smartFormTemplatesCreated     SmartFormTemplate[]               @relation("SmartFormTemplateCreator")
+  smartFormTemplatesUpdated     SmartFormTemplate[]               @relation("SmartFormTemplateUpdater")
+  smartFormTemplateVersions     SmartFormTemplateVersion[]        @relation("SmartFormTemplatePublisher")
+  smartFormInstancesSaved       SmartFormInstance[]               @relation("SmartFormInstanceLastSaver")
+  createdConfirmations          ProjectConfirmation[]             @relation("ProjectConfirmationCreator")
+  responsibleConfirmations      ProjectConfirmation[]             @relation("ProjectConfirmationResponsible")
+  confirmationLogisticsReadStates ConfirmationLogisticsReadState[]
+  confirmationEmpImportJobs     ConfirmationEmpImportJob[]        @relation("ConfirmationEmpImportJobCreator")
+  confirmationTemplatesUploaded ConfirmationTemplateLibraryFile[] @relation("ConfirmationTemplateLibraryUploader")
+  confirmationResponsesUploaded ConfirmationResponseLibraryFile[] @relation("ConfirmationResponseLibraryUploader")
+  confirmationResponsesRouted   ConfirmationResponseLibraryFile[] @relation("ConfirmationResponseLibraryRouter")
+  auditLogs                     AuditLog[]                        @relation("AuditActor")
+  authSessions                  AuthSession[]
+  authAccounts                  AuthAccount[]
+  tmsTimesheetMonths            TmsTimesheetMonth[]
+  tmsPendingLinkSubmissions     TmsPendingLinkSubmission[]        @relation("TmsPendingLinkOwner")
+  tmsProjectLinks               TmsProjectLink[]                  @relation("TmsProjectLinkOwner")
+
+  @@map("users")
+}
+
+enum TmsTimesheetStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+}
+
+enum TmsApprovalStatus {
+  NOT_SUBMITTED
+  SUBMITTED
+  APPROVED
+  RETURNED
+  PENDING_CONFIRMATION
+}
+
+enum TmsPendingLinkStatus {
+  PENDING_LINK
+  LINKED
+  SUPERSEDED
+}
+
+enum TmsProjectLinkStatus {
+  PENDING
+  LINKED
+}
+
+enum TmsTimesheetHalf {
+  FIRST_HALF
+  SECOND_HALF
+}
+
+model TmsTimesheetMonth {
+  id                      String             @id @default(cuid())
+  userId                  String             @map("user_id")
+  year                    Int
+  month                   Int
+  draftRows               Json               @default("[]") @map("draft_rows")
+  firstStatus             TmsTimesheetStatus @default(DRAFT) @map("first_status")
+  firstSubmittedRevision  Int                @default(0) @map("first_submitted_revision")
+  firstSubmittedRows      Json?              @map("first_submitted_rows")
+  firstApprovedById       String?            @map("first_approved_by_id")
+  firstApprovedAt         DateTime?          @map("first_approved_at")
+  secondStatus            TmsTimesheetStatus @default(DRAFT) @map("second_status")
+  secondSubmittedRevision Int                @default(0) @map("second_submitted_revision")
+  secondSubmittedRows     Json?              @map("second_submitted_rows")
+  secondApprovedById      String?            @map("second_approved_by_id")
+  secondApprovedAt        DateTime?          @map("second_approved_at")
+  createdAt               DateTime           @default(now()) @map("created_at")
+  updatedAt               DateTime           @updatedAt @map("updated_at")
+  user                    User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, year, month])
+  @@index([year, month, firstStatus, secondStatus])
+  @@map("tms_timesheet_months")
+}
+
+model TmsApprovalSubmission {
+  id            String            @id @default(cuid())
+  ownerUserId   String            @map("owner_user_id")
+  engagementId  String            @map("engagement_id")
+  projectId     String?           @map("project_id")
+  year          Int
+  month         Int
+  half          TmsTimesheetHalf
+  revision      Int
+  status        TmsApprovalStatus @default(SUBMITTED)
+  submittedRows Json              @map("submitted_rows")
+  submittedAt   DateTime          @default(now()) @map("submitted_at")
+  reviewedById  String?           @map("reviewed_by_id")
+  reviewedAt    DateTime?         @map("reviewed_at")
+  returnReason  String?           @map("return_reason")
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+  project       Project?          @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@unique([ownerUserId, engagementId, projectId, year, month, half, revision])
+  @@index([engagementId, year, month, half, status])
+  @@index([projectId, year, month, half, status])
+  @@index([ownerUserId, year, month, half])
+  @@map("tms_approval_submissions")
+}
+
+model TmsPendingLinkSubmission {
+  id                 String               @id @default(cuid())
+  ownerUserId        String               @map("owner_user_id")
+  projectId          String               @map("project_id")
+  year               Int
+  month              Int
+  half               TmsTimesheetHalf
+  revision           Int
+  status             TmsPendingLinkStatus @default(PENDING_LINK)
+  submittedRows      Json                 @map("submitted_rows")
+  linkedEngagementId String?              @map("linked_engagement_id")
+  linkedAt           DateTime?            @map("linked_at")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+  owner              User                 @relation("TmsPendingLinkOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  project            Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  linkedEngagement   CmpEngagement?       @relation(fields: [linkedEngagementId], references: [id], onDelete: SetNull)
+
+  @@unique([ownerUserId, projectId, year, month, half, revision])
+  @@index([projectId, status])
+  @@index([ownerUserId, year, month, half, status])
+  @@map("tms_pending_link_submissions")
+}
+
+model TmsProjectLink {
+  id              String               @id @default(cuid())
+  referenceNumber Int                  @unique @default(autoincrement()) @map("reference_number")
+  ownerUserId     String               @map("owner_user_id")
+  rowId           String               @map("row_id")
+  year            Int
+  month           Int
+  periodScope     String               @map("period_scope")
+  label           String
+  projectId       String?              @map("project_id")
+  status          TmsProjectLinkStatus @default(PENDING)
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @updatedAt @map("updated_at")
+  owner           User                 @relation("TmsProjectLinkOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  project         Project?             @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@unique([ownerUserId, rowId])
+  @@index([status, year, month])
+  @@index([projectId, status])
+  @@map("tms_project_links")
+}
+
+model AuthSession {
+  id        String   @id @default(cuid())
+  expiresAt DateTime @map("expires_at")
+  token     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("auth_sessions")
+}
+
+model AuthAccount {
+  id                    String    @id @default(cuid())
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  userId                String    @map("user_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("auth_accounts")
+}
+
+model AuthVerification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([identifier])
+  @@map("auth_verifications")
+}
+
+model AuthDeviceCode {
+  id              String    @id @default(cuid())
+  deviceCode      String    @unique @map("device_code")
+  userCode        String    @unique @map("user_code")
+  userId          String?   @map("user_id")
+  expiresAt       DateTime  @map("expires_at")
+  status          String
+  lastPolledAt    DateTime? @map("last_polled_at")
+  pollingInterval Int?      @map("polling_interval")
+  clientId        String?   @map("client_id")
+  scope           String?
+
+  @@index([expiresAt])
+  @@index([userId])
+  @@map("auth_device_codes")
+}
+
+model UserMailConnection {
+  id                   String                   @id @default(cuid())
+  userId               String                   @unique @map("user_id")
+  provider             UserMailProvider         @default(WECOM_EXMAIL)
+  emailAddress         String                   @map("email_address")
+  smtpHost             String                   @default("smtp.exmail.qq.com") @map("smtp_host")
+  smtpPort             Int                      @default(465) @map("smtp_port")
+  smtpSecure           Boolean                  @default(true) @map("smtp_secure")
+  credentialCiphertext String                   @map("credential_ciphertext") @db.Text
+  credentialIv         String                   @map("credential_iv")
+  credentialAuthTag    String                   @map("credential_auth_tag")
+  status               UserMailConnectionStatus @default(CONNECTED)
+  verifiedAt           DateTime?                @map("verified_at")
+  lastTestedAt         DateTime?                @map("last_tested_at")
+  lastError            String?                  @map("last_error") @db.Text
+  createdAt            DateTime                 @default(now()) @map("created_at")
+  updatedAt            DateTime                 @updatedAt @map("updated_at")
+  user                 User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("user_mail_connections")
+}
+
+model SystemConnection {
+  id                   String                   @id @default(cuid())
+  provider             SystemConnectionProvider @unique
+  credentialCiphertext String                   @map("credential_ciphertext") @db.Text
+  credentialIv         String                   @map("credential_iv")
+  credentialAuthTag    String                   @map("credential_auth_tag")
+  status               SystemConnectionStatus   @default(CONNECTED)
+  verifiedAt           DateTime?                @map("verified_at")
+  lastTestedAt         DateTime?                @map("last_tested_at")
+  lastError            String?                  @map("last_error") @db.Text
+  quotaTotal           Int?                     @map("quota_total")
+  quotaUsed            Int?                     @map("quota_used")
+  quotaRemain          Int?                     @map("quota_remain")
+  updatedById          String?                  @map("updated_by_id")
+  createdAt            DateTime                 @default(now()) @map("created_at")
+  updatedAt            DateTime                 @updatedAt @map("updated_at")
+  updatedBy            User?                    @relation("SystemConnectionUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@map("system_connections")
+}
+
+model WebhookIngressReceipt {
+  messageId   String                   @id @map("message_id")
+  provider    SystemConnectionProvider
+  requestId   String?                  @map("request_id")
+  bodySha256  String                   @map("body_sha256")
+  receivedAt  DateTime                 @map("received_at")
+  processedAt DateTime                 @default(now()) @map("processed_at")
+
+  @@index([provider, processedAt])
+  @@map("webhook_ingress_receipts")
+}
+
+model WorkpaperTemplate {
+  id          String                  @id @default(cuid())
+  code        String                  @unique
+  name        String
+  subjectCode String                  @map("subject_code")
+  subjectName String                  @map("subject_name")
+  language    String                  @default("zh-CN")
+  description String?
+  isActive    Boolean                 @default(true) @map("is_active")
+  createdBy   String?                 @map("created_by")
+  createdAt   DateTime                @default(now()) @map("created_at")
+  updatedAt   DateTime                @updatedAt @map("updated_at")
+  items       WorkpaperTemplateItem[]
+
+  @@index([language, isActive])
+  @@index([subjectCode, isActive])
+  @@map("workpaper_templates")
+}
+
+model WorkpaperTemplateItem {
+  id                   String                @id @default(cuid())
+  templateId           String                @map("template_id")
+  itemCode             String?               @map("item_code")
+  title                String
+  description          String?
+  paperType            PaperType             @default(WORKING_PAPER) @map("paper_type")
+  bucket               WorkingPaperBucket    @default(CURRENT)
+  sortOrder            Int                   @default(0) @map("sort_order")
+  createdAt            DateTime              @default(now()) @map("created_at")
+  updatedAt            DateTime              @updatedAt @map("updated_at")
+  template             WorkpaperTemplate     @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  workingPapers        WorkingPaper[]
+  attachments          Attachment[]
+  projectTemplateFiles ProjectTemplateFile[]
+
+  @@index([templateId, sortOrder])
+  @@index([templateId, itemCode])
+  @@map("workpaper_template_items")
+}
+
+model ProjectTemplate {
+  id                  String                     @id @default(cuid())
+  code                String                     @unique
+  name                String
+  language            String                     @default("zh-CN")
+  frameworkTemplateId String?                    @map("framework_template_id")
+  description         String?
+  status              ProjectTemplateStatus      @default(DRAFT)
+  createdBy           String?                    @map("created_by")
+  createdAt           DateTime                   @default(now()) @map("created_at")
+  updatedAt           DateTime                   @updatedAt @map("updated_at")
+  frameworkTemplate   FrameworkTemplate?         @relation(fields: [frameworkTemplateId], references: [id], onDelete: SetNull)
+  nodes               ProjectTemplateNode[]
+  files               ProjectTemplateFile[]
+  smartForms          ProjectTemplateSmartForm[]
+
+  @@index([language, status])
+  @@index([frameworkTemplateId, status])
+  @@map("project_templates")
+}
+
+model ProjectTemplateNode {
+  id                String                     @id @default(cuid())
+  projectTemplateId String                     @map("project_template_id")
+  parentId          String?                    @map("parent_id")
+  level             Int
+  code              String
+  title             String
+  auditAreaCode     String?                    @map("audit_area_code")
+  nodeType          WorkflowNodeType           @map("node_type")
+  sortOrder         Int                        @map("sort_order")
+  createdAt         DateTime                   @default(now()) @map("created_at")
+  updatedAt         DateTime                   @updatedAt @map("updated_at")
+  projectTemplate   ProjectTemplate            @relation(fields: [projectTemplateId], references: [id], onDelete: Cascade)
+  parent            ProjectTemplateNode?       @relation("ProjectTemplateTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children          ProjectTemplateNode[]      @relation("ProjectTemplateTree")
+  files             ProjectTemplateFile[]
+  smartForms        ProjectTemplateSmartForm[]
+
+  @@unique([projectTemplateId, parentId, code])
+  @@index([projectTemplateId, level, sortOrder])
+  @@map("project_template_nodes")
+}
+
+model ProjectTemplateFile {
+  id                String                     @id @default(cuid())
+  projectTemplateId String                     @map("project_template_id")
+  templateNodeId    String                     @map("template_node_id")
+  code              String
+  title             String
+  fileName          String                     @map("file_name")
+  originalName      String?                    @map("original_name")
+  fileUrl           String                     @map("file_url")
+  fileSize          Int                        @map("file_size")
+  mimeType          String                     @map("mime_type")
+  placeholderType   AttachmentPlaceholderType? @map("placeholder_type")
+  paperType         PaperType                  @default(WORKING_PAPER) @map("paper_type")
+  sortOrder         Int                        @default(0) @map("sort_order")
+  templateItemId    String?                    @map("template_item_id")
+  createdAt         DateTime                   @default(now()) @map("created_at")
+  updatedAt         DateTime                   @updatedAt @map("updated_at")
+  projectTemplate   ProjectTemplate            @relation(fields: [projectTemplateId], references: [id], onDelete: Cascade)
+  templateNode      ProjectTemplateNode        @relation(fields: [templateNodeId], references: [id], onDelete: Cascade)
+  templateItem      WorkpaperTemplateItem?     @relation(fields: [templateItemId], references: [id], onDelete: SetNull)
+
+  @@unique([templateNodeId, code])
+  @@index([projectTemplateId, templateNodeId, sortOrder])
+  @@index([templateItemId])
+  @@map("project_template_files")
+}
+
+model SmartFormTemplate {
+  id                        String                     @id @default(cuid())
+  code                      String                     @unique
+  name                      String
+  frameworkTemplateId       String?                    @map("framework_template_id")
+  description               String?
+  status                    SmartFormTemplateStatus    @default(DRAFT)
+  draftDefinitionJson       Json                       @map("draft_definition_json")
+  currentPublishedVersionId String?                    @unique @map("current_published_version_id")
+  createdBy                 String                     @map("created_by")
+  updatedBy                 String?                    @map("updated_by")
+  createdAt                 DateTime                   @default(now()) @map("created_at")
+  updatedAt                 DateTime                   @updatedAt @map("updated_at")
+  frameworkTemplate         FrameworkTemplate?         @relation(fields: [frameworkTemplateId], references: [id], onDelete: SetNull)
+  creator                   User                       @relation("SmartFormTemplateCreator", fields: [createdBy], references: [id])
+  updater                   User?                      @relation("SmartFormTemplateUpdater", fields: [updatedBy], references: [id], onDelete: SetNull)
+  currentPublishedVersion   SmartFormTemplateVersion?  @relation("SmartFormTemplateCurrentVersion", fields: [currentPublishedVersionId], references: [id], onDelete: SetNull)
+  versions                  SmartFormTemplateVersion[] @relation("SmartFormTemplateVersions")
+  projectTemplateReferences ProjectTemplateSmartForm[]
+  instances                 SmartFormInstance[]
+
+  @@index([frameworkTemplateId, status])
+  @@map("smart_form_templates")
+}
+
+model SmartFormTemplateVersion {
+  id                 String                     @id @default(cuid())
+  templateId         String                     @map("template_id")
+  version            Int
+  definitionJson     Json                       @map("definition_json")
+  definitionHash     String                     @map("definition_hash")
+  publishedBy        String                     @map("published_by")
+  publishedAt        DateTime                   @default(now()) @map("published_at")
+  template           SmartFormTemplate          @relation("SmartFormTemplateVersions", fields: [templateId], references: [id], onDelete: Cascade)
+  currentForTemplate SmartFormTemplate?         @relation("SmartFormTemplateCurrentVersion")
+  publisher          User                       @relation("SmartFormTemplatePublisher", fields: [publishedBy], references: [id])
+  projectReferences  ProjectTemplateSmartForm[]
+  instances          SmartFormInstance[]
+
+  @@unique([templateId, version])
+  @@index([templateId, publishedAt])
+  @@map("smart_form_template_versions")
+}
+
+model ProjectTemplateSmartForm {
+  id                         String                   @id @default(cuid())
+  projectTemplateId          String                   @map("project_template_id")
+  templateNodeId             String                   @map("template_node_id")
+  smartFormTemplateId        String                   @map("smart_form_template_id")
+  smartFormTemplateVersionId String                   @map("smart_form_template_version_id")
+  code                       String
+  title                      String
+  fileName                   String                   @map("file_name")
+  sortOrder                  Int                      @default(0) @map("sort_order")
+  createdAt                  DateTime                 @default(now()) @map("created_at")
+  updatedAt                  DateTime                 @updatedAt @map("updated_at")
+  projectTemplate            ProjectTemplate          @relation(fields: [projectTemplateId], references: [id], onDelete: Cascade)
+  templateNode               ProjectTemplateNode      @relation(fields: [templateNodeId], references: [id], onDelete: Cascade)
+  smartFormTemplate          SmartFormTemplate        @relation(fields: [smartFormTemplateId], references: [id], onDelete: Restrict)
+  smartFormTemplateVersion   SmartFormTemplateVersion @relation(fields: [smartFormTemplateVersionId], references: [id], onDelete: Restrict)
+
+  @@unique([templateNodeId, code])
+  @@index([projectTemplateId, templateNodeId, sortOrder])
+  @@index([smartFormTemplateVersionId])
+  @@map("project_template_smart_forms")
+}
+
+model SmartFormInstance {
+  id                         String                   @id @default(cuid())
+  projectId                  String                   @map("project_id")
+  attachmentId               String                   @unique @map("attachment_id")
+  smartFormTemplateId        String                   @map("smart_form_template_id")
+  smartFormTemplateVersionId String                   @map("smart_form_template_version_id")
+  schemaHash                 String                   @map("schema_hash")
+  answerHash                 String                   @map("answer_hash")
+  status                     SmartFormInstanceStatus  @default(INCOMPLETE)
+  completedAt                DateTime?                @map("completed_at")
+  lastSavedBy                String?                  @map("last_saved_by")
+  lastSavedAt                DateTime?                @map("last_saved_at")
+  createdAt                  DateTime                 @default(now()) @map("created_at")
+  updatedAt                  DateTime                 @updatedAt @map("updated_at")
+  project                    Project                  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  attachment                 Attachment               @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+  smartFormTemplate          SmartFormTemplate        @relation(fields: [smartFormTemplateId], references: [id], onDelete: Restrict)
+  smartFormTemplateVersion   SmartFormTemplateVersion @relation(fields: [smartFormTemplateVersionId], references: [id], onDelete: Restrict)
+  lastSaver                  User?                    @relation("SmartFormInstanceLastSaver", fields: [lastSavedBy], references: [id], onDelete: SetNull)
+
+  @@index([projectId, status])
+  @@index([smartFormTemplateVersionId])
+  @@map("smart_form_instances")
+}
+
+model CmpClientGroup {
+  id                     String                  @id @default(cuid())
+  groupCode              String                  @unique @map("group_code")
+  nameZh                 String                  @map("name_zh")
+  nameEn                 String?                 @map("name_en")
+  status                 CmpMasterStatus         @default(ACTIVE)
+  ultimateParentClientId String?                 @unique @map("ultimate_parent_client_id")
+  createdById            String?                 @map("created_by_id")
+  createdAt              DateTime                @default(now()) @map("created_at")
+  updatedAt              DateTime                @updatedAt @map("updated_at")
+  clients                CmpClient[]
+  ultimateParent         CmpClient?              @relation("CmpClientGroupUltimateParent", fields: [ultimateParentClientId], references: [id], onDelete: SetNull)
+  relationships          CmpClientRelationship[]
+
+  @@index([status, groupCode])
+  @@map("cmp_client_groups")
+}
+
+model CmpApprovalNumberSequence {
+  id         String   @id @default(cuid())
+  prefix     String
+  year       Int
+  lastNumber Int      @default(0) @map("last_number")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@unique([prefix, year])
+  @@map("cmp_approval_number_sequences")
+}
+
+model CmpClient {
+  id                               String                    @id @default(cuid())
+  clientCode                       String                    @unique @map("client_code")
+  companyCode                      String?                   @map("company_code")
+  companyIdentifierType            String                    @default("COMPANY_REGISTRATION_NUMBER") @map("company_identifier_type")
+  companyNumber                    String?                   @map("company_number")
+  nameZh                           String?                   @map("name_zh")
+  nameEn                           String?                   @map("name_en")
+  groupId                          String?                   @map("group_id")
+  groupMode                        String?                   @map("group_mode")
+  groupName                        String?                   @map("group_name")
+  address                          String?
+  contactPerson                    String?                   @map("contact_person")
+  telephone                        String?
+  email                            String?
+  website                          String?
+  yearEndDate                      DateTime?                 @map("year_end_date")
+  yearEndMonth                     Int?                      @map("year_end_month")
+  hsicSectionCode                  String?                   @map("hsic_section_code")
+  industryOtherDescription         String?                   @map("industry_other_description")
+  reportingGaap                    String?                   @map("reporting_gaap")
+  contactPosition                  String?                   @map("contact_position")
+  contactDepartment                String?                   @map("contact_department")
+  contactMobile                    String?                   @map("contact_mobile")
+  contactRemarks                   String?                   @map("contact_remarks")
+  principalAddressSameAsRegistered Boolean                   @default(false) @map("principal_address_same_as_registered")
+  placeOfIncorporation             String?                   @map("place_of_incorporation")
+  incorporationYearMonth           String?                   @map("incorporation_year_month")
+  listedOrPrivate                  String?                   @map("listed_or_private")
+  companyTypeOtherDescription      String?                   @map("company_type_other_description")
+  stockExchangeOrListingPlace      String?                   @map("stock_exchange_or_listing_place")
+  stockCode                        String?                   @map("stock_code")
+  marketSegment                    String?                   @map("market_segment")
+  regulatedEntities                String?                   @map("regulated_entities")
+  regulatedBy                      String?                   @map("regulated_by")
+  isSubsidiary                     Boolean                   @default(false) @map("is_subsidiary")
+  parentClientCode                 String?                   @map("parent_client_code")
+  parentHoldingCompanyName         String?                   @map("parent_holding_company_name")
+  hasSubsidiariesOrAssociates      Boolean                   @default(false) @map("has_subsidiaries_or_associates")
+  subsidiariesOrAssociates         String?                   @map("subsidiaries_or_associates")
+  referredBy                       String?                   @map("referred_by")
+  clientPartnerPicId               String?                   @map("client_partner_pic_id")
+  clientPartnerPic                 String?                   @map("client_partner_pic")
+  clientLeadingPartnerId           String?                   @map("client_leading_partner_id")
+  clientLeadingPartner             String?                   @map("client_leading_partner")
+  clientManagerMicId               String?                   @map("client_manager_mic_id")
+  clientManagerMic                 String?                   @map("client_manager_mic")
+  alternativePartnerSecondMicId    String?                   @map("alternative_partner_second_mic_id")
+  alternativePartnerSecondMic      String?                   @map("alternative_partner_second_mic")
+  expectedJobOrEngagementType      String?                   @map("expected_job_or_engagement_type")
+  serviceType                      String?                   @map("service_type")
+  serviceLines                     String?                   @map("service_lines")
+  taxServiceDetails                String?                   @map("tax_service_details")
+  comSecServiceDetails             String?                   @map("com_sec_service_details")
+  otherServiceDescription          String?                   @map("other_service_description")
+  approvalReferenceNumber          String?                   @map("approval_reference_number")
+  approvalDate                     DateTime?                 @map("approval_date")
+  remarks                          String?
+  preparedBy                       String?                   @map("prepared_by")
+  approvedBy                       String?                   @map("approved_by")
+  micApproval                      String?                   @map("mic_approval")
+  picApproval                      String?                   @map("pic_approval")
+  itAdmin                          String?                   @map("it_admin")
+  signOffDate                      DateTime?                 @map("sign_off_date")
+  status                           CmpClientStatus           @default(ACTIVE)
+  createdById                      String?                   @map("created_by_id")
+  createdAt                        DateTime                  @default(now()) @map("created_at")
+  updatedAt                        DateTime                  @updatedAt @map("updated_at")
+  group                            CmpClientGroup?           @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  ultimateParentForGroup           CmpClientGroup?           @relation("CmpClientGroupUltimateParent")
+  relationshipsFrom                CmpClientRelationship[]   @relation("CmpClientRelationshipFrom")
+  relationshipsTo                  CmpClientRelationship[]   @relation("CmpClientRelationshipTo")
+  clientPartnerPicUser             User?                     @relation("CmpClientPartnerPic", fields: [clientPartnerPicId], references: [id], onDelete: SetNull)
+  clientLeadingPartnerUser         User?                     @relation("CmpClientLeadingPartner", fields: [clientLeadingPartnerId], references: [id], onDelete: SetNull)
+  clientManagerMicUser             User?                     @relation("CmpClientManagerMic", fields: [clientManagerMicId], references: [id], onDelete: SetNull)
+  alternativePartnerSecondMicUser  User?                     @relation("CmpClientAlternativeMic", fields: [alternativePartnerSecondMicId], references: [id], onDelete: SetNull)
+  addresses                        CmpClientAddress[]
+  contacts                         CmpClientContact[]
+  versions                         CmpClientVersion[]
+  engagements                      CmpEngagement[]
+  projects                         Project[]
+  searchDocuments                  CmpClientSearchDocument[]
+  amlScreeningBatches              CmpAmlScreeningBatch[]
+
+  @@index([groupId, status])
+  @@index([status, clientCode])
+  @@index([companyIdentifierType, companyNumber])
+  @@index([clientPartnerPicId])
+  @@index([clientLeadingPartnerId])
+  @@index([clientManagerMicId])
+  @@index([alternativePartnerSecondMicId])
+  @@index([clientPartnerPic])
+  @@index([clientManagerMic])
+  @@map("cmp_clients")
+}
+
+model CmpClientContact {
+  id          String    @id @default(cuid())
+  clientId    String    @map("client_id")
+  name        String?
+  position    String?
+  department  String?
+  officePhone String?   @map("office_phone")
+  mobile      String?
+  email       String?
+  remarks     String?
+  sortOrder   Int       @default(0) @map("sort_order")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  client      CmpClient @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId, sortOrder])
+  @@map("cmp_client_contacts")
+}
+
+model CmpClientSearchDocument {
+  id           String                          @id @default(cuid())
+  clientId     String                          @map("client_id")
+  category     CmpClientSearchDocumentCategory
+  fileName     String                          @map("file_name")
+  originalName String                          @map("original_name")
+  fileUrl      String                          @map("file_url")
+  fileSize     Int                             @map("file_size")
+  mimeType     String                          @map("mime_type")
+  version      Int                             @default(1)
+  contentHash  String?                         @map("content_hash")
+  uploadedById String                          @map("uploaded_by_id")
+  createdAt    DateTime                        @default(now()) @map("created_at")
+  updatedAt    DateTime                        @updatedAt @map("updated_at")
+  client       CmpClient                       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  uploadedBy   User                            @relation("CmpClientSearchDocumentUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([clientId, category, createdAt])
+  @@map("cmp_client_search_documents")
+}
+
+model CmpClientAddress {
+  id        String               @id @default(cuid())
+  clientId  String               @map("client_id")
+  type      CmpClientAddressType
+  label     String?
+  address   String
+  sortOrder Int                  @default(0) @map("sort_order")
+  createdAt DateTime             @default(now()) @map("created_at")
+  updatedAt DateTime             @updatedAt @map("updated_at")
+  client    CmpClient            @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId, type, sortOrder])
+  @@map("cmp_client_addresses")
+}
+
+model CmpClientVersion {
+  id                  String                @id @default(cuid())
+  clientId            String                @map("client_id")
+  versionNumber       Int                   @map("version_number")
+  sourceType          String                @map("source_type")
+  acceptanceRequestId String?               @unique @map("acceptance_request_id")
+  snapshotJson        Json                  @map("snapshot_json")
+  changeSummaryJson   Json?                 @map("change_summary_json")
+  changedById         String?               @map("changed_by_id")
+  changedByName       String                @map("changed_by_name")
+  approvedById        String?               @map("approved_by_id")
+  approvedByName      String?               @map("approved_by_name")
+  approvedAt          DateTime?             @map("approved_at")
+  schemaVersion       Int                   @default(1) @map("schema_version")
+  createdAt           DateTime              @default(now()) @map("created_at")
+  client              CmpClient             @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  acceptanceRequest   CmpAcceptanceRequest? @relation("CmpAcceptanceClientVersion", fields: [acceptanceRequestId], references: [id], onDelete: SetNull)
+
+  @@unique([clientId, versionNumber])
+  @@index([clientId, approvedAt])
+  @@index([changedById, approvedAt])
+  @@map("cmp_client_versions")
+}
+
+model CmpClientRelationship {
+  id                   String                    @id @default(cuid())
+  groupId              String                    @map("group_id")
+  fromClientId         String                    @map("from_client_id")
+  toClientId           String                    @map("to_client_id")
+  type                 CmpClientRelationshipType
+  ownershipPercentage  Decimal?                  @map("ownership_percentage") @db.Decimal(5, 2)
+  effectiveFrom        DateTime?                 @map("effective_from")
+  effectiveTo          DateTime?                 @map("effective_to")
+  remarks              String?
+  approvedViaRequestId String?                   @map("approved_via_request_id")
+  createdById          String?                   @map("created_by_id")
+  createdAt            DateTime                  @default(now()) @map("created_at")
+  updatedAt            DateTime                  @updatedAt @map("updated_at")
+  group                CmpClientGroup            @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  fromClient           CmpClient                 @relation("CmpClientRelationshipFrom", fields: [fromClientId], references: [id], onDelete: Restrict)
+  toClient             CmpClient                 @relation("CmpClientRelationshipTo", fields: [toClientId], references: [id], onDelete: Restrict)
+  approvedViaRequest   CmpAcceptanceRequest?     @relation("CmpClientRelationshipApproval", fields: [approvedViaRequestId], references: [id], onDelete: SetNull)
+  createdBy            User?                     @relation("CmpClientRelationshipCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([groupId, type, effectiveTo])
+  @@index([fromClientId, effectiveTo])
+  @@index([toClientId, effectiveTo])
+  @@index([approvedViaRequestId])
+  @@map("cmp_client_relationships")
+}
+
+model CmpEngagement {
+  id                           String                          @id @default(cuid())
+  clientId                     String                          @map("client_id")
+  engagementCode               String                          @unique @map("engagement_code")
+  serviceType                  CmpEngagementServiceType        @map("service_type")
+  otherServiceDescription      String?                         @map("other_service_description")
+  deliverables                 Json                            @default("[]")
+  yearEndDate                  DateTime?                       @map("year_end_date")
+  reportDate                   DateTime?                       @map("report_date")
+  approvalReferenceNumber      String?                         @map("approval_reference_number")
+  engagementDate               DateTime?                       @map("engagement_date")
+  budgetedHours                Decimal                         @default(0) @map("budgeted_hours") @db.Decimal(12, 2)
+  agreedFee                    Decimal                         @default(0) @map("agreed_fee") @db.Decimal(18, 2)
+  recoveryRate                 Decimal?                        @map("recovery_rate") @db.Decimal(5, 2)
+  feeCurrency                  String                          @default("HKD") @map("fee_currency")
+  feeExchangeRateSnapshotId    String?                         @map("fee_exchange_rate_snapshot_id")
+  feeExchangeRateHkdPerUnit    Decimal?                        @map("fee_exchange_rate_hkd_per_unit") @db.Decimal(18, 8)
+  feeExchangeRateSource        String                          @default("SYSTEM") @map("fee_exchange_rate_source")
+  amlRiskClassification        CmpAmlRiskClassification        @default(NOT_HIGH) @map("aml_risk_classification")
+  engagementRiskClassification CmpEngagementRiskClassification @default(NORMAL) @map("engagement_risk_classification")
+  picUserId                    String?                         @map("pic_user_id")
+  micUserId                    String?                         @map("mic_user_id")
+  eqReviewerUserId             String?                         @map("eq_reviewer_user_id")
+  pic                          String?
+  mic                          String?
+  eqReviewer                   String?                         @map("eq_reviewer")
+  status                       CmpEngagementStatus             @default(ACTIVE)
+  remarks                      String?
+  createdById                  String?                         @map("created_by_id")
+  createdAt                    DateTime                        @default(now()) @map("created_at")
+  updatedAt                    DateTime                        @updatedAt @map("updated_at")
+  client                       CmpClient                       @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  picUser                      User?                           @relation("CmpEngagementPic", fields: [picUserId], references: [id], onDelete: SetNull)
+  micUser                      User?                           @relation("CmpEngagementMic", fields: [micUserId], references: [id], onDelete: SetNull)
+  eqReviewerUser               User?                           @relation("CmpEngagementEqReviewer", fields: [eqReviewerUserId], references: [id], onDelete: SetNull)
+  codeAliases                  CmpEngagementCodeAlias[]
+  feePlanningLines             CmpEngagementFeePlanLine[]
+  feeNotes                     CmpEngagementFeeNote[]
+  billings                     CmpBilling[]
+  archiveDraft                 CmpEngagementArchiveDraft?
+  archiveSnapshot              CmpEngagementArchiveSnapshot?
+  feeExchangeRateSnapshot      CmpBudgetExchangeRateSnapshot?  @relation(fields: [feeExchangeRateSnapshotId], references: [id], onDelete: SetNull)
+  projects                     Project[]
+  tmsPendingLinkSubmissions    TmsPendingLinkSubmission[]
+
+  @@index([clientId, status])
+  @@index([status, engagementCode])
+  @@index([serviceType, status])
+  @@index([pic])
+  @@index([mic])
+  @@index([picUserId])
+  @@index([micUserId])
+  @@index([eqReviewerUserId])
+  @@index([feeExchangeRateSnapshotId])
+  @@map("cmp_engagements")
+}
+
+model CmpEngagementArchiveDraft {
+  id              String                             @id @default(cuid())
+  engagementId    String                             @unique @map("engagement_id")
+  payload         Json
+  sourceUpdatedAt DateTime                           @map("source_updated_at")
+  tmsFingerprint  String                             @map("tms_fingerprint")
+  editorUserId    String                             @map("editor_user_id")
+  workflowStatus  CmpEngagementArchiveWorkflowStatus @default(DRAFT) @map("workflow_status")
+  submittedById   String?                            @map("submitted_by_id")
+  submittedAt     DateTime?                          @map("submitted_at")
+  returnedById    String?                            @map("returned_by_id")
+  returnedAt      DateTime?                          @map("returned_at")
+  returnReason    String?                            @map("return_reason")
+  overrideReason  String?                            @map("override_reason")
+  createdAt       DateTime                           @default(now()) @map("created_at")
+  updatedAt       DateTime                           @updatedAt @map("updated_at")
+  engagement      CmpEngagement                      @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@index([editorUserId, updatedAt])
+  @@index([workflowStatus, updatedAt])
+  @@map("cmp_engagement_archive_drafts")
+}
+
+model CmpEngagementArchiveSnapshot {
+  id                   String                           @id @default(cuid())
+  engagementId         String                           @unique @map("engagement_id")
+  engagementPayload    Json                             @map("engagement_payload")
+  currency             String
+  budgetCost           Decimal                          @map("budget_cost") @db.Decimal(18, 2)
+  actualCost           Decimal                          @map("actual_cost") @db.Decimal(18, 2)
+  tmsFingerprint       String                           @map("tms_fingerprint")
+  archivedById         String                           @map("archived_by_id")
+  workflowVersion      Int                              @default(1) @map("workflow_version")
+  preparedById         String?                          @map("prepared_by_id")
+  submittedAt          DateTime?                        @map("submitted_at")
+  approvedById         String?                          @map("approved_by_id")
+  approvalNote         String?                          @map("approval_note")
+  acknowledgedWarnings Json                             @default("[]") @map("acknowledged_warnings")
+  archivedAt           DateTime                         @default(now()) @map("archived_at")
+  createdAt            DateTime                         @default(now()) @map("created_at")
+  engagement           CmpEngagement                    @relation(fields: [engagementId], references: [id], onDelete: Restrict)
+  memberCosts          CmpEngagementArchiveMemberCost[]
+
+  @@index([archivedAt])
+  @@map("cmp_engagement_archive_snapshots")
+}
+
+model CmpEngagementArchiveMemberCost {
+  id           String                       @id @default(cuid())
+  snapshotId   String                       @map("snapshot_id")
+  userId       String                       @map("user_id")
+  userName     String                       @map("user_name")
+  userEmail    String                       @map("user_email")
+  grade        CmpEngagementFeePlanGrade
+  historical   Boolean                      @default(false)
+  budgetNormal Decimal                      @map("budget_normal") @db.Decimal(12, 2)
+  budgetOt     Decimal                      @map("budget_ot") @db.Decimal(12, 2)
+  actualNormal Decimal                      @map("actual_normal") @db.Decimal(12, 2)
+  actualOt     Decimal                      @map("actual_ot") @db.Decimal(12, 2)
+  absent       Decimal                      @default(0) @db.Decimal(12, 2)
+  hourlyRate   Decimal                      @map("hourly_rate") @db.Decimal(18, 2)
+  budgetCost   Decimal                      @map("budget_cost") @db.Decimal(18, 2)
+  actualCost   Decimal                      @map("actual_cost") @db.Decimal(18, 2)
+  currency     String
+  sortOrder    Int                          @map("sort_order")
+  snapshot     CmpEngagementArchiveSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+
+  @@unique([snapshotId, userId])
+  @@index([snapshotId, sortOrder])
+  @@map("cmp_engagement_archive_member_costs")
+}
+
+model CmpEngagementFeeNote {
+  id                  String        @id @default(cuid())
+  engagementId        String        @map("engagement_id")
+  periodNumber        Int           @default(1) @map("period_number")
+  plannedIssueDate    DateTime?     @map("planned_issue_date") @db.Date
+  plannedAmount       Decimal?      @map("planned_amount") @db.Decimal(18, 2)
+  receivedAmount      Decimal?      @map("received_amount") @db.Decimal(18, 2)
+  receivedDate        DateTime?     @map("received_date") @db.Date
+  feeNoteNumber       String?       @map("fee_note_number")
+  engagementReference String?       @map("engagement_reference")
+  issueDate           DateTime?     @map("issue_date") @db.Date
+  recipientName       String?       @map("recipient_name")
+  recipientAttention  String?       @map("recipient_attention")
+  recipientSalutation String?       @map("recipient_salutation")
+  recipientAddress    String?       @map("recipient_address")
+  currency            String        @default("HKD")
+  serviceDescription  String?       @map("service_description")
+  lineItems           Json          @default("[]") @map("line_items")
+  amount              Decimal?      @db.Decimal(18, 2)
+  disbursementAmount  Decimal?      @map("disbursement_amount") @db.Decimal(18, 2)
+  totalAmount         Decimal?      @map("total_amount") @db.Decimal(18, 2)
+  issuerReference     String?       @map("issuer_reference")
+  signatoryName       String?       @map("signatory_name")
+  bankPayeeName       String?       @map("bank_payee_name")
+  bankPayeeNameZh     String?       @map("bank_payee_name_zh")
+  bankName            String?       @map("bank_name")
+  hkdAccountNumber    String?       @map("hkd_account_number")
+  cnyAccountNumber    String?       @map("cny_account_number")
+  usdAccountNumber    String?       @map("usd_account_number")
+  swiftCode           String?       @map("swift_code")
+  hkdSwiftCode        String?       @map("hkd_swift_code")
+  cnySwiftCode        String?       @map("cny_swift_code")
+  usdSwiftCode        String?       @map("usd_swift_code")
+  firmLegalName       String?       @map("firm_legal_name")
+  firmAddress         String?       @map("firm_address")
+  firmPhone           String?       @map("firm_phone")
+  firmFax             String?       @map("firm_fax")
+  firmEmail           String?       @map("firm_email")
+  firmWebsite         String?       @map("firm_website")
+  localizedContent    Json          @default("{}") @map("localized_content")
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @updatedAt @map("updated_at")
+  engagement          CmpEngagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@unique([engagementId, periodNumber])
+  @@index([engagementId, periodNumber])
+  @@map("cmp_engagement_fee_notes")
+}
+
+model CmpBillingSequence {
+  id         String   @id @default(cuid())
+  year       Int      @unique
+  lastNumber Int      @default(0) @map("last_number")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("cmp_billing_sequences")
+}
+
+model CmpBilling {
+  id                    String                     @id @default(cuid())
+  engagementId          String                     @map("engagement_id")
+  billNumber            String                     @unique @map("bill_number")
+  numberYear            Int                        @map("number_year")
+  sequenceNumber        Int                        @map("sequence_number")
+  legacyFeeNoteNumber   String?                    @map("legacy_fee_note_number")
+  status                CmpBillingStatus           @default(DRAFT)
+  version               Int                        @default(1)
+  issueDate             DateTime                   @default(now()) @map("issue_date") @db.Date
+  currency              String                     @default("HKD")
+  subtotalAmount        Decimal                    @default(0) @map("subtotal_amount") @db.Decimal(18, 2)
+  totalAmount           Decimal                    @default(0) @map("total_amount") @db.Decimal(18, 2)
+  clientSnapshot        Json                       @default("{}") @map("client_snapshot")
+  firmSnapshot          Json                       @default("{}") @map("firm_snapshot")
+  localizedContent      Json                       @default("{}") @map("localized_content")
+  sentAt                DateTime?                  @map("sent_at")
+  sentMethod            String?                    @map("sent_method")
+  sentNote              String?                    @map("sent_note")
+  submittedAt           DateTime?                  @map("submitted_at")
+  approvedAt            DateTime?                  @map("approved_at")
+  returnedAt            DateTime?                  @map("returned_at")
+  returnReason          String?                    @map("return_reason")
+  clientClaimAmount     Decimal?                   @map("client_claim_amount") @db.Decimal(18, 2)
+  clientClaimCurrency   String?                    @map("client_claim_currency")
+  clientClaimPaidAt     DateTime?                  @map("client_claim_paid_at") @db.Date
+  clientClaimReference  String?                    @map("client_claim_reference")
+  clientClaimNote       String?                    @map("client_claim_note")
+  clientPaidAt          DateTime?                  @map("client_paid_at")
+  reconciledAt          DateTime?                  @map("reconciled_at")
+  financeOverrideReason String?                    @map("finance_override_reason")
+  createdById           String                     @map("created_by_id")
+  submittedById         String?                    @map("submitted_by_id")
+  approvedById          String?                    @map("approved_by_id")
+  sentById              String?                    @map("sent_by_id")
+  clientPaidById        String?                    @map("client_paid_by_id")
+  reconciledById        String?                    @map("reconciled_by_id")
+  createdAt             DateTime                   @default(now()) @map("created_at")
+  updatedAt             DateTime                   @updatedAt @map("updated_at")
+  engagement            CmpEngagement              @relation(fields: [engagementId], references: [id], onDelete: Restrict)
+  createdBy             User                       @relation("CmpBillingCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  submittedBy           User?                      @relation("CmpBillingSubmitter", fields: [submittedById], references: [id], onDelete: SetNull)
+  approvedBy            User?                      @relation("CmpBillingApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  sentBy                User?                      @relation("CmpBillingSender", fields: [sentById], references: [id], onDelete: SetNull)
+  clientPaidBy          User?                      @relation("CmpBillingClientPaidBy", fields: [clientPaidById], references: [id], onDelete: SetNull)
+  reconciledBy          User?                      @relation("CmpBillingReconciler", fields: [reconciledById], references: [id], onDelete: SetNull)
+  lineItems             CmpBillingLineItem[]
+  statusEvents          CmpBillingStatusEvent[]
+  financeReceipts       CmpBillingFinanceReceipt[]
+  artifacts             CmpBillingArtifact[]
+
+  @@unique([numberYear, sequenceNumber])
+  @@index([engagementId, status, createdAt])
+  @@index([status, updatedAt])
+  @@index([clientPaidAt])
+  @@map("cmp_billings")
+}
+
+model CmpBillingFirmTemplate {
+  id              String                   @id @default(cuid())
+  name            String
+  status          CmpBillingTemplateStatus @default(ACTIVE)
+  isDefault       Boolean                  @default(false) @map("is_default")
+  version         Int                      @default(1)
+  firmLegalNameZh String                   @default("") @map("firm_legal_name_zh")
+  firmLegalNameEn String                   @default("") @map("firm_legal_name_en")
+  firmAddressZh   String                   @default("") @map("firm_address_zh")
+  firmAddressEn   String                   @default("") @map("firm_address_en")
+  phone           String                   @default("")
+  email           String                   @default("")
+  website         String                   @default("")
+  createdById     String                   @map("created_by_id")
+  updatedById     String                   @map("updated_by_id")
+  createdAt       DateTime                 @default(now()) @map("created_at")
+  updatedAt       DateTime                 @updatedAt @map("updated_at")
+  createdBy       User                     @relation("CmpBillingFirmTemplateCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedBy       User                     @relation("CmpBillingFirmTemplateUpdater", fields: [updatedById], references: [id], onDelete: Restrict)
+
+  @@index([status, name])
+  @@map("cmp_billing_firm_templates")
+}
+
+model CmpBillingBankTemplate {
+  id                String                   @id @default(cuid())
+  name              String
+  status            CmpBillingTemplateStatus @default(ACTIVE)
+  isDefault         Boolean                  @default(false) @map("is_default")
+  version           Int                      @default(1)
+  bankPayeeNameZh   String                   @default("") @map("bank_payee_name_zh")
+  bankPayeeNameEn   String                   @default("") @map("bank_payee_name_en")
+  bankNameZh        String                   @default("") @map("bank_name_zh")
+  bankNameEn        String                   @default("") @map("bank_name_en")
+  hkdAccountNumber  String                   @default("") @map("hkd_account_number")
+  hkdSwiftCode      String                   @default("") @map("hkd_swift_code")
+  cnyAccountNumber  String                   @default("") @map("cny_account_number")
+  cnySwiftCode      String                   @default("") @map("cny_swift_code")
+  usdAccountNumber  String                   @default("") @map("usd_account_number")
+  usdSwiftCode      String                   @default("") @map("usd_swift_code")
+  createdById       String                   @map("created_by_id")
+  updatedById       String                   @map("updated_by_id")
+  createdAt         DateTime                 @default(now()) @map("created_at")
+  updatedAt         DateTime                 @updatedAt @map("updated_at")
+  createdBy         User                     @relation("CmpBillingBankTemplateCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedBy         User                     @relation("CmpBillingBankTemplateUpdater", fields: [updatedById], references: [id], onDelete: Restrict)
+
+  @@index([status, name])
+  @@map("cmp_billing_bank_templates")
+}
+
+model CmpBillingLineItem {
+  id            String     @id @default(cuid())
+  billingId     String     @map("billing_id")
+  descriptionZh String     @default("") @map("description_zh")
+  descriptionEn String     @default("") @map("description_en")
+  amount        Decimal    @db.Decimal(18, 2)
+  sortOrder     Int        @map("sort_order")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  billing       CmpBilling @relation(fields: [billingId], references: [id], onDelete: Cascade)
+
+  @@index([billingId, sortOrder])
+  @@map("cmp_billing_line_items")
+}
+
+model CmpBillingStatusEvent {
+  id         String            @id @default(cuid())
+  billingId  String            @map("billing_id")
+  fromStatus CmpBillingStatus? @map("from_status")
+  toStatus   CmpBillingStatus  @map("to_status")
+  action     String
+  reason     String?
+  payload    Json              @default("{}")
+  actorId    String            @map("actor_id")
+  createdAt  DateTime          @default(now()) @map("created_at")
+  billing    CmpBilling        @relation(fields: [billingId], references: [id], onDelete: Cascade)
+  actor      User              @relation("CmpBillingStatusEventActor", fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([billingId, createdAt])
+  @@index([actorId, createdAt])
+  @@map("cmp_billing_status_events")
+}
+
+model CmpBillingFinanceReceipt {
+  id                  String                @id @default(cuid())
+  billingId           String                @map("billing_id")
+  receiptDate         DateTime              @map("receipt_date") @db.Date
+  bankReference       String                @map("bank_reference")
+  receiptAmount       Decimal               @map("receipt_amount") @db.Decimal(18, 2)
+  receiptCurrency     String                @map("receipt_currency")
+  exchangeRateToBill  Decimal               @map("exchange_rate_to_bill") @db.Decimal(18, 8)
+  exchangeRateBatchId String?               @map("exchange_rate_batch_id")
+  billCurrencyAmount  Decimal               @map("bill_currency_amount") @db.Decimal(18, 2)
+  internalNote        String?               @map("internal_note")
+  createdById         String                @map("created_by_id")
+  createdAt           DateTime              @default(now()) @map("created_at")
+  billing             CmpBilling            @relation(fields: [billingId], references: [id], onDelete: Cascade)
+  createdBy           User                  @relation("CmpBillingFinanceReceiptCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  exchangeRateBatch   CmpExchangeRateBatch? @relation(fields: [exchangeRateBatchId], references: [id], onDelete: SetNull)
+  artifacts           CmpBillingArtifact[]
+
+  @@index([billingId, receiptDate])
+  @@index([exchangeRateBatchId])
+  @@map("cmp_billing_finance_receipts")
+}
+
+model CmpBillingArtifact {
+  id               String                    @id @default(cuid())
+  billingId        String                    @map("billing_id")
+  financeReceiptId String?                   @map("finance_receipt_id")
+  type             CmpBillingArtifactType
+  locale           String?
+  version          Int?
+  objectKey        String                    @unique @map("object_key")
+  fileName         String                    @map("file_name")
+  originalName     String                    @map("original_name")
+  mimeType         String                    @map("mime_type")
+  sizeBytes        Int                       @map("size_bytes")
+  sha256           String
+  uploadedById     String                    @map("uploaded_by_id")
+  createdAt        DateTime                  @default(now()) @map("created_at")
+  retentionUntil   DateTime                  @map("retention_until")
+  billing          CmpBilling                @relation(fields: [billingId], references: [id], onDelete: Cascade)
+  financeReceipt   CmpBillingFinanceReceipt? @relation(fields: [financeReceiptId], references: [id], onDelete: Cascade)
+  uploadedBy       User                      @relation("CmpBillingArtifactUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([billingId, type, createdAt])
+  @@index([financeReceiptId])
+  @@map("cmp_billing_artifacts")
+}
+
+model CmpEngagementFeePlanLine {
+  id               String                      @id @default(cuid())
+  engagementId     String                      @map("engagement_id")
+  grade            CmpEngagementFeePlanGrade
+  quantity         Int
+  hourlyRate       Decimal                     @map("hourly_rate") @db.Decimal(18, 2)
+  hoursPerPerson   Decimal                     @map("hours_per_person") @db.Decimal(12, 2)
+  otHoursPerPerson Decimal                     @default(0) @map("ot_hours_per_person") @db.Decimal(12, 2)
+  dateFrom         DateTime?                   @map("date_from") @db.Date
+  dateTo           DateTime?                   @map("date_to") @db.Date
+  tbcQuantity      Int                         @default(0) @map("tbc_quantity")
+  sortOrder        Int                         @map("sort_order")
+  createdAt        DateTime                    @default(now()) @map("created_at")
+  updatedAt        DateTime                    @updatedAt @map("updated_at")
+  engagement       CmpEngagement               @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+  staff            CmpEngagementFeePlanStaff[]
+
+  @@index([engagementId, sortOrder])
+  @@map("cmp_engagement_fee_plan_lines")
+}
+
+model CmpEngagementFeePlanStaff {
+  id            String                   @id @default(cuid())
+  feePlanLineId String                   @map("fee_plan_line_id")
+  userId        String                   @map("user_id")
+  sortOrder     Int                      @map("sort_order")
+  createdAt     DateTime                 @default(now()) @map("created_at")
+  feePlanLine   CmpEngagementFeePlanLine @relation(fields: [feePlanLineId], references: [id], onDelete: Cascade)
+  user          User                     @relation("CmpEngagementFeePlanStaffUser", fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([feePlanLineId, userId])
+  @@index([userId])
+  @@map("cmp_engagement_fee_plan_staff")
+}
+
+model CmpBudgetExchangeRateSnapshot {
+  id                  String                 @id @default(cuid())
+  currency            String
+  hkdPerUnit          Decimal                @map("hkd_per_unit") @db.Decimal(18, 8)
+  periodStart         DateTime               @map("period_start")
+  periodEnd           DateTime               @map("period_end")
+  sourceUrl           String                 @map("source_url")
+  fetchedAt           DateTime               @map("fetched_at")
+  exchangeRateBatchId String?                @map("exchange_rate_batch_id")
+  source              String                 @default("SYSTEM")
+  createdAt           DateTime               @default(now()) @map("created_at")
+  engagements         CmpEngagement[]
+  exchangeRateBatch   CmpExchangeRateBatch? @relation(fields: [exchangeRateBatchId], references: [id], onDelete: SetNull)
+
+  @@index([currency, fetchedAt])
+  @@index([exchangeRateBatchId])
+  @@map("cmp_budget_exchange_rate_snapshots")
+}
+
+model CmpBudgetExchangeRateFallback {
+  currency    String   @id
+  hkdPerUnit  Decimal  @map("hkd_per_unit") @db.Decimal(18, 8)
+  updatedById String?  @map("updated_by_id")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedBy   User?    @relation("CmpExchangeRateFallbackUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([updatedById])
+  @@map("cmp_budget_exchange_rate_fallbacks")
+}
+
+model CmpExchangeRateBatch {
+  id              String                         @id @default(cuid())
+  baseCurrency    String                         @default("HKD") @map("base_currency")
+  provider        String
+  sourceDate      DateTime                       @map("source_date") @db.Date
+  sourceUrl       String                         @map("source_url")
+  fetchedAt       DateTime                       @map("fetched_at")
+  refreshedById   String?                        @map("refreshed_by_id")
+  createdAt       DateTime                       @default(now()) @map("created_at")
+  refreshedBy     User?                          @relation("CmpExchangeRateBatchRefresher", fields: [refreshedById], references: [id], onDelete: SetNull)
+  snapshots       CmpBudgetExchangeRateSnapshot[]
+  financeReceipts CmpBillingFinanceReceipt[]
+
+  @@unique([provider, sourceDate])
+  @@index([sourceDate])
+  @@index([refreshedById])
+  @@map("cmp_exchange_rate_batches")
+}
+
+model CmpEngagementCodeAlias {
+  id             String        @id @default(cuid())
+  engagementId   String        @map("engagement_id")
+  code           String
+  normalizedCode String        @unique @map("normalized_code")
+  replacedAt     DateTime      @default(now()) @map("replaced_at")
+  engagement     CmpEngagement @relation(fields: [engagementId], references: [id], onDelete: Cascade)
+
+  @@index([engagementId, replacedAt])
+  @@map("cmp_engagement_code_aliases")
+}
+
+model CmpAcceptanceRequest {
+  id                            String                      @id @default(cuid())
+  requestNo                     String                      @unique @map("request_no")
+  draftName                     String?                     @map("draft_name")
+  type                          CmpAcceptanceRequestType
+  status                        CmpAcceptanceStatus         @default(DRAFT)
+  currentStep                   CmpAcceptanceStep           @default(MIC) @map("current_step")
+  submittedById                 String                      @map("submitted_by_id")
+  micApproverId                 String                      @map("mic_approver_id")
+  picApproverId                 String?                     @map("pic_approver_id")
+  itApproverId                  String?                     @map("it_approver_id")
+  workflowVersion               Int                         @default(1) @map("workflow_version")
+  draftAssigneeId               String?                     @map("draft_assignee_id")
+  draftCompletedAt              DateTime?                   @map("draft_completed_at")
+  draftCompletedById            String?                     @map("draft_completed_by_id")
+  returnedFromStep              CmpAcceptanceStep?          @map("returned_from_step")
+  picApprovedAt                 DateTime?                   @map("pic_approved_at")
+  targetClientId                String?                     @map("target_client_id")
+  targetEngagementId            String?                     @map("target_engagement_id")
+  clientPayload                 Json?                       @map("client_payload")
+  engagementPayload             Json?                       @map("engagement_payload")
+  changeBaselinePayload         Json?                       @map("change_baseline_payload")
+  changeBaselineCapturedAt      DateTime?                   @map("change_baseline_captured_at")
+  changeBaselineTargetUpdatedAt DateTime?                   @map("change_baseline_target_updated_at")
+  returnReason                  String?                     @map("return_reason")
+  submittedAt                   DateTime?                   @map("submitted_at")
+  approvedAt                    DateTime?                   @map("approved_at")
+  returnedAt                    DateTime?                   @map("returned_at")
+  createdAt                     DateTime                    @default(now()) @map("created_at")
+  updatedAt                     DateTime                    @updatedAt @map("updated_at")
+  submittedBy                   User                        @relation("CmpAcceptanceSubmitter", fields: [submittedById], references: [id], onDelete: Restrict)
+  micApprover                   User                        @relation("CmpAcceptanceMicApprover", fields: [micApproverId], references: [id], onDelete: Restrict)
+  picApprover                   User?                       @relation("CmpAcceptancePicApprover", fields: [picApproverId], references: [id], onDelete: Restrict)
+  itApprover                    User?                       @relation("CmpAcceptanceItApprover", fields: [itApproverId], references: [id], onDelete: Restrict)
+  draftAssignee                 User?                       @relation("CmpAcceptanceDraftAssignee", fields: [draftAssigneeId], references: [id], onDelete: SetNull)
+  draftCompletedBy              User?                       @relation("CmpAcceptanceDraftCompleter", fields: [draftCompletedById], references: [id], onDelete: SetNull)
+  approvalSteps                 CmpAcceptanceApprovalStep[]
+  approvedClientRelationships   CmpClientRelationship[]     @relation("CmpClientRelationshipApproval")
+  clientVersions                CmpClientVersion[]          @relation("CmpAcceptanceClientVersion")
+  amlScreeningBatches           CmpAmlScreeningBatch[]
+
+  @@index([status, currentStep])
+  @@index([type, status])
+  @@index([submittedById, status])
+  @@index([micApproverId, status])
+  @@index([picApproverId, status])
+  @@index([itApproverId, status])
+  @@index([draftAssigneeId, status])
+  @@map("cmp_acceptance_requests")
+}
+
+model CmpAmlConfiguration {
+  id                   String   @id @default("default")
+  enabled              Boolean  @default(false)
+  credentialCiphertext String?  @map("credential_ciphertext")
+  credentialIv         String?  @map("credential_iv")
+  credentialAuthTag    String?  @map("credential_auth_tag")
+  updatedById          String?  @map("updated_by_id")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+  updatedBy            User?    @relation("CmpAmlConfigurationUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@map("cmp_aml_configurations")
+}
+
+model CmpAmlScreeningBatch {
+  id                  String                   @id @default(cuid())
+  acceptanceRequestId String                   @map("acceptance_request_id")
+  clientId            String?                  @map("client_id")
+  requestFingerprint  String                   @map("request_fingerprint")
+  dedupeKey           String                   @unique @map("dedupe_key")
+  forceRun            Boolean                  @default(false) @map("force_run")
+  status              CmpAmlBatchStatus        @default(RUNNING)
+  subjectCount        Int                      @default(0) @map("subject_count")
+  attentionCount      Int                      @default(0) @map("attention_count")
+  errorCount          Int                      @default(0) @map("error_count")
+  triggeredById       String                   @map("triggered_by_id")
+  completedAt         DateTime?                @map("completed_at")
+  createdAt           DateTime                 @default(now()) @map("created_at")
+  updatedAt           DateTime                 @updatedAt @map("updated_at")
+  acceptanceRequest   CmpAcceptanceRequest     @relation(fields: [acceptanceRequestId], references: [id], onDelete: Cascade)
+  client              CmpClient?               @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  triggeredBy         User                     @relation("CmpAmlBatchTrigger", fields: [triggeredById], references: [id], onDelete: Restrict)
+  subjects            CmpAmlScreeningSubject[]
+
+  @@index([acceptanceRequestId, createdAt])
+  @@index([clientId, createdAt])
+  @@index([requestFingerprint])
+  @@map("cmp_aml_screening_batches")
+}
+
+model CmpAmlScreeningSubject {
+  id                   String                @id @default(cuid())
+  batchId              String                @map("batch_id")
+  subjectKey           String                @map("subject_key")
+  entityType           CmpAmlEntityType      @map("entity_type")
+  rolesJson            Json                  @map("roles_json")
+  displayName          String                @map("display_name")
+  inputJson            Json                  @map("input_json")
+  idempotencyKey       String                @unique @map("idempotency_key")
+  diditRequestId       String?               @unique @map("didit_request_id")
+  status               CmpAmlScreeningStatus
+  score                Float?
+  totalHits            Int                   @default(0) @map("total_hits")
+  warningsJson         Json                  @map("warnings_json")
+  providerResponseJson Json?                 @map("provider_response_json")
+  errorCode            String?               @map("error_code")
+  errorMessage         String?               @map("error_message")
+  startedAt            DateTime              @default(now()) @map("started_at")
+  completedAt          DateTime              @map("completed_at")
+  createdAt            DateTime              @default(now()) @map("created_at")
+  updatedAt            DateTime              @updatedAt @map("updated_at")
+  batch                CmpAmlScreeningBatch  @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  hits                 CmpAmlHit[]
+
+  @@unique([batchId, subjectKey])
+  @@index([batchId, status])
+  @@map("cmp_aml_screening_subjects")
+}
+
+model CmpAmlHit {
+  id            String                 @id @default(cuid())
+  screeningId   String                 @map("screening_id")
+  diditHitId    String                 @map("didit_hit_id")
+  reviewStatus  CmpAmlReviewStatus     @default(UNREVIEWED) @map("review_status")
+  matchScore    Float?                 @map("match_score")
+  riskScore     Float?                 @map("risk_score")
+  detailsJson   Json                   @map("details_json")
+  reviewedById  String?                @map("reviewed_by_id")
+  reviewedAt    DateTime?              @map("reviewed_at")
+  reviewComment String?                @map("review_comment")
+  createdAt     DateTime               @default(now()) @map("created_at")
+  updatedAt     DateTime               @updatedAt @map("updated_at")
+  screening     CmpAmlScreeningSubject @relation(fields: [screeningId], references: [id], onDelete: Cascade)
+  reviewedBy    User?                  @relation("CmpAmlHitReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@unique([screeningId, diditHitId])
+  @@index([screeningId, reviewStatus])
+  @@index([reviewedById])
+  @@map("cmp_aml_hits")
+}
+
+model CmpAcceptanceApprovalStep {
+  id         String                  @id @default(cuid())
+  requestId  String                  @map("request_id")
+  step       CmpAcceptanceStep
+  approverId String                  @map("approver_id")
+  status     CmpAcceptanceStepStatus @default(PENDING)
+  comment    String?
+  actedAt    DateTime?               @map("acted_at")
+  createdAt  DateTime                @default(now()) @map("created_at")
+  request    CmpAcceptanceRequest    @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  approver   User                    @relation("CmpAcceptanceStepApprover", fields: [approverId], references: [id], onDelete: Restrict)
+
+  @@index([requestId, step])
+  @@index([approverId, status])
+  @@map("cmp_acceptance_approval_steps")
+}
+
+model Workspace {
+  id          String                      @id @default(cuid())
+  name        String
+  clientName  String                      @map("client_name")
+  description String?
+  ownerId     String                      @map("owner_id")
+  createdAt   DateTime                    @default(now()) @map("created_at")
+  updatedAt   DateTime                    @updatedAt @map("updated_at")
+  owner       User                        @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  members     WorkspaceMember[]
+  projects    Project[]
+  placements  ProjectWorkspacePlacement[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id          String      @id @default(cuid())
+  workspaceId String      @map("workspace_id")
+  userId      String      @map("user_id")
+  role        ProjectRole
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@map("workspace_members")
+}
+
+model Role {
+  id              String           @id @default(cuid())
+  code            String           @unique
+  name            String
+  scope           RoleScope
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  rolePermissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id              String           @id @default(cuid())
+  code            String           @unique
+  name            String
+  description     String
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String     @id @default(cuid())
+  roleId       String     @map("role_id")
+  permissionId String     @map("permission_id")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model Project {
+  id                           String                            @id @default(cuid())
+  projectNumber                Int                               @unique @default(autoincrement()) @map("project_number")
+  workspaceId                  String                            @map("workspace_id")
+  projectCode                  String                            @unique @map("project_code")
+  name                         String
+  language                     String                            @default("zh-CN")
+  frameworkTemplateId          String?                           @map("framework_template_id")
+  applicableAccountingStandard String?                           @map("applicable_accounting_standard")
+  reportingDate                DateTime                          @map("reporting_date")
+  yearEndDate                  DateTime                          @map("year_end_date")
+  reportDate                   DateTime                          @map("report_date")
+  archiveDeadline              DateTime                          @map("archive_deadline")
+  ownerId                      String                            @map("owner_id")
+  cmpClientId                  String?                           @map("cmp_client_id")
+  cmpEngagementId              String?                           @map("cmp_engagement_id")
+  industryCode                 String?                           @map("industry_code")
+  industrySourceText           String?                           @map("industry_source_text")
+  auditAreaCodes               String[]                          @default([]) @map("audit_area_codes")
+  rolledForwardFromProjectId   String?                           @map("rolled_forward_from_project_id")
+  status                       ProjectStatus                     @default(ACTIVE)
+  notes                        String?
+  archivePassword              String?                           @map("archive_password")
+  createdAt                    DateTime                          @default(now()) @map("created_at")
+  updatedAt                    DateTime                          @updatedAt @map("updated_at")
+  workspace                    Workspace                         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  owner                        User                              @relation("ProjectOwner", fields: [ownerId], references: [id])
+  cmpClient                    CmpClient?                        @relation(fields: [cmpClientId], references: [id], onDelete: SetNull)
+  cmpEngagement                CmpEngagement?                    @relation(fields: [cmpEngagementId], references: [id], onDelete: SetNull)
+  rolledForwardFromProject     Project?                          @relation("ProjectRollForward", fields: [rolledForwardFromProjectId], references: [id], onDelete: SetNull)
+  rolledForwardProjects        Project[]                         @relation("ProjectRollForward")
+  frameworkTemplate            FrameworkTemplate?                @relation(fields: [frameworkTemplateId], references: [id], onDelete: SetNull)
+  members                      ProjectMember[]
+  placements                   ProjectWorkspacePlacement[]
+  desktopPlacements            DesktopProjectPlacement[]
+  invitations                  ProjectInvitation[]
+  workflowNodes                WorkflowNode[]
+  workingPapers                WorkingPaper[]
+  reviewQuestions              WorkingPaperQuestion[]
+  attachments                  Attachment[]
+  attachmentVersions           AttachmentVersion[]
+  desktopMasterGrants          DesktopMasterGrant[]
+  desktopCheckInIdempotencies  DesktopCheckInIdempotency[]
+  zipMasterSessions            ZipMasterSession[]
+  zipEntryMasterSessions       ZipEntryMasterSession[]
+  zipArchiveSnapshots          ZipArchiveSnapshot[]
+  zipArchiveEntryCaches        ZipArchiveEntryCache[]
+  smartFormInstances           SmartFormInstance[]
+  confirmations                ProjectConfirmation[]
+  confirmationDefaults         ProjectConfirmationDefaults?
+  confirmationResponseIntakes  ConfirmationResponseLibraryFile[] @relation("ConfirmationResponseLibraryProject")
+  confirmationSequences        ProjectConfirmationSequence[]
+  archiveArtifacts             ProjectArchiveArtifact[]
+  archiveJobs                  ProjectArchiveJob[]
+  fileExportJobs               ProjectFileExportJob[]
+  confirmationEmpImportJobs    ConfirmationEmpImportJob[]
+  inboxMessages                InboxMessage[]
+  auditLogs                    AuditLog[]
+  tmsPendingLinkSubmissions    TmsPendingLinkSubmission[]
+  tmsProjectLinks              TmsProjectLink[]
+  tmsApprovalSubmissions       TmsApprovalSubmission[]
+
+  @@index([cmpClientId])
+  @@index([cmpEngagementId])
+  @@index([rolledForwardFromProjectId])
+  @@map("projects")
+}
+
+model FrameworkTemplate {
+  id                 String              @id @default(cuid())
+  code               String              @unique
+  name               String
+  language           String              @default("zh-CN")
+  description        String?
+  isActive           Boolean             @default(true) @map("is_active")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  projects           Project[]
+  projectTemplates   ProjectTemplate[]
+  smartFormTemplates SmartFormTemplate[]
+
+  @@map("framework_templates")
+}
+
+model ProjectWorkspacePlacement {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  projectId   String    @map("project_id")
+  workspaceId String    @map("workspace_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+  @@index([workspaceId])
+  @@map("project_workspace_placements")
+}
+
+model DesktopFolder {
+  id         String                    @id @default(cuid())
+  ownerId    String                    @map("owner_id")
+  name       String
+  sortOrder  Int                       @default(0) @map("sort_order")
+  isDefault  Boolean                   @default(false) @map("is_default")
+  createdAt  DateTime                  @default(now()) @map("created_at")
+  updatedAt  DateTime                  @updatedAt @map("updated_at")
+  owner      User                      @relation("DesktopFolderOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  placements DesktopProjectPlacement[]
+
+  @@unique([ownerId, name])
+  @@index([ownerId, sortOrder])
+  @@map("desktop_folders")
+}
+
+model DesktopProjectPlacement {
+  id           String        @id @default(cuid())
+  userId       String        @map("user_id")
+  projectId    String        @map("project_id")
+  folderId     String        @map("folder_id")
+  desktopX     Int           @default(0) @map("desktop_x")
+  desktopY     Int           @default(0) @map("desktop_y")
+  sortOrder    Int           @default(0) @map("sort_order")
+  lastOpenedAt DateTime?     @map("last_opened_at")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  user         User          @relation("DesktopPlacementUser", fields: [userId], references: [id], onDelete: Cascade)
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  folder       DesktopFolder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+  @@index([userId, folderId])
+  @@index([folderId, sortOrder])
+  @@map("desktop_project_placements")
+}
+
+model ProjectMember {
+  id           String        @id @default(cuid())
+  projectId    String        @map("project_id")
+  userId       String        @map("user_id")
+  projectRole  ProjectRole   @map("project_role")
+  inChargeRole InChargeRole? @map("in_charge_role")
+  authorizationSuspendedAt DateTime? @map("authorization_suspended_at")
+  status       UserStatus    @default(ACTIVE)
+  joinedAt     DateTime      @default(now()) @map("joined_at")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@map("project_members")
+}
+
+model ProjectInvitation {
+  id             String           @id @default(cuid())
+  projectId      String           @map("project_id")
+  tokenHash      String           @unique @map("token_hash")
+  recipientEmail String?          @map("recipient_email")
+  invitedRole    ProjectRole      @map("invited_role")
+  invitedBy      String           @map("invited_by")
+  expiresAt      DateTime         @map("expires_at")
+  usedAt         DateTime?        @map("used_at")
+  status         InvitationStatus @default(PENDING)
+  createdAt      DateTime         @default(now()) @map("created_at")
+  project        Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  inviter        User             @relation("InvitationSender", fields: [invitedBy], references: [id])
+  inboxMessage   InboxMessage?
+
+  @@map("project_invitations")
+}
+
+model InboxMessage {
+  id                  String                @id @default(cuid())
+  recipientId         String                @map("recipient_id")
+  senderId            String?               @map("sender_id")
+  projectInvitationId String?               @unique @map("project_invitation_id")
+  projectId           String?               @map("project_id")
+  workingPaperId      String?               @map("working_paper_id")
+  attachmentId        String?               @map("attachment_id")
+  reviewQuestionId    String?               @map("review_question_id")
+  type                InboxMessageType
+  title               String
+  body                String
+  contentKey          String?               @map("content_key")
+  contentParams       Json?                 @map("content_params")
+  actionUrl           String?               @map("action_url")
+  readAt              DateTime?             @map("read_at")
+  createdAt           DateTime              @default(now()) @map("created_at")
+  recipient           User                  @relation("InboxRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  sender              User?                 @relation("InboxSender", fields: [senderId], references: [id], onDelete: SetNull)
+  projectInvitation   ProjectInvitation?    @relation(fields: [projectInvitationId], references: [id], onDelete: Cascade)
+  project             Project?              @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  workingPaper        WorkingPaper?         @relation(fields: [workingPaperId], references: [id], onDelete: SetNull)
+  attachment          Attachment?           @relation(fields: [attachmentId], references: [id], onDelete: SetNull)
+  reviewQuestion      WorkingPaperQuestion? @relation(fields: [reviewQuestionId], references: [id], onDelete: SetNull)
+
+  @@index([recipientId, readAt, createdAt])
+  @@index([recipientId, type, readAt, createdAt])
+  @@index([projectId, createdAt])
+  @@index([workingPaperId, createdAt])
+  @@index([attachmentId, createdAt])
+  @@index([reviewQuestionId, createdAt])
+  @@map("inbox_messages")
+}
+
+model IndependenceDeclaration {
+  id                 String   @id @default(cuid())
+  userId             String   @map("user_id")
+  projectId          String?  @map("project_id")
+  declarationVersion String   @map("declaration_version")
+  acceptedAt         DateTime @default(now()) @map("accepted_at")
+  source             String
+  createdAt          DateTime @default(now()) @map("created_at")
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, projectId])
+  @@map("independence_declarations")
+}
+
+model WorkflowNode {
+  id                                String                      @id @default(cuid())
+  projectId                         String                      @map("project_id")
+  parentId                          String?                     @map("parent_id")
+  level                             Int
+  code                              String
+  title                             String
+  nodeType                          WorkflowNodeType            @map("node_type")
+  sortOrder                         Int                         @map("sort_order")
+  createdBy                         String                      @map("created_by")
+  createdAt                         DateTime                    @default(now()) @map("created_at")
+  updatedAt                         DateTime                    @updatedAt @map("updated_at")
+  project                           Project                     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  parent                            WorkflowNode?               @relation("WorkflowTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children                          WorkflowNode[]              @relation("WorkflowTree")
+  creator                           User                        @relation("WorkflowNodeCreator", fields: [createdBy], references: [id])
+  workingPapers                     WorkingPaper[]
+  attachments                       Attachment[]
+  confirmationEmpImportJobsAsTarget ConfirmationEmpImportJob[]  @relation("ConfirmationEmpImportTargetNode")
+  confirmationEmpImportJobsAsBatch  ConfirmationEmpImportJob[]  @relation("ConfirmationEmpImportBatchNode")
+  confirmationEmpImportItems        ConfirmationEmpImportItem[]
+
+  @@unique([projectId, parentId, code])
+  @@map("workflow_nodes")
+}
+
+model WorkingPaper {
+  id                         String                                 @id @default(cuid())
+  projectId                  String                                 @map("project_id")
+  workflowNodeId             String                                 @map("workflow_node_id")
+  code                       String
+  title                      String
+  paperType                  PaperType                              @map("paper_type")
+  bucket                     WorkingPaperBucket                     @default(CURRENT)
+  preparerId                 String?                                @map("preparer_id")
+  reviewerId                 String?                                @map("reviewer_id")
+  preparedAt                 DateTime?                              @map("prepared_at")
+  reviewedAt                 DateTime?                              @map("reviewed_at")
+  returnedAt                 DateTime?                              @map("returned_at")
+  reviewNote                 String?                                @map("review_note")
+  createdBy                  String                                 @map("created_by")
+  templateItemId             String?                                @map("template_item_id")
+  createdAt                  DateTime                               @default(now()) @map("created_at")
+  updatedAt                  DateTime                               @updatedAt @map("updated_at")
+  project                    Project                                @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  workflowNode               WorkflowNode                           @relation(fields: [workflowNodeId], references: [id], onDelete: Cascade)
+  creator                    User                                   @relation("WorkingPaperCreator", fields: [createdBy], references: [id])
+  templateItem               WorkpaperTemplateItem?                 @relation(fields: [templateItemId], references: [id], onDelete: SetNull)
+  preparer                   User?                                  @relation("WorkingPaperPreparer", fields: [preparerId], references: [id], onDelete: SetNull)
+  reviewer                   User?                                  @relation("WorkingPaperReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  attachments                Attachment[]
+  signoffs                   WorkingPaperSignoff[]
+  reviewQuestions            WorkingPaperQuestion[]
+  questionMessageReferences  WorkingPaperQuestionMessageReference[]
+  inboxMessages              InboxMessage[]
+  confirmationEmpImportItems ConfirmationEmpImportItem[]
+
+  @@unique([workflowNodeId, code])
+  @@unique([workflowNodeId, templateItemId, bucket])
+  @@index([workflowNodeId, bucket])
+  @@index([templateItemId])
+  @@map("working_papers")
+}
+
+model WorkingPaperSignoff {
+  id                  String                  @id @default(cuid())
+  workingPaperId      String                  @map("working_paper_id")
+  attachmentId        String?                 @map("attachment_id")
+  userId              String                  @map("user_id")
+  type                WorkingPaperSignoffType
+  roundNumber         Int                     @default(1) @map("round_number")
+  isCurrent           Boolean                 @default(true) @map("is_current")
+  attachmentVersionId String?                 @map("attachment_version_id")
+  attachmentVersion   Int?                    @map("attachment_version")
+  contentHash         String?                 @map("content_hash")
+  signedAt            DateTime                @default(now()) @map("signed_at")
+  revokedAt           DateTime?               @map("revoked_at")
+  revokedById         String?                 @map("revoked_by_id")
+  revocationReason    String?                 @map("revocation_reason") @db.Text
+  createdAt           DateTime                @default(now()) @map("created_at")
+  workingPaper        WorkingPaper            @relation(fields: [workingPaperId], references: [id], onDelete: Cascade)
+  attachment          Attachment?             @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+  user                User                    @relation("WorkingPaperSignoffUser", fields: [userId], references: [id], onDelete: Cascade)
+  revokedBy           User?                   @relation("WorkingPaperSignoffRevokedBy", fields: [revokedById], references: [id], onDelete: SetNull)
+
+  @@index([workingPaperId, signedAt])
+  @@index([attachmentId, signedAt])
+  @@index([attachmentId, isCurrent, revokedAt, signedAt])
+  @@index([attachmentId, roundNumber, revokedAt])
+  @@index([revokedById])
+  @@map("working_paper_signoffs")
+}
+
+model WorkingPaperQuestion {
+  id                   String                        @id @default(cuid())
+  projectId            String                        @map("project_id")
+  workingPaperId       String                        @map("working_paper_id")
+  attachmentId         String?                       @map("attachment_id")
+  smartFormNodeId      String?                       @map("smart_form_node_id")
+  smartFormRowId       String?                       @map("smart_form_row_id")
+  smartFormTargetLabel String?                       @map("smart_form_target_label")
+  body                 String
+  status               ReviewQuestionStatus          @default(OPEN)
+  assignedToId         String?                       @map("assigned_to_id")
+  createdById          String                        @map("created_by_id")
+  repliedById          String?                       @map("replied_by_id")
+  replyBody            String?                       @map("reply_body")
+  repliedAt            DateTime?                     @map("replied_at")
+  clearedById          String?                       @map("cleared_by_id")
+  clearedAt            DateTime?                     @map("cleared_at")
+  reopenedById         String?                       @map("reopened_by_id")
+  reopenedAt           DateTime?                     @map("reopened_at")
+  createdAt            DateTime                      @default(now()) @map("created_at")
+  updatedAt            DateTime                      @updatedAt @map("updated_at")
+  project              Project                       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  workingPaper         WorkingPaper                  @relation(fields: [workingPaperId], references: [id], onDelete: Cascade)
+  attachment           Attachment?                   @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+  assignedTo           User?                         @relation("WorkingPaperQuestionAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdBy            User                          @relation("WorkingPaperQuestionCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  repliedBy            User?                         @relation("WorkingPaperQuestionReplier", fields: [repliedById], references: [id], onDelete: SetNull)
+  clearedBy            User?                         @relation("WorkingPaperQuestionClearer", fields: [clearedById], references: [id], onDelete: SetNull)
+  reopenedBy           User?                         @relation("WorkingPaperQuestionReopener", fields: [reopenedById], references: [id], onDelete: SetNull)
+  messages             WorkingPaperQuestionMessage[]
+  inboxMessages        InboxMessage[]
+
+  @@index([projectId, workingPaperId, status])
+  @@index([projectId, attachmentId, status])
+  @@index([attachmentId, smartFormNodeId, smartFormRowId])
+  @@index([assignedToId, status])
+  @@map("working_paper_questions")
+}
+
+model WorkingPaperQuestionMessage {
+  id          String                                 @id @default(cuid())
+  questionId  String                                 @map("question_id")
+  authorId    String                                 @map("author_id")
+  messageType WorkingPaperQuestionMessageType        @map("message_type")
+  body        String
+  createdAt   DateTime                               @default(now()) @map("created_at")
+  question    WorkingPaperQuestion                   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  author      User                                   @relation("WorkingPaperQuestionMessageAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  images      WorkingPaperQuestionMessageImage[]
+  references  WorkingPaperQuestionMessageReference[]
+
+  @@index([questionId, createdAt])
+  @@index([authorId, createdAt])
+  @@map("working_paper_question_messages")
+}
+
+model WorkingPaperQuestionMessageReference {
+  id             String                      @id @default(cuid())
+  messageId      String                      @map("message_id")
+  workingPaperId String                      @map("working_paper_id")
+  createdAt      DateTime                    @default(now()) @map("created_at")
+  message        WorkingPaperQuestionMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  workingPaper   WorkingPaper                @relation(fields: [workingPaperId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, workingPaperId])
+  @@index([workingPaperId, createdAt])
+  @@map("working_paper_question_message_references")
+}
+
+model WorkingPaperQuestionMessageImage {
+  id           String                      @id @default(cuid())
+  messageId    String                      @map("message_id")
+  fileName     String                      @map("file_name")
+  originalName String?                     @map("original_name")
+  objectKey    String                      @map("object_key")
+  fileSize     Int                         @map("file_size")
+  mimeType     String                      @map("mime_type")
+  width        Int?
+  height       Int?
+  createdAt    DateTime                    @default(now()) @map("created_at")
+  message      WorkingPaperQuestionMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, objectKey])
+  @@index([messageId, createdAt])
+  @@map("working_paper_question_message_images")
+}
+
+model Attachment {
+  id                           String                      @id @default(cuid())
+  projectId                    String                      @map("project_id")
+  workingPaperId               String?                     @map("working_paper_id")
+  workflowNodeId               String?                     @map("workflow_node_id")
+  bucket                       WorkingPaperBucket          @default(CURRENT)
+  code                         String?
+  title                        String?
+  preparerId                   String?                     @map("preparer_id")
+  reviewerId                   String?                     @map("reviewer_id")
+  preparedAt                   DateTime?                   @map("prepared_at")
+  reviewedAt                   DateTime?                   @map("reviewed_at")
+  returnedAt                   DateTime?                   @map("returned_at")
+  reviewNote                   String?                     @map("review_note")
+  templateItemId               String?                     @map("template_item_id")
+  fileKind                     AttachmentFileKind          @default(SUPPORTING) @map("file_kind")
+  placeholderType              AttachmentPlaceholderType?  @map("placeholder_type")
+  fileName                     String                      @map("file_name")
+  originalName                 String?                     @map("original_name")
+  fileUrl                      String                      @map("file_url")
+  fileSize                     Int                         @map("file_size")
+  mimeType                     String                      @map("mime_type")
+  sortOrder                    Int                         @default(0) @map("sort_order")
+  version                      Int                         @default(1)
+  previewStatus                String                      @default("UNSUPPORTED") @map("preview_status")
+  previewVersion               Int?                        @map("preview_version")
+  previewError                 String?                     @map("preview_error") @db.Text
+  previewAttemptCount          Int                         @default(0) @map("preview_attempt_count")
+  previewNextAttemptAt         DateTime?                   @map("preview_next_attempt_at")
+  previewLeaseToken            String?                     @map("preview_lease_token")
+  previewLeaseExpiresAt        DateTime?                   @map("preview_lease_expires_at")
+  previewUpdatedAt             DateTime?                   @map("preview_updated_at")
+  headVersionId                String?                     @unique @map("head_version_id")
+  contentHash                  String?                     @map("content_hash")
+  lockEpoch                    Int                         @default(0) @map("lock_epoch")
+  conflictFrozenAt             DateTime?                   @map("conflict_frozen_at")
+  conflictCandidateVersionId   String?                     @map("conflict_candidate_version_id")
+  workDate                     DateTime?                   @map("work_date")
+  lockedBy                     String?                     @map("locked_by")
+  lockedAt                     DateTime?                   @map("locked_at")
+  lockExpiresAt                DateTime?                   @map("lock_expires_at")
+  lockSessionId                String?                     @map("lock_session_id")
+  lockHeartbeatAt              DateTime?                   @map("lock_heartbeat_at")
+  lockStaleAt                  DateTime?                   @map("lock_stale_at")
+  lockRevokedAt                DateTime?                   @map("lock_revoked_at")
+  lockRevokedBy                String?                     @map("lock_revoked_by")
+  lockReleaseReason            String?                     @map("lock_release_reason")
+  uploadedBy                   String                      @map("uploaded_by")
+  deletedAt                    DateTime?                   @map("deleted_at")
+  deletedBy                    String?                     @map("deleted_by")
+  deletedFromWorkingPaperId    String?                     @map("deleted_from_working_paper_id")
+  deletedFromWorkflowNodeId    String?                     @map("deleted_from_workflow_node_id")
+  deletedFromWorkingPaperCode  String?                     @map("deleted_from_working_paper_code")
+  deletedFromWorkingPaperTitle String?                     @map("deleted_from_working_paper_title")
+  restoredAt                   DateTime?                   @map("restored_at")
+  restoredBy                   String?                     @map("restored_by")
+  lastModifiedBy               String?                     @map("last_modified_by")
+  lastModifiedAt               DateTime?                   @map("last_modified_at")
+  createdAt                    DateTime                    @default(now()) @map("created_at")
+  updatedAt                    DateTime                    @updatedAt @map("updated_at")
+  project                      Project                     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  workingPaper                 WorkingPaper?               @relation(fields: [workingPaperId], references: [id], onDelete: SetNull)
+  workflowNode                 WorkflowNode?               @relation(fields: [workflowNodeId], references: [id], onDelete: SetNull)
+  templateItem                 WorkpaperTemplateItem?      @relation(fields: [templateItemId], references: [id], onDelete: SetNull)
+  preparer                     User?                       @relation("AttachmentPreparer", fields: [preparerId], references: [id], onDelete: SetNull)
+  reviewer                     User?                       @relation("AttachmentReviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  uploader                     User                        @relation("AttachmentUploader", fields: [uploadedBy], references: [id])
+  lockHolder                   User?                       @relation("AttachmentLockHolder", fields: [lockedBy], references: [id], onDelete: SetNull)
+  deletedByUser                User?                       @relation("AttachmentDeletedBy", fields: [deletedBy], references: [id], onDelete: SetNull)
+  restoredByUser               User?                       @relation("AttachmentRestoredBy", fields: [restoredBy], references: [id], onDelete: SetNull)
+  lastModifier                 User?                       @relation("AttachmentLastModifier", fields: [lastModifiedBy], references: [id], onDelete: SetNull)
+  headVersion                  AttachmentVersion?          @relation("AttachmentHeadVersion", fields: [headVersionId], references: [id], onDelete: SetNull)
+  versions                     AttachmentVersion[]         @relation("AttachmentVersions")
+  desktopMasterGrants          DesktopMasterGrant[]
+  desktopCheckInIdempotencies  DesktopCheckInIdempotency[]
+  zipMasterSessions            ZipMasterSession[]
+  zipEntryMasterSessions       ZipEntryMasterSession[]
+  zipArchiveSnapshots          ZipArchiveSnapshot[]
+  zipArchiveEntryCaches        ZipArchiveEntryCache[]
+  smartFormInstance            SmartFormInstance?
+  signoffs                     WorkingPaperSignoff[]
+  reviewQuestions              WorkingPaperQuestion[]
+  inboxMessages                InboxMessage[]
+  confirmationEmpImportItems   ConfirmationEmpImportItem[]
+
+  @@index([projectId, deletedAt])
+  @@index([workflowNodeId, bucket])
+  @@index([workingPaperId, sortOrder])
+  @@index([workflowNodeId, bucket, sortOrder])
+  @@index([previewStatus, previewNextAttemptAt])
+  @@index([previewLeaseExpiresAt])
+  @@index([templateItemId])
+  @@index([lockSessionId])
+  @@index([deletedFromWorkingPaperId])
+  @@index([deletedFromWorkflowNodeId])
+  @@index([lastModifiedAt])
+  @@map("attachments")
+}
+
+model DesktopMasterGrant {
+  id             String    @id @default(cuid())
+  lockSessionId  String    @map("lock_session_id")
+  projectId      String    @map("project_id")
+  attachmentId   String    @map("attachment_id")
+  userId         String    @map("user_id")
+  secretHash     String    @map("secret_hash")
+  allowedActions String    @map("allowed_actions")
+  issuedAt       DateTime  @default(now()) @map("issued_at")
+  expiresAt      DateTime? @map("expires_at")
+  revokedAt      DateTime? @map("revoked_at")
+  lastUsedAt     DateTime? @map("last_used_at")
+
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  attachment Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([lockSessionId])
+  @@index([projectId, attachmentId])
+  @@map("desktop_master_grants")
+}
+
+model DesktopCheckInIdempotency {
+  id               String    @id @default(cuid())
+  idempotencyKey   String    @unique @map("idempotency_key")
+  lockSessionId    String    @map("lock_session_id")
+  projectId        String    @map("project_id")
+  attachmentId     String    @map("attachment_id")
+  localContentHash String    @map("local_content_hash")
+  status           String
+  responseJson     Json?     @map("response_json")
+  attemptToken     String?   @map("attempt_token")
+  leaseExpiresAt   DateTime? @map("lease_expires_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  attachment Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+
+  @@index([lockSessionId])
+  @@index([projectId, attachmentId])
+  @@index([status, leaseExpiresAt])
+  @@map("desktop_check_in_idempotencies")
+}
+
+model ZipMasterSession {
+  id                String                @id @default(cuid())
+  projectId         String                @map("project_id")
+  attachmentId      String                @map("attachment_id")
+  userId            String                @map("user_id")
+  lockSessionId     String                @map("lock_session_id")
+  baseVersion       Int                   @map("base_version")
+  baseHash          String                @map("base_hash")
+  state             ZipMasterSessionState @default(OPEN)
+  dirty             Boolean               @default(false)
+  closeResponseJson Json?                 @map("close_response_json")
+  entryTreeJson     Json?                 @map("entry_tree_json")
+  lastError         String?               @map("last_error")
+  createdAt         DateTime              @default(now()) @map("created_at")
+  updatedAt         DateTime              @updatedAt @map("updated_at")
+  lastSeenAt        DateTime              @default(now()) @map("last_seen_at")
+  closedAt          DateTime?             @map("closed_at")
+
+  project             Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  attachment          Attachment              @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+  user                User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  operations          ZipMasterOperation[]
+  entryMasterSessions ZipEntryMasterSession[]
+
+  @@unique([lockSessionId])
+  @@index([projectId, attachmentId, state])
+  @@index([userId, state])
+  @@map("zip_master_sessions")
+}
+
+model ZipEntryMasterSession {
+  id                    String                @id @default(cuid())
+  projectId             String                @map("project_id")
+  attachmentId          String                @map("attachment_id")
+  zipMasterSessionId    String                @map("zip_master_session_id")
+  userId                String                @map("user_id")
+  entryPath             String                @map("entry_path")
+  fileName              String                @map("file_name")
+  mimeType              String                @map("mime_type")
+  fileSize              Int                   @map("file_size")
+  lockSessionId         String                @map("lock_session_id")
+  secretHash            String                @map("secret_hash")
+  baseHash              String                @map("base_hash")
+  baseContentObjectKey  String?               @map("base_content_object_key")
+  baseOperationSequence Int                   @default(0) @map("base_operation_sequence")
+  state                 ZipMasterSessionState @default(OPEN)
+  closeResponseJson     Json?                 @map("close_response_json")
+  lastError             String?               @map("last_error")
+  createdAt             DateTime              @default(now()) @map("created_at")
+  updatedAt             DateTime              @updatedAt @map("updated_at")
+  lastSeenAt            DateTime              @default(now()) @map("last_seen_at")
+  closedAt              DateTime?             @map("closed_at")
+
+  project          Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  attachment       Attachment       @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+  zipMasterSession ZipMasterSession @relation(fields: [zipMasterSessionId], references: [id], onDelete: Cascade)
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([lockSessionId])
+  @@index([zipMasterSessionId, entryPath, state])
+  @@index([projectId, attachmentId, state])
+  @@index([userId, state])
+  @@map("zip_entry_master_sessions")
+}
+
+model ZipMasterOperation {
+  id         String                 @id @default(cuid())
+  sessionId  String                 @map("session_id")
+  sequence   Int
+  type       ZipMasterOperationType
+  entryPath  String                 @map("entry_path")
+  targetPath String?                @map("target_path")
+  objectKey  String?                @map("object_key")
+  fileName   String?                @map("file_name")
+  mimeType   String?                @map("mime_type")
+  fileSize   Int?                   @map("file_size")
+  createdAt  DateTime               @default(now()) @map("created_at")
+
+  session ZipMasterSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, sequence])
+  @@index([sessionId, createdAt])
+  @@map("zip_master_operations")
+}
+
+model ZipArchiveSnapshot {
+  id                String   @id @default(cuid())
+  projectId         String   @map("project_id")
+  attachmentId      String   @map("attachment_id")
+  attachmentVersion Int      @map("attachment_version")
+  entryTreeJson     Json     @map("entry_tree_json")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  attachment Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+
+  @@unique([attachmentId, attachmentVersion])
+  @@index([projectId, attachmentId, attachmentVersion])
+  @@map("zip_archive_snapshots")
+}
+
+model ZipArchiveEntryCache {
+  id                String   @id @default(cuid())
+  projectId         String   @map("project_id")
+  attachmentId      String   @map("attachment_id")
+  attachmentVersion Int      @map("attachment_version")
+  entryPath         String   @map("entry_path")
+  fileName          String   @map("file_name")
+  mimeType          String   @map("mime_type")
+  fileSize          Int      @map("file_size")
+  objectKey         String   @map("object_key")
+  contentHash       String   @map("content_hash")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  attachment Attachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+
+  @@unique([attachmentId, attachmentVersion, entryPath])
+  @@index([projectId, attachmentId, attachmentVersion])
+  @@map("zip_archive_entry_caches")
+}
+
+model AttachmentVersion {
+  id                      String              @id @default(cuid())
+  attachmentId            String              @map("attachment_id")
+  projectId               String              @map("project_id")
+  version                 Int
+  parentVersionId         String?             @map("parent_version_id")
+  sourceVersionId         String?             @map("source_version_id")
+  fileKind                AttachmentFileKind  @map("file_kind")
+  fileName                String              @map("file_name")
+  originalName            String?             @map("original_name")
+  fileUrl                 String              @map("file_url")
+  fileSize                Int                 @map("file_size")
+  mimeType                String              @map("mime_type")
+  contentHash             String?             @map("content_hash")
+  workDate                DateTime?           @map("work_date")
+  uploadedBy              String?             @map("uploaded_by")
+  uploadedAt              DateTime            @map("uploaded_at")
+  archivedBy              String              @map("archived_by")
+  action                  String              @default("UPLOAD")
+  message                 String?
+  conflictState           String              @default("NONE") @map("conflict_state")
+  conflictBaseVersionId   String?             @map("conflict_base_version_id")
+  conflictServerVersionId String?             @map("conflict_server_version_id")
+  conflictResolvedBy      String?             @map("conflict_resolved_by")
+  conflictResolvedAt      DateTime?           @map("conflict_resolved_at")
+  conflictResolution      String?             @map("conflict_resolution")
+  isCurrent               Boolean             @default(false) @map("is_current")
+  createdAt               DateTime            @default(now()) @map("created_at")
+  attachment              Attachment          @relation("AttachmentVersions", fields: [attachmentId], references: [id], onDelete: Cascade)
+  project                 Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  archivedByUser          User                @relation("AttachmentVersionArchivedBy", fields: [archivedBy], references: [id])
+  uploadedByUser          User?               @relation("AttachmentVersionUploader", fields: [uploadedBy], references: [id], onDelete: SetNull)
+  parentVersion           AttachmentVersion?  @relation("AttachmentVersionParent", fields: [parentVersionId], references: [id], onDelete: SetNull)
+  childVersions           AttachmentVersion[] @relation("AttachmentVersionParent")
+  sourceVersion           AttachmentVersion?  @relation("AttachmentVersionSource", fields: [sourceVersionId], references: [id], onDelete: SetNull)
+  sourcedVersions         AttachmentVersion[] @relation("AttachmentVersionSource")
+  headAttachments         Attachment[]        @relation("AttachmentHeadVersion")
+
+  @@unique([attachmentId, version])
+  @@index([projectId, attachmentId, version])
+  @@index([attachmentId, parentVersionId])
+  @@index([attachmentId, isCurrent])
+  @@index([sourceVersionId])
+  @@index([uploadedBy])
+  @@index([attachmentId, conflictState])
+  @@map("attachment_versions")
+}
+
+model ProjectConfirmation {
+  id                        String                            @id @default(cuid())
+  projectId                 String                            @map("project_id")
+  type                      ConfirmationType
+  status                    ConfirmationStatus                @default(DRAFT)
+  voidedFromStatus          ConfirmationStatus?               @map("voided_from_status")
+  displayName               String?                           @map("display_name")
+  clientName                String?                           @map("client_name")
+  confirmationCode          String?                           @map("confirmation_code")
+  auditPeriod               String?                           @map("audit_period")
+  counterpartyName          String                            @map("counterparty_name")
+  respondingEntityName      String?                           @map("responding_entity_name")
+  thirdPartyName            String?                           @map("third_party_name")
+  subjectName               String?                           @map("subject_name")
+  attachmentName            String?                           @map("attachment_name")
+  counterpartyContact       String?                           @map("counterparty_contact")
+  counterpartyAddress       String?                           @map("counterparty_address")
+  draftTemplateCode         String?                           @map("draft_template_code")
+  draftPayload              Json?                             @map("draft_payload")
+  draftUpdatedAt            DateTime?                         @map("draft_updated_at")
+  typeSequence              Int?                              @map("type_sequence")
+  submissionVersion         Int                               @default(0) @map("submission_version")
+  currentArtifactId         String?                           @unique @map("current_artifact_id")
+  queuedAt                  DateTime?                         @map("queued_at")
+  queueClaimedBy            String?                           @map("queue_claimed_by")
+  queueClaimedAt            DateTime?                         @map("queue_claimed_at")
+  revisionReason            String?                           @map("revision_reason")
+  revisionRequestedBy       String?                           @map("revision_requested_by")
+  revisionRequestedAt       DateTime?                         @map("revision_requested_at")
+  responsibleUserId         String?                           @map("responsible_user_id")
+  plannedSendDate           DateTime?                         @map("planned_send_date")
+  reportDeadline            DateTime?                         @map("report_deadline")
+  preparedDispatchMethod    ConfirmationDispatchMethod?       @map("prepared_dispatch_method")
+  preparedSenderName        String?                           @map("prepared_sender_name")
+  preparedApplicantName     String?                           @map("prepared_applicant_name")
+  preparedCourierName       String?                           @map("prepared_courier_name")
+  preparedTrackingNumber    String?                           @map("prepared_tracking_number")
+  preparedDispatchReference String?                           @map("prepared_dispatch_reference")
+  preparedRecipientName     String?                           @map("prepared_recipient_name")
+  preparedRecipientContact  String?                           @map("prepared_recipient_contact")
+  preparedRecipientPhone    String?                           @map("prepared_recipient_phone")
+  preparedFollowUpDate      DateTime?                         @map("prepared_follow_up_date")
+  preparedAttachmentName    String?                           @map("prepared_attachment_name")
+  preparedDispatchNotes     String?                           @map("prepared_dispatch_notes")
+  preparedDispatchReadyBy   String?                           @map("prepared_dispatch_ready_by")
+  preparedDispatchReadyAt   DateTime?                         @map("prepared_dispatch_ready_at")
+  teamConfirmStatus         ConfirmationTeamConfirmStatus     @default(PENDING) @map("team_confirm_status")
+  teamConfirmedByName       String?                           @map("team_confirmed_by_name")
+  teamConfirmedAt           DateTime?                         @map("team_confirmed_at")
+  differenceStatus          ConfirmationDifferenceStatus?     @map("difference_status")
+  notes                     String?
+  createdBy                 String                            @map("created_by")
+  createdAt                 DateTime                          @default(now()) @map("created_at")
+  updatedAt                 DateTime                          @updatedAt @map("updated_at")
+  project                   Project                           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  creator                   User                              @relation("ProjectConfirmationCreator", fields: [createdBy], references: [id])
+  responsibleUser           User?                             @relation("ProjectConfirmationResponsible", fields: [responsibleUserId], references: [id], onDelete: SetNull)
+  artifacts                 ConfirmationArtifact[]            @relation("ConfirmationArtifacts")
+  currentArtifact           ConfirmationArtifact?             @relation("CurrentConfirmationArtifact", fields: [currentArtifactId, id], references: [id, confirmationId], onDelete: Restrict)
+  dispatches                ProjectConfirmationDispatch[]
+  batchItems                ConfirmationDispatchBatchItem[]
+  responses                 ProjectConfirmationResponse[]
+  followUpEvents            ConfirmationFollowUpEvent[]
+  logisticsReadStates       ConfirmationLogisticsReadState[]
+  resolvedIntakeExceptions  ConfirmationIntakeException[]     @relation("ConfirmationIntakeExceptionResolvedConfirmation")
+  empImportItems            ConfirmationEmpImportItem[]
+  responseLibraryFiles      ConfirmationResponseLibraryFile[] @relation("ConfirmationResponseLibraryConfirmation")
+
+  @@unique([projectId, type, typeSequence])
+  @@unique([currentArtifactId, id])
+  @@index([projectId, status, updatedAt])
+  @@index([projectId, confirmationCode])
+  @@index([responsibleUserId])
+  @@map("project_confirmations")
+}
+
+model ConfirmationGeneralField {
+  id        String   @id
+  name      String
+  position  Int      @default(0)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("confirmation_general_fields")
+}
+
+model ConfirmationGeneralFieldsLayout {
+  id        String   @id @default("default")
+  layout    Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("confirmation_general_fields_layout")
+}
+
+model ProjectConfirmationDefaults {
+  id               String   @id @default(cuid())
+  projectId        String   @unique @map("project_id")
+  clientName       String?  @map("client_name")
+  confirmationDate String?  @map("confirmation_date")
+  reference        String?
+  pic              String?
+  mic              String?
+  reportDate       String?  @map("report_date")
+  baseInformation  Json?    @map("base_information")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  project          Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("project_confirmation_defaults")
+}
+
+model ConfirmationTemplateLibraryFile {
+  id               String           @id @default(cuid())
+  code             String           @unique
+  name             String
+  confirmationType ConfirmationType @map("confirmation_type")
+  description      String?
+  designSchema     Json?            @map("design_schema")
+  designStatus     ConfirmationTemplateDesignStatus @default(DRAFT) @map("design_status")
+  enabledAt        DateTime?        @map("enabled_at")
+  fileName         String           @map("file_name")
+  objectKey        String           @unique @map("object_key")
+  fileSize         Int              @map("file_size")
+  mimeType         String           @map("mime_type")
+  uploadedById     String           @map("uploaded_by_id")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+  uploader         User             @relation("ConfirmationTemplateLibraryUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([confirmationType, updatedAt])
+  @@map("confirmation_template_library_files")
+}
+
+model ConfirmationTemplateLibraryBuiltInOverride {
+  templateCode String                         @id @map("template_code")
+  designSchema Json?                           @map("design_schema")
+  designStatus ConfirmationTemplateDesignStatus @default(ENABLED) @map("design_status")
+  enabledAt   DateTime?                        @map("enabled_at")
+  deletedAt   DateTime?                        @map("deleted_at")
+  createdAt   DateTime                         @default(now()) @map("created_at")
+  updatedAt   DateTime                         @updatedAt @map("updated_at")
+
+  @@index([designStatus])
+  @@map("confirmation_template_library_builtin_overrides")
+}
+
+model ConfirmationResponseLibraryFile {
+  id                    String                                   @id @default(cuid())
+  code                  String                                   @unique
+  title                 String
+  receivedAt            DateTime                                 @map("received_at")
+  courierTrackingNumber String?                                  @map("courier_tracking_number")
+  referenceNumber       String?                                  @map("reference_number")
+  clientName            String                                   @map("client_name")
+  respondingEntity      String                                   @map("responding_entity")
+  notes                 String?
+  fileName              String                                   @map("file_name")
+  objectKey             String                                   @unique @map("object_key")
+  fileSize              Int                                      @map("file_size")
+  mimeType              String                                   @map("mime_type")
+  uploadedById          String                                   @map("uploaded_by_id")
+  projectId             String?                                  @map("project_id")
+  confirmationId        String?                                  @map("confirmation_id")
+  provisionalType       ConfirmationType?                        @map("provisional_type")
+  routingStatus         ConfirmationResponseLibraryRoutingStatus @default(UNASSIGNED_PROJECT) @map("routing_status")
+  routedById            String?                                  @map("routed_by_id")
+  routedAt              DateTime?                                @map("routed_at")
+  matchedResponseId     String?                                  @unique @map("matched_response_id")
+  createdAt             DateTime                                 @default(now()) @map("created_at")
+  updatedAt             DateTime                                 @updatedAt @map("updated_at")
+  uploader              User                                     @relation("ConfirmationResponseLibraryUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+  project               Project?                                 @relation("ConfirmationResponseLibraryProject", fields: [projectId], references: [id], onDelete: SetNull)
+  confirmation          ProjectConfirmation?                     @relation("ConfirmationResponseLibraryConfirmation", fields: [confirmationId], references: [id], onDelete: SetNull)
+  routedBy              User?                                    @relation("ConfirmationResponseLibraryRouter", fields: [routedById], references: [id], onDelete: SetNull)
+  matchedResponse       ProjectConfirmationResponse?             @relation("ConfirmationResponseLibraryMatchedResponse", fields: [matchedResponseId], references: [id], onDelete: Restrict)
+
+  @@index([receivedAt, updatedAt])
+  @@index([routingStatus, updatedAt])
+  @@index([projectId, routingStatus, updatedAt])
+  @@index([confirmationId])
+  @@map("confirmation_response_library_files")
+}
+
+model ProjectConfirmationDispatch {
+  id                   String                              @id @default(cuid())
+  confirmationId       String                              @map("confirmation_id")
+  sequence             Int                                 @default(1)
+  method               ConfirmationDispatchMethod          @default(COURIER)
+  artifactId           String?                             @map("artifact_id")
+  batchItemId          String?                             @unique @map("batch_item_id")
+  executionStatus      ConfirmationDispatchExecutionStatus @default(QUEUED) @map("execution_status")
+  idempotencyKey       String?                             @unique @map("idempotency_key")
+  providerName         String?                             @map("provider_name")
+  providerReference    String?                             @map("provider_reference")
+  providerErrorCode    String?                             @map("provider_error_code")
+  providerErrorMessage String?                             @map("provider_error_message")
+  startedAt            DateTime?                           @map("started_at")
+  sentAt               DateTime?                           @map("sent_at")
+  senderEmail          String?                             @map("sender_email")
+  recipientEmail       String?                             @map("recipient_email")
+  emailSubject         String?                             @map("email_subject")
+  emailBodyText        String?                             @map("email_body_text") @db.Text
+  deliveredAt          DateTime?                           @map("delivered_at")
+  senderName           String?                             @map("sender_name")
+  applicantName        String?                             @map("applicant_name")
+  courierName          String?                             @map("courier_name")
+  trackingNumber       String?                             @map("tracking_number")
+  trackingProvider     String?                             @map("tracking_provider")
+  trackingCarrierCode  Int?                                @map("tracking_carrier_code")
+  trackingCarrierName  String?                             @map("tracking_carrier_name")
+  trackingStatus       String?                             @map("tracking_status")
+  trackingSubstatus    String?                             @map("tracking_substatus")
+  trackingDescription  String?                             @map("tracking_description") @db.Text
+  trackingLocation     String?                             @map("tracking_location")
+  trackingEvents       Json?                               @map("tracking_events")
+  trackingRegisteredAt DateTime?                           @map("tracking_registered_at")
+  trackingLastEventAt  DateTime?                           @map("tracking_last_event_at")
+  trackingUpdatedAt    DateTime?                           @map("tracking_updated_at")
+  trackingStoppedAt    DateTime?                           @map("tracking_stopped_at")
+  trackingError        String?                             @map("tracking_error")
+  dispatchReference    String?                             @map("dispatch_reference")
+  recipientName        String?                             @map("recipient_name")
+  recipientContact     String?                             @map("recipient_contact")
+  recipientPhone       String?                             @map("recipient_phone")
+  followUpDate         DateTime?                           @map("follow_up_date")
+  attachmentName       String?                             @map("attachment_name")
+  attachmentObjectKey  String?                             @map("attachment_object_key")
+  attachmentMimeType   String?                             @map("attachment_mime_type")
+  attachmentSize       Int?                                @map("attachment_size")
+  attachmentSha256     String?                             @map("attachment_sha256")
+  notes                String?
+  createdBy            String                              @map("created_by")
+  createdAt            DateTime                            @default(now()) @map("created_at")
+  confirmation         ProjectConfirmation                 @relation(fields: [confirmationId], references: [id], onDelete: Cascade)
+  batchItem            ConfirmationDispatchBatchItem?      @relation("ConfirmationDispatchBatchItemDispatch", fields: [batchItemId, confirmationId], references: [id, confirmationId], onDelete: Restrict)
+  artifact             ConfirmationArtifact?               @relation("ConfirmationDispatchArtifact", fields: [artifactId, confirmationId], references: [id, confirmationId], onDelete: Restrict)
+  events               ConfirmationDispatchEvent[]
+  physicalPackages     ConfirmationPhysicalPackage[]       @relation("ConfirmationDispatchPhysicalPackages")
+
+  @@unique([confirmationId, sequence])
+  @@unique([id, confirmationId])
+  @@unique([batchItemId, confirmationId])
+  @@index([confirmationId, createdAt])
+  @@index([artifactId])
+  @@index([trackingNumber])
+  @@map("project_confirmation_dispatches")
+}
+
+model ProjectConfirmationResponse {
+  id                String                            @id @default(cuid())
+  confirmationId    String                            @map("confirmation_id")
+  responseStatus    ConfirmationResponseStatus        @default(RECEIVED) @map("response_status")
+  responseChannel   ConfirmationResponseChannel?      @map("response_channel")
+  sourcePackageId   String?                           @unique @map("source_package_id")
+  matchMethod       ConfirmationResponseMatchMethod?  @map("match_method")
+  routingStatus     ConfirmationResponseRoutingStatus @default(PENDING) @map("routing_status")
+  responsibleUserId String?                           @map("responsible_user_id")
+  receivingUserId   String?                           @map("receiving_user_id")
+  pageCount         Int?                              @map("page_count")
+  conditionNotes    String?                           @map("condition_notes")
+  storageLocation   String?                           @map("storage_location")
+  receivedAt        DateTime?                         @map("received_at")
+  receivedBy        String?                           @map("received_by")
+  responseReference String?                           @map("response_reference")
+  responseAddress   String?                           @map("response_address")
+  attachmentName    String?                           @map("attachment_name")
+  notes             String?
+  createdAt         DateTime                          @default(now()) @map("created_at")
+  updatedAt         DateTime                          @updatedAt @map("updated_at")
+  confirmation      ProjectConfirmation               @relation(fields: [confirmationId], references: [id], onDelete: Cascade)
+  sourcePackage     ConfirmationPhysicalPackage?      @relation("ConfirmationPackageResponse", fields: [sourcePackageId, confirmationId], references: [id, confirmationId], onDelete: Restrict)
+  artifacts         ConfirmationResponseArtifact[]
+  empImportItems    ConfirmationEmpImportItem[]       @relation("ConfirmationEmpImportResponse")
+  sourceLibraryFile ConfirmationResponseLibraryFile?  @relation("ConfirmationResponseLibraryMatchedResponse")
+
+  @@unique([sourcePackageId, confirmationId])
+  @@unique([id, confirmationId])
+  @@index([confirmationId, receivedAt])
+  @@index([sourcePackageId])
+  @@map("project_confirmation_responses")
+}
+
+model ProjectConfirmationSequence {
+  projectId String           @map("project_id")
+  type      ConfirmationType
+  nextValue Int              @default(1) @map("next_value")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, type])
+  @@map("project_confirmation_sequences")
+}
+
+model ConfirmationArtifact {
+  id                 String                          @id @default(cuid())
+  confirmationId     String                          @map("confirmation_id")
+  version            Int
+  disposition        ConfirmationArtifactDisposition @default(ACTIVE)
+  templateCode       String                          @map("template_code")
+  templateVersion    String                          @map("template_version")
+  docxObjectKey      String                          @map("docx_object_key")
+  docxSize           Int                             @map("docx_size")
+  pdfObjectKey       String                          @map("pdf_object_key")
+  pdfSize            Int                             @map("pdf_size")
+  pdfSha256          String                          @map("pdf_sha256")
+  structuredSnapshot Json                            @map("structured_snapshot")
+  derivedSnapshot    Json                            @map("derived_snapshot")
+  submissionKey      String                          @unique @map("submission_key")
+  submittedBy        String                          @map("submitted_by")
+  submittedAt        DateTime                        @map("submitted_at")
+  invalidatedBy      String?                         @map("invalidated_by")
+  invalidatedAt      DateTime?                       @map("invalidated_at")
+  invalidationReason String?                         @map("invalidation_reason")
+  createdAt          DateTime                        @default(now()) @map("created_at")
+
+  confirmation           ProjectConfirmation             @relation("ConfirmationArtifacts", fields: [confirmationId], references: [id], onDelete: Cascade)
+  currentForConfirmation ProjectConfirmation?            @relation("CurrentConfirmationArtifact")
+  dispatches             ProjectConfirmationDispatch[]   @relation("ConfirmationDispatchArtifact")
+  batchItems             ConfirmationDispatchBatchItem[] @relation("ConfirmationDispatchBatchItemArtifact")
+  empImportItems         ConfirmationEmpImportItem[]     @relation("ConfirmationEmpImportOutgoingArtifact")
+
+  @@unique([id, confirmationId])
+  @@unique([confirmationId, version])
+  @@index([confirmationId, submittedAt])
+  @@map("confirmation_artifacts")
+}
+
+model ConfirmationDispatchBatch {
+  id                     String                          @id @default(cuid())
+  method                 ConfirmationDispatchMethod
+  status                 ConfirmationDispatchBatchStatus @default(QUEUED)
+  idempotencyKey         String                          @unique @map("idempotency_key")
+  createdBy              String                          @map("created_by")
+  startedAt              DateTime?                       @map("started_at")
+  completedAt            DateTime?                       @map("completed_at")
+  printBundleObjectKey   String?                         @map("print_bundle_object_key")
+  printBundleSha256      String?                         @map("print_bundle_sha256")
+  printBundleGeneratedAt DateTime?                       @map("print_bundle_generated_at")
+  createdAt              DateTime                        @default(now()) @map("created_at")
+  updatedAt              DateTime                        @updatedAt @map("updated_at")
+
+  items ConfirmationDispatchBatchItem[]
+
+  @@index([status, createdAt])
+  @@map("confirmation_dispatch_batches")
+}
+
+model ConfirmationDispatchBatchItem {
+  id             String                              @id @default(cuid())
+  batchId        String                              @map("batch_id")
+  confirmationId String                              @map("confirmation_id")
+  artifactId     String                              @map("artifact_id")
+  status         ConfirmationDispatchBatchItemStatus @default(QUEUED)
+  idempotencyKey String                              @unique @map("idempotency_key")
+  errorCode      String?                             @map("error_code")
+  errorMessage   String?                             @map("error_message")
+  createdAt      DateTime                            @default(now()) @map("created_at")
+  updatedAt      DateTime                            @updatedAt @map("updated_at")
+
+  batch        ConfirmationDispatchBatch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  confirmation ProjectConfirmation          @relation(fields: [confirmationId], references: [id], onDelete: Cascade)
+  artifact     ConfirmationArtifact         @relation("ConfirmationDispatchBatchItemArtifact", fields: [artifactId, confirmationId], references: [id, confirmationId], onDelete: Restrict)
+  dispatch     ProjectConfirmationDispatch? @relation("ConfirmationDispatchBatchItemDispatch")
+
+  @@unique([id, confirmationId])
+  @@index([batchId, status])
+  @@index([confirmationId])
+  @@index([artifactId])
+  @@map("confirmation_dispatch_batch_items")
+}
+
+model ConfirmationDispatchEvent {
+  id         String                        @id @default(cuid())
+  dispatchId String                        @map("dispatch_id")
+  eventType  ConfirmationDispatchEventType @map("event_type")
+  actorId    String?                       @map("actor_id")
+  source     String                        @map("source")
+  payload    Json                          @map("payload")
+  occurredAt DateTime                      @map("occurred_at")
+  createdAt  DateTime                      @default(now()) @map("created_at")
+
+  dispatch ProjectConfirmationDispatch @relation(fields: [dispatchId], references: [id], onDelete: Cascade)
+
+  @@index([dispatchId, occurredAt])
+  @@map("confirmation_dispatch_events")
+}
+
+model ConfirmationFollowUpEvent {
+  id             String                        @id @default(cuid())
+  confirmationId String                        @map("confirmation_id")
+  eventType      ConfirmationFollowUpEventType @map("event_type")
+  actorId        String?                       @map("actor_id")
+  source         String
+  notes          String?
+  payload        Json?
+  occurredAt     DateTime                      @map("occurred_at")
+  createdAt      DateTime                      @default(now()) @map("created_at")
+
+  confirmation ProjectConfirmation @relation(fields: [confirmationId], references: [id], onDelete: Cascade)
+
+  @@index([confirmationId, occurredAt])
+  @@map("confirmation_follow_up_events")
+}
+
+model ConfirmationLogisticsReadState {
+  userId         String   @map("user_id")
+  confirmationId String   @map("confirmation_id")
+  version        String
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  confirmation ProjectConfirmation @relation(fields: [confirmationId], references: [id], onDelete: Cascade)
+
+  @@id([userId, confirmationId])
+  @@index([confirmationId])
+  @@map("confirmation_logistics_read_states")
+}
+
+model ConfirmationPhysicalPackage {
+  id                  String                            @id @default(cuid())
+  dispatchId          String                            @map("dispatch_id")
+  confirmationId      String                            @map("confirmation_id")
+  scanToken           String                            @unique @map("scan_token")
+  packageCode         String                            @unique @map("package_code")
+  status              ConfirmationPhysicalPackageStatus @default(CREATED)
+  version             Int                               @default(1)
+  packagePdfObjectKey String                            @map("package_pdf_object_key")
+  packagePdfSha256    String                            @map("package_pdf_sha256")
+  courierName         String?                           @map("courier_name")
+  trackingNumber      String?                           @map("tracking_number")
+  custodianUserId     String?                           @map("custodian_user_id")
+  storageLocation     String?                           @map("storage_location")
+  replacesPackageId   String?                           @unique @map("replaces_package_id")
+  voidedAt            DateTime?                         @map("voided_at")
+  custodyReceivedAt   DateTime?                         @map("custody_received_at")
+  custodyReleasedAt   DateTime?                         @map("custody_released_at")
+  deliveredAt         DateTime?                         @map("delivered_at")
+  createdAt           DateTime                          @default(now()) @map("created_at")
+  updatedAt           DateTime                          @updatedAt @map("updated_at")
+
+  dispatch                 ProjectConfirmationDispatch   @relation("ConfirmationDispatchPhysicalPackages", fields: [dispatchId, confirmationId], references: [id, confirmationId], onDelete: Cascade)
+  sourceResponse           ProjectConfirmationResponse?  @relation("ConfirmationPackageResponse")
+  resolvedIntakeExceptions ConfirmationIntakeException[] @relation("ConfirmationIntakeExceptionResolvedPackage")
+  replacesPackage          ConfirmationPhysicalPackage?  @relation("ConfirmationPackageReplacement", fields: [replacesPackageId], references: [id], onDelete: SetNull)
+  replacementPackage       ConfirmationPhysicalPackage?  @relation("ConfirmationPackageReplacement")
+
+  @@unique([id, confirmationId])
+  @@index([dispatchId])
+  @@index([status, custodyReceivedAt])
+  @@map("confirmation_physical_packages")
+}
+
+model ConfirmationResponseArtifact {
+  id         String   @id @default(cuid())
+  responseId String   @map("response_id")
+  sequence   Int
+  objectKey  String   @map("object_key")
+  fileName   String   @map("file_name")
+  mimeType   String   @map("mime_type")
+  fileSize   Int      @map("file_size")
+  sha256     String   @map("sha256")
+  uploadedBy String   @map("uploaded_by")
+  capturedAt DateTime @map("captured_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  response       ProjectConfirmationResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  empImportItems ConfirmationEmpImportItem[] @relation("ConfirmationEmpImportResponseArtifact")
+
+  @@unique([responseId, sequence])
+  @@unique([id, responseId])
+  @@map("confirmation_response_artifacts")
+}
+
+model ConfirmationEmpImportJob {
+  id                   String                         @id @default(cuid())
+  projectId            String                         @map("project_id")
+  targetWorkflowNodeId String                         @map("target_workflow_node_id")
+  batchWorkflowNodeId  String?                        @map("batch_workflow_node_id")
+  mode                 ConfirmationEmpImportMode
+  batchCode            String?                        @map("batch_code")
+  batchTitle           String?                        @map("batch_title")
+  idempotencyKey       String                         @unique @map("idempotency_key")
+  previewFingerprint   String                         @map("preview_fingerprint")
+  previewedAt          DateTime                       @map("previewed_at")
+  status               ConfirmationEmpImportJobStatus @default(QUEUED)
+  createdBy            String                         @map("created_by")
+  startedAt            DateTime?                      @map("started_at")
+  completedAt          DateTime?                      @map("completed_at")
+  lastError            String?                        @map("last_error")
+  createdAt            DateTime                       @default(now()) @map("created_at")
+  updatedAt            DateTime                       @updatedAt @map("updated_at")
+  project              Project                        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  targetWorkflowNode   WorkflowNode                   @relation("ConfirmationEmpImportTargetNode", fields: [targetWorkflowNodeId], references: [id], onDelete: Restrict)
+  batchWorkflowNode    WorkflowNode?                  @relation("ConfirmationEmpImportBatchNode", fields: [batchWorkflowNodeId], references: [id], onDelete: SetNull)
+  creator              User                           @relation("ConfirmationEmpImportJobCreator", fields: [createdBy], references: [id])
+  items                ConfirmationEmpImportItem[]
+
+  @@index([projectId, status, createdAt])
+  @@index([targetWorkflowNodeId])
+  @@map("confirmation_emp_import_jobs")
+}
+
+model ConfirmationEmpImportItem {
+  id                     String                          @id @default(cuid())
+  jobId                  String                          @map("job_id")
+  confirmationId         String                          @map("confirmation_id")
+  sourceKind             ConfirmationEmpImportSourceKind @map("source_kind")
+  outgoingArtifactId     String?                         @map("outgoing_artifact_id")
+  responseId             String?                         @map("response_id")
+  responseArtifactId     String?                         @map("response_artifact_id")
+  sourceObjectKey        String                          @map("source_object_key")
+  sourceFileName         String                          @map("source_file_name")
+  sourceMimeType         String                          @map("source_mime_type")
+  sourceSize             Int                             @map("source_size")
+  sourceSha256           String                          @map("source_sha256")
+  sourceConfirmationCode String?                         @map("source_confirmation_code")
+  sourceCounterpartyName String?                         @map("source_counterparty_name")
+  activeLinkKey          String                          @map("active_link_key")
+  status                 ConfirmationEmpImportItemStatus @default(QUEUED)
+  attemptCount           Int                             @default(0) @map("attempt_count")
+  errorCode              String?                         @map("error_code")
+  errorMessage           String?                         @map("error_message")
+  packageSequence        Int?                            @map("package_sequence")
+  zipEntryName           String?                         @map("zip_entry_name")
+  empWorkflowNodeId      String?                         @map("emp_workflow_node_id")
+  workingPaperId         String?                         @map("working_paper_id")
+  attachmentId           String?                         @map("attachment_id")
+  workingPaperCode       String?                         @map("working_paper_code")
+  workingPaperTitle      String?                         @map("working_paper_title")
+  attachmentObjectKey    String?                         @map("attachment_object_key")
+  targetHeadVersionId    String?                         @map("target_head_version_id")
+  targetHeadHash         String?                         @map("target_head_hash")
+  prepareUserId          String?                         @map("prepare_user_id")
+  preparedAt             DateTime?                       @map("prepared_at")
+  reviewUserId           String?                         @map("review_user_id")
+  reviewedAt             DateTime?                       @map("reviewed_at")
+  withdrawnAt            DateTime?                       @map("withdrawn_at")
+  withdrawnBy            String?                         @map("withdrawn_by")
+  withdrawalReason       String?                         @map("withdrawal_reason")
+  createdAt              DateTime                        @default(now()) @map("created_at")
+  updatedAt              DateTime                        @updatedAt @map("updated_at")
+  job                    ConfirmationEmpImportJob        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  confirmation           ProjectConfirmation             @relation(fields: [confirmationId], references: [id], onDelete: Restrict)
+  outgoingArtifact       ConfirmationArtifact?           @relation("ConfirmationEmpImportOutgoingArtifact", fields: [outgoingArtifactId, confirmationId], references: [id, confirmationId], onDelete: Restrict)
+  response               ProjectConfirmationResponse?    @relation("ConfirmationEmpImportResponse", fields: [responseId, confirmationId], references: [id, confirmationId], onDelete: Restrict)
+  responseArtifact       ConfirmationResponseArtifact?   @relation("ConfirmationEmpImportResponseArtifact", fields: [responseArtifactId, responseId], references: [id, responseId], onDelete: Restrict)
+  empWorkflowNode        WorkflowNode?                   @relation(fields: [empWorkflowNodeId], references: [id], onDelete: SetNull)
+  workingPaper           WorkingPaper?                   @relation(fields: [workingPaperId], references: [id], onDelete: SetNull)
+  attachment             Attachment?                     @relation(fields: [attachmentId], references: [id], onDelete: SetNull)
+
+  @@index([activeLinkKey, withdrawnAt])
+  @@index([jobId, status])
+  @@index([confirmationId])
+  @@index([workingPaperId])
+  @@index([attachmentId])
+  @@map("confirmation_emp_import_items")
+}
+
+model ConfirmationIntakeException {
+  id                     String                            @id @default(cuid())
+  reason                 ConfirmationIntakeExceptionReason
+  status                 ConfirmationIntakeExceptionStatus @default(OPEN)
+  scanTokenHash          String?                           @map("scan_token_hash")
+  scanTokenSuffix        String?                           @map("scan_token_suffix")
+  notes                  String?
+  suggestedMatches       Json?                             @map("suggested_matches")
+  resolvedConfirmationId String?                           @map("resolved_confirmation_id")
+  resolvedPackageId      String?                           @map("resolved_package_id")
+  resolvedBy             String?                           @map("resolved_by")
+  resolutionReason       String?                           @map("resolution_reason")
+  resolvedAt             DateTime?                         @map("resolved_at")
+  createdAt              DateTime                          @default(now()) @map("created_at")
+  updatedAt              DateTime                          @updatedAt @map("updated_at")
+
+  artifacts            ConfirmationIntakeExceptionArtifact[]
+  resolvedConfirmation ProjectConfirmation?                  @relation("ConfirmationIntakeExceptionResolvedConfirmation", fields: [resolvedConfirmationId], references: [id], onDelete: SetNull)
+  resolvedPackage      ConfirmationPhysicalPackage?          @relation("ConfirmationIntakeExceptionResolvedPackage", fields: [resolvedPackageId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([resolvedConfirmationId])
+  @@index([resolvedPackageId])
+  @@map("confirmation_intake_exceptions")
+}
+
+model ConfirmationIntakeExceptionArtifact {
+  id          String   @id @default(cuid())
+  exceptionId String   @map("exception_id")
+  sequence    Int
+  objectKey   String   @map("object_key")
+  fileName    String   @map("file_name")
+  mimeType    String   @map("mime_type")
+  fileSize    Int      @map("file_size")
+  sha256      String   @map("sha256")
+  uploadedBy  String   @map("uploaded_by")
+  capturedAt  DateTime @map("captured_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  exception ConfirmationIntakeException @relation(fields: [exceptionId], references: [id], onDelete: Cascade)
+
+  @@unique([exceptionId, sequence])
+  @@map("confirmation_intake_exception_artifacts")
+}
+
+model ProjectArchiveArtifact {
+  id              String             @id @default(cuid())
+  projectId       String             @map("project_id")
+  fileName        String             @map("file_name")
+  objectKey       String             @map("object_key")
+  fileSize        Int                @map("file_size")
+  mimeType        String             @map("mime_type")
+  fileCheckReport Json               @map("file_check_report")
+  manifestJson    Json               @map("manifest_json")
+  createdBy       String             @map("created_by")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  project         Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  creator         User               @relation("ProjectArchiveArtifactCreator", fields: [createdBy], references: [id])
+  archiveJob      ProjectArchiveJob? @relation("ProjectArchiveJobArtifact")
+
+  @@index([projectId, createdAt])
+  @@map("project_archive_artifacts")
+}
+
+model ProjectArchiveJob {
+  id             String                  @id
+  projectId      String                  @map("project_id")
+  status         String
+  currentPhase   String                  @map("current_phase")
+  currentLabel   String?                 @map("current_label")
+  completedUnits Int                     @default(0) @map("completed_units")
+  totalUnits     Int                     @default(4) @map("total_units")
+  errorMessage   String?                 @map("error_message")
+  artifactId     String?                 @unique @map("artifact_id")
+  createdBy      String                  @map("created_by")
+  startedAt      DateTime?               @map("started_at")
+  completedAt    DateTime?               @map("completed_at")
+  createdAt      DateTime                @default(now()) @map("created_at")
+  updatedAt      DateTime                @updatedAt @map("updated_at")
+  project        Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  artifact       ProjectArchiveArtifact? @relation("ProjectArchiveJobArtifact", fields: [artifactId], references: [id], onDelete: SetNull)
+  creator        User                    @relation("ProjectArchiveJobCreator", fields: [createdBy], references: [id])
+
+  @@index([projectId, createdAt])
+  @@index([projectId, status, updatedAt])
+  @@map("project_archive_jobs")
+}
+
+model ProjectFileExportJob {
+  id               String                     @id
+  projectId        String                     @map("project_id")
+  createdBy        String                     @map("created_by")
+  scope            ProjectFileExportJobScope
+  bucket           WorkingPaperBucket
+  workflowNodeId   String?                    @map("workflow_node_id")
+  status           ProjectFileExportJobStatus @default(QUEUED)
+  currentPhase     ProjectFileExportJobPhase  @default(COLLECTING) @map("current_phase")
+  completedFiles   Int                        @default(0) @map("completed_files")
+  totalFiles       Int                        @default(0) @map("total_files")
+  totalSourceBytes BigInt                     @default(0) @map("total_source_bytes")
+  snapshotJson     Json                       @map("snapshot_json")
+  errorMessage     String?                    @map("error_message") @db.Text
+  outputObjectKey  String?                    @map("output_object_key")
+  outputFileName   String?                    @map("output_file_name")
+  outputFileSize   BigInt?                    @map("output_file_size")
+  startedAt        DateTime?                  @map("started_at")
+  completedAt      DateTime?                  @map("completed_at")
+  downloadedAt     DateTime?                  @map("downloaded_at")
+  expiresAt        DateTime?                  @map("expires_at")
+  workerToken      String?                    @map("worker_token")
+  leaseExpiresAt   DateTime?                  @map("lease_expires_at")
+  createdAt        DateTime                   @default(now()) @map("created_at")
+  updatedAt        DateTime                   @updatedAt @map("updated_at")
+  project          Project                    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  creator          User                       @relation("ProjectFileExportJobCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdBy, status, updatedAt])
+  @@index([status, expiresAt])
+  @@index([status, leaseExpiresAt])
+  @@map("project_file_export_jobs")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorId     String   @map("actor_id")
+  action      String
+  targetType  String   @map("target_type")
+  targetId    String?  @map("target_id")
+  projectId   String?  @map("project_id")
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  actor       User     @relation("AuditActor", fields: [actorId], references: [id])
+  project     Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([projectId, createdAt])
+  @@map("audit_logs")
+}
+
+model KnowledgeDocument {
+  id                String                        @id @default(cuid())
+  referenceCode     String?                       @unique @map("reference_code")
+  title             String
+  department        String
+  type              String
+  secondaryCategory String?                       @map("secondary_category")
+  tertiaryCategory  String?                       @map("tertiary_category")
+  kind              String                        @default("FILE")
+  body              Json?
+  externalLink      String?                       @map("external_link")
+  previewAllowed    Boolean                       @default(true) @map("preview_allowed")
+  downloadAllowed   Boolean                       @default(true) @map("download_allowed")
+  status            String                        @default("PUBLISHED")
+  publishedAt       DateTime                      @default(now()) @map("published_at")
+  archivedAt        DateTime?                     @map("archived_at")
+  originalName      String?                       @map("original_name")
+  objectKey         String?                       @unique @map("object_key")
+  mimeType          String?                       @map("mime_type")
+  size              Int?
+  uploadedById      String                        @map("uploaded_by_id")
+  createdAt         DateTime                      @default(now()) @map("created_at")
+  updatedAt         DateTime                      @updatedAt @map("updated_at")
+  uploader          User                          @relation("KnowledgeDocumentUploader", fields: [uploadedById], references: [id])
+  attachments       KnowledgeDocumentAttachment[]
+
+  @@index([department, secondaryCategory, tertiaryCategory, updatedAt])
+  @@index([department, type, updatedAt])
+  @@index([status, publishedAt])
+  @@index([updatedAt])
+  @@map("knowledge_documents")
+}
+
+model KnowledgeDocumentAttachment {
+  id           String            @id @default(cuid())
+  documentId   String            @map("document_id")
+  originalName String            @map("original_name")
+  objectKey    String            @unique @map("object_key")
+  mimeType     String            @map("mime_type")
+  size         Int
+  createdAt    DateTime          @default(now()) @map("created_at")
+  document     KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId, createdAt])
+  @@map("knowledge_document_attachments")
+}
+
+model ConfirmationInformationLibraryEntry {
+  requiresBankTemplate         Boolean  @default(false) @map("requires_bank_template")
+  id                           String   @id @default(cuid())
+  bankCode                     String   @unique @map("bank_code")
+  bankNameEn                   String   @map("bank_name_en")
+  bankNameZh                   String   @map("bank_name_zh")
+  bankType                     String   @map("bank_type")
+  businessAddress              String   @map("business_address")
+  mailingAddress               String?  @map("mailing_address")
+  mailingAddressSameAsBusiness Boolean  @default(false) @map("mailing_address_same_as_business")
+  contactName                  String?  @map("contact_name")
+  attention                    String?
+  notes                        String?
+  background                   String?
+  historicalMailingAddress    String?  @map("historical_mailing_address")
+  cautions                     String?
+  sourceLabel                  String   @map("source_label")
+  sourceRow                    Int?     @map("source_row")
+  isActive                     Boolean  @default(true) @map("is_active")
+  createdAt                    DateTime @default(now()) @map("created_at")
+  updatedAt                    DateTime @updatedAt @map("updated_at")
+
+  @@map("confirmation_information_library_entries")
+}
+
+model WorkItemRecord {
+  id               String               @id @default(cuid())
+  dedupeKey        String               @unique @map("dedupe_key")
+  ruleId           String               @map("rule_id")
+  cycleKey         String               @default("active") @map("cycle_key")
+  domain           String
+  subjectType      String               @map("subject_type")
+  subjectId        String               @map("subject_id")
+  projectId        String?              @map("project_id")
+  status           WorkItemRecordStatus @default(ACTIVE)
+  state            String
+  severity         String
+  priority         String
+  locale           String               @default("zh-CN")
+  displayContent   String               @map("display_content")
+  contentKey       String               @map("content_key")
+  contentParams    Json                 @map("content_params")
+  actionTarget     Json                 @map("action_target")
+  dueAt            DateTime?            @map("due_at")
+  openedAt         DateTime             @map("opened_at")
+  sourceUpdatedAt  DateTime             @map("source_updated_at")
+  resolvedAt       DateTime?            @map("resolved_at")
+  resolutionReason String?              @map("resolution_reason")
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+  responsibilities WorkItemResponsibility[]
+  events           WorkItemEvent[]
+
+  @@unique([ruleId, subjectType, subjectId, cycleKey])
+  @@index([status, domain, updatedAt])
+  @@index([projectId, status, updatedAt])
+  @@map("work_item_records")
+}
+
+model WorkItemResponsibility {
+  id           String                         @id @default(cuid())
+  workItemId   String                         @map("work_item_id")
+  selectorType WorkItemResponsibilitySelector @map("selector_type")
+  selectorKey  String                         @map("selector_key")
+  userId       String?                        @map("user_id")
+  projectId    String?                        @map("project_id")
+  roleCode     String?                        @map("role_code")
+  engagementId String?                        @map("engagement_id")
+  isPrimary    Boolean                        @default(false) @map("is_primary")
+  createdAt    DateTime                       @default(now()) @map("created_at")
+  workItem     WorkItemRecord                 @relation(fields: [workItemId], references: [id], onDelete: Cascade)
+
+  @@unique([workItemId, selectorKey])
+  @@index([selectorType, userId])
+  @@index([selectorType, projectId])
+  @@index([selectorType, roleCode])
+  @@index([selectorType, engagementId])
+  @@map("work_item_responsibilities")
+}
+
+model WorkItemEvent {
+  id          String            @id @default(cuid())
+  workItemId  String            @map("work_item_id")
+  type        WorkItemEventType
+  actorUserId String?           @map("actor_user_id")
+  payload     Json?
+  createdAt   DateTime          @default(now()) @map("created_at")
+  workItem    WorkItemRecord    @relation(fields: [workItemId], references: [id], onDelete: Cascade)
+
+  @@index([workItemId, createdAt])
+  @@index([type, createdAt])
+  @@map("work_item_events")
+}

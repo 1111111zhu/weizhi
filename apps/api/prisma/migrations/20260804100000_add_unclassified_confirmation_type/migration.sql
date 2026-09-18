@@ -1,0 +1,1 @@
+ALTER TYPE "ConfirmationType" ADD VALUE 'UNCLASSIFIED';

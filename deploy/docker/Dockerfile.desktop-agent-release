@@ -1,0 +1,25 @@
+FROM node:24-bookworm-slim
+
+ARG RELEASE_VERSION
+ARG SOURCE_COMMIT
+
+LABEL org.opencontainers.image.title="Project Wing Desktop Agent release"
+LABEL org.opencontainers.image.version="${RELEASE_VERSION}"
+LABEL org.opencontainers.image.revision="${SOURCE_COMMIT}"
+
+WORKDIR /release
+RUN npm install --omit=dev --no-save \
+      ali-oss@6.23.0 \
+      proxy-agent@5.0.0
+
+COPY download-ghcr-asset.mjs /release/
+COPY oss-publisher-support.mjs /release/
+COPY publish-installer-to-oss.mjs /release/
+COPY publish-macos-to-oss.mjs /release/
+COPY publish-relay-to-oss.sh /release/
+RUN chmod 0555 /release/download-ghcr-asset.mjs /release/publish-relay-to-oss.sh \
+  && chown -R node:node /release
+
+USER node
+
+ENTRYPOINT ["/release/publish-relay-to-oss.sh"]

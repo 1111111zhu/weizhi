@@ -1,0 +1,32 @@
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+ping: {}
+
+entryPoints:
+  web:
+    address: ":80"
+    forwardedHeaders:
+      insecure: true
+    transport:
+      respondingTimeouts:
+        readTimeout: "600s"
+        writeTimeout: "600s"
+        idleTimeout: "180s"
+      lifeCycle:
+        requestAcceptGraceTimeout: "10s"
+        graceTimeOut: "10s"
+
+providers:
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+log:
+  level: INFO
+  format: common
+
+accessLog:
+  format: json
+  bufferingSize: 100

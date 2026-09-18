@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>0.2.1</Version>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(PublishTrimmed)' == 'true'">
+    <TrimmerRootAssembly Include="$(AssemblyName)" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../native-shared/RuntimeOwnershipLease.cs" Link="RuntimeOwnershipLease.cs" />
+    <Compile Include="../../native-shared/ProcessGenerationIdentity.cs" Link="ProcessGenerationIdentity.cs" />
+  </ItemGroup>
+</Project>

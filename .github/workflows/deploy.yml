@@ -1,0 +1,92 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [Build]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      image_source_sha:
+        description: Existing immutable image SHA for controlled recovery.
+        required: true
+        type: string
+      apply_pending_migrations:
+        description: Deprecated compatibility input; pending migrations are now automatic.
+        required: false
+        default: true
+        type: boolean
+      edge_ha_bootstrap:
+        description: One-time dual Edge initialization before the private HaVip exists.
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  actions: read
+  contents: read
+  packages: read
+
+concurrency:
+  group: projectwing-development
+  cancel-in-progress: false
+
+jobs:
+  resolve-image-source:
+    name: Read Build image source
+    if: >-
+      github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main')
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    outputs:
+      image-source-sha: ${{ steps.source.outputs.sha }}
+      source-commit-sha: ${{ steps.source.outputs.source_commit_sha }}
+      build-run-id: ${{ steps.source.outputs.build_run_id }}
+      build-run-attempt: ${{ steps.source.outputs.build_run_attempt }}
+    steps:
+      - uses: actions/download-artifact@v8
+        if: github.event_name == 'workflow_run'
+        with:
+          name: projectwing-image-source
+          path: ${{ runner.temp }}/build-image-source
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - id: source
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          if [[ '${{ github.event_name }}' == workflow_dispatch ]]; then
+            source_sha='${{ inputs.image_source_sha }}'
+            source_commit_sha='${{ github.sha }}'
+            build_run_id=0
+            build_run_attempt=0
+          else
+            source_sha="$(sed -n 's/^image_source_sha=//p' "${RUNNER_TEMP}/build-image-source/image-source.env")"
+            source_commit_sha='${{ github.event.workflow_run.head_sha }}'
+            build_run_id='${{ github.event.workflow_run.id }}'
+            build_run_attempt='${{ github.event.workflow_run.run_attempt }}'
+          fi
+          [[ "${source_sha}" =~ ^[a-f0-9]{40}$ ]]
+          [[ "${source_commit_sha}" =~ ^[a-f0-9]{40}$ ]]
+          echo "sha=${source_sha}" >> "${GITHUB_OUTPUT}"
+          echo "source_commit_sha=${source_commit_sha}" >> "${GITHUB_OUTPUT}"
+          echo "build_run_id=${build_run_id}" >> "${GITHUB_OUTPUT}"
+          echo "build_run_attempt=${build_run_attempt}" >> "${GITHUB_OUTPUT}"
+          echo "Deploying immutable image generation ${source_sha}."
+
+  deploy-blue-green:
+    name: Deploy verified image generation
+    needs: resolve-image-source
+    uses: ./.github/workflows/oss-image-bundle-pilot.yml
+    with:
+      systems: api,emp,cmp,showroom,tms,intranet,ib,ib-api,reverse-proxy
+      operation: deploy
+      image_source_sha: ${{ needs.resolve-image-source.outputs.image-source-sha }}
+      source_commit_sha: ${{ needs.resolve-image-source.outputs.source-commit-sha }}
+      build_run_id: ${{ fromJSON(needs.resolve-image-source.outputs.build-run-id) }}
+      build_run_attempt: ${{ fromJSON(needs.resolve-image-source.outputs.build-run-attempt) }}
+      apply_pending_migrations: true
+      edge_ha_bootstrap: ${{ github.event_name == 'workflow_dispatch' && inputs.edge_ha_bootstrap }}
+    secrets: inherit

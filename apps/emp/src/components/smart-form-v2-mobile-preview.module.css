@@ -1,0 +1,103 @@
+/* Opt-in presentation for the real SmartForm preview; wide layouts are unchanged. */
+@media (width < 48rem) {
+  :global(html.pw-mobile-theme) :global(body) {
+    min-width: 0;
+  }
+  :global(html.pw-mobile-theme) {
+    scroll-padding-block-end: calc(5rem + env(safe-area-inset-bottom));
+  }
+  .preview :is(button, input, textarea, [tabindex]) {
+    scroll-margin-block-end: calc(5rem + env(safe-area-inset-bottom));
+  }
+  .desktopToolbar {
+    display: none;
+  }
+  .preview {
+    background: var(--card);
+    font-family: var(--pw-mobile-font-family, system-ui, sans-serif);
+  }
+  .toolbar {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+  }
+  .toolbarLabel {
+    display: none;
+  }
+  .preview [role="tab"][aria-selected="true"] {
+    color: var(--pw-mobile-navigation-active, var(--primary));
+  }
+  .toolbarControls {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+  .body {
+    padding: var(--md-sys-space-1) var(--md-sys-space-4)
+      calc(5rem + env(safe-area-inset-bottom));
+  }
+  .preview :global(.smart-form-v2-document) {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .preview :global(.smart-form-v2-document) > header {
+    position: static;
+    padding: 0.75rem 0;
+  }
+  .preview [data-smart-form-document-title] {
+    flex-basis: 100%;
+  }
+  .preview [data-smart-form-document-title] h1 {
+    font-size: var(--pw-mobile-type-title, 1.25rem);
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  .preview [data-smart-form-document-badge] {
+    display: none;
+  }
+  .preview [data-smart-form-node-kind="section"] {
+    padding: var(--md-sys-space-3) 0;
+  }
+  .preview :global(.smart-form-v2-document) > header {
+    padding-bottom: var(--md-sys-space-4);
+  }
+  .preview :global(.smart-form-v2-document) > div > section {
+    padding-block: var(--md-sys-space-3);
+    padding-inline: 0;
+  }
+  .preview form:global(.smart-form-v2-document) > footer {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: var(--md-sys-layer-navigation);
+    min-height: var(--pw-control-target);
+    padding: var(--md-sys-space-2) var(--md-sys-space-4)
+      max(var(--md-sys-space-2), env(safe-area-inset-bottom));
+    background: var(--md-sys-color-surface-container-lowest);
+    border-top: var(--md-sys-border-width) solid
+      var(--md-sys-color-outline-variant);
+    box-shadow: var(--md-sys-elevation-0);
+    backdrop-filter: none;
+  }
+  .preview [data-smart-form-node-kind="sheet"] {
+    margin-inline-start: 0;
+    width: 100%;
+    padding-inline: 0;
+  }
+  .preview [data-smart-form-procedure-depth] {
+    margin-left: 0;
+    padding-left: 0;
+    gap: 0.375rem;
+  }
+  .preview
+    [data-smart-form-procedure-depth]:not(
+      [data-smart-form-procedure-depth="0"]
+    ) {
+    padding-left: 0;
+  }
+  .preview [data-smart-form-procedure-spacer] {
+    display: none;
+  }
+}

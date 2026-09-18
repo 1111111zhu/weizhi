@@ -1,0 +1,22 @@
+---
+title: Your component
+description: A non-published example of the local registry authoring shape.
+---
+
+import { YourComponent } from "@/registry/new-york/your-component";
+
+<ComponentPreview name="your-component">
+  <YourComponent />
+</ComponentPreview>
+
+## Usage
+
+This source is documentation-only and is not listed in the published registry. Use it as a local authoring reference before adding a reviewed component to `registry.json`.
+
+```tsx
+import { YourComponent } from "@/registry/new-york/your-component";
+
+export function MyComponent() {
+  return <YourComponent />;
+}
+```

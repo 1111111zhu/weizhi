@@ -1,0 +1,43 @@
+http:
+  services:
+    projectwing-active-gateway:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: "__PROJECTWING_ACTIVE_GATEWAY__"
+
+  routers:
+    projectwing-emp:
+      rule: "Host(`wing.superfx.cn`) || Host(`emp.superfx.cn`)"
+      service: projectwing-active-gateway
+    projectwing-auth:
+      rule: "Host(`auth.superfx.cn`)"
+      service: projectwing-active-gateway
+    projectwing-cmp:
+      rule: "Host(`cmp.superfx.cn`)"
+      service: projectwing-active-gateway
+    projectwing-showroom:
+      rule: "Host(`showroom.superfx.cn`)"
+      service: projectwing-active-gateway
+    projectwing-tms:
+      rule: "Host(`tms.superfx.cn`)"
+      service: projectwing-active-gateway
+    projectwing-intranet:
+      rule: "Host(`intranet.superfx.cn`)"
+      service: projectwing-active-gateway
+    projectwing-ib:
+      rule: "Host(`ib.superfx.cn`)"
+      service: projectwing-active-gateway
+    projectwing-db:
+      rule: "Host(`db.superfx.cn`)"
+      middlewares:
+        - edge-admin-access
+      service: projectwing-active-gateway
+    projectwing-db-verification:
+      rule: "Host(`db.superfx.cn`)"
+      priority: 100
+      entryPoints:
+        - verification
+      middlewares:
+        - edge-admin-access
+      service: projectwing-active-gateway

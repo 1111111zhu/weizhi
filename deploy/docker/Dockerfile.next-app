@@ -1,0 +1,128 @@
+ARG NODE_IMAGE=node:22-bookworm-slim
+
+FROM ${NODE_IMAGE} AS builder
+
+ARG APP_NAME
+ARG APP_PACKAGE
+ARG SOURCE_REVISION=unknown
+ARG NEXT_PUBLIC_API_BASE_URL=https://emp.superfx.cn/api
+ARG NEXT_PUBLIC_AUTH_BASE_URL=https://auth.superfx.cn
+ARG NEXT_PUBLIC_DESKTOP_AGENT_WINDOWS_DOWNLOAD_URL=https://emp.superfx.cn/api/downloads/desktop-agent/windows/latest
+ARG NEXT_PUBLIC_DESKTOP_AGENT_MACOS_DOWNLOAD_URL=https://emp.superfx.cn/api/downloads/desktop-agent/macos/latest
+ARG NEXT_PUBLIC_DESKTOP_AGENT_MINIMUM_VERSION=0.2.0
+ARG NEXT_PUBLIC_DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION=0.1.10
+ARG NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX=superfx.cn
+ARG NEXT_PUBLIC_SHOWROOM_BASE_PATH=
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+ENV NEXT_PUBLIC_AUTH_BASE_URL=${NEXT_PUBLIC_AUTH_BASE_URL}
+ENV NEXT_PUBLIC_DESKTOP_AGENT_WINDOWS_DOWNLOAD_URL=${NEXT_PUBLIC_DESKTOP_AGENT_WINDOWS_DOWNLOAD_URL}
+ENV NEXT_PUBLIC_DESKTOP_AGENT_MACOS_DOWNLOAD_URL=${NEXT_PUBLIC_DESKTOP_AGENT_MACOS_DOWNLOAD_URL}
+ENV NEXT_PUBLIC_DESKTOP_AGENT_MINIMUM_VERSION=${NEXT_PUBLIC_DESKTOP_AGENT_MINIMUM_VERSION}
+ENV NEXT_PUBLIC_DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION=${NEXT_PUBLIC_DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION}
+ENV NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX=${NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX}
+ENV NEXT_PUBLIC_SHOWROOM_BASE_PATH=${NEXT_PUBLIC_SHOWROOM_BASE_PATH}
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_OPTIONS=--max-old-space-size=1536
+ENV PNPM_HOME=/pnpm
+ENV PATH="${PNPM_HOME}:${PATH}"
+
+ARG PNPM_FETCH_RETRIES=5
+ARG PNPM_FETCH_RETRY_MINTIMEOUT=10000
+ARG PNPM_FETCH_RETRY_MAXTIMEOUT=120000
+ARG PNPM_FETCH_TIMEOUT=600000
+ARG PNPM_NETWORK_CONCURRENCY=8
+
+WORKDIR /repo
+
+RUN set -eux; \
+  test -n "${APP_NAME}"; \
+  test -n "${APP_PACKAGE}"; \
+  printf 'fetch-retries=%s\nfetch-retry-mintimeout=%s\nfetch-retry-maxtimeout=%s\nfetch-timeout=%s\nnetwork-concurrency=%s\nverify-deps-before-run=false\n' \
+    "$PNPM_FETCH_RETRIES" \
+    "$PNPM_FETCH_RETRY_MINTIMEOUT" \
+    "$PNPM_FETCH_RETRY_MAXTIMEOUT" \
+    "$PNPM_FETCH_TIMEOUT" \
+    "$PNPM_NETWORK_CONCURRENCY" >> /root/.npmrc; \
+  corepack enable; \
+  corepack prepare pnpm@11.5.0 --activate; \
+  pnpm config set fetch-retries "$PNPM_FETCH_RETRIES"; \
+  pnpm config set fetch-retry-mintimeout "$PNPM_FETCH_RETRY_MINTIMEOUT"; \
+  pnpm config set fetch-retry-maxtimeout "$PNPM_FETCH_RETRY_MAXTIMEOUT"; \
+  pnpm config set fetch-timeout "$PNPM_FETCH_TIMEOUT"; \
+  pnpm config set network-concurrency "$PNPM_NETWORK_CONCURRENCY"; \
+  pnpm config set verify-deps-before-run false
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+COPY packages/document-viewer/package.json packages/document-viewer/package.json
+COPY packages/pdf-template-designer/package.json packages/pdf-template-designer/package.json
+COPY packages/shared/package.json packages/shared/package.json
+COPY packages/ui/package.json packages/ui/package.json
+COPY apps/emp/package.json apps/emp/package.json
+COPY apps/cmp/package.json apps/cmp/package.json
+COPY apps/tms/package.json apps/tms/package.json
+COPY apps/intranet/package.json apps/intranet/package.json
+COPY apps/ib/package.json apps/ib/package.json
+COPY apps/ui-showroom/package.json apps/ui-showroom/package.json
+
+RUN --mount=type=cache,id=projectwing-pnpm-store,target=/pnpm/store,sharing=locked \
+  pnpm --config.verify-deps-before-run=false install --frozen-lockfile --ignore-scripts --store-dir /pnpm/store
+
+COPY packages/document-viewer packages/document-viewer
+COPY packages/pdf-template-designer packages/pdf-template-designer
+COPY packages/shared packages/shared
+COPY packages/ui packages/ui
+COPY apps/emp apps/emp
+COPY apps/cmp apps/cmp
+COPY apps/tms apps/tms
+COPY apps/intranet apps/intranet
+COPY apps/ib apps/ib
+COPY apps/ui-showroom apps/ui-showroom
+COPY design-first.provenance.json design-first.provenance.json
+COPY oxfmt.config.ts oxfmt.config.ts
+COPY scripts/design-first scripts/design-first
+COPY docs/design-system.registry.json docs/design-system.registry.json
+COPY docs/ui-provenance.generated.json docs/ui-provenance.generated.json
+
+RUN if [ "${APP_NAME}" = "ui-showroom" ]; then \
+      pnpm rebuild --pending; \
+      test -f apps/ui-showroom/.source/server.ts || pnpm --filter "${APP_PACKAGE}" postinstall; \
+    fi
+RUN pnpm --filter @project-wing/shared build
+RUN if [ "${APP_NAME}" = "ui-showroom" ]; then \
+      node scripts/design-first/provenance-command.mjs --write --source-revision "${SOURCE_REVISION}"; \
+      pnpm --filter "${APP_PACKAGE}" registry:build; \
+    fi
+RUN --mount=type=cache,id=projectwing-next-cache-${APP_NAME},target=/repo/apps/${APP_NAME}/.next/cache,sharing=locked \
+  pnpm --filter "${APP_PACKAGE}" exec next build
+RUN set -eux; \
+  mkdir -p /standalone; \
+  cp -R "apps/${APP_NAME}/.next/standalone/." /standalone/; \
+  mkdir -p "/standalone/apps/${APP_NAME}/.next"; \
+  cp -R "apps/${APP_NAME}/.next/static" "/standalone/apps/${APP_NAME}/.next/static"; \
+  if [ -d "apps/${APP_NAME}/public" ]; then \
+    cp -R "apps/${APP_NAME}/public" "/standalone/apps/${APP_NAME}/public"; \
+  else \
+    mkdir -p "/standalone/apps/${APP_NAME}/public"; \
+  fi
+
+FROM ${NODE_IMAGE} AS runner
+
+ARG APP_NAME
+ARG APP_PORT=3000
+ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
+ENV PORT=${APP_PORT}
+ENV APP_NAME=${APP_NAME}
+
+WORKDIR /app
+
+RUN groupadd --system --gid 1001 nodejs \
+  && useradd --system --uid 1001 --gid nodejs nextjs
+
+COPY --from=builder --chown=nextjs:nodejs /standalone ./
+
+USER nextjs
+
+EXPOSE ${APP_PORT}
+
+CMD ["sh", "-c", "node apps/${APP_NAME}/server.js"]

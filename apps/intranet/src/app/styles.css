@@ -1,0 +1,342 @@
+@import "tailwindcss";
+@import "./mobile-material.css";
+@import "@project-wing/ui/styles.css";
+@source "../../../../packages/document-viewer/src";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
+
+@custom-variant dark (&:is(.dark *));
+
+@font-face {
+  font-family: "Noto Serif SC Launcher";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/noto-serif-sc-launcher.woff2") format("woff2");
+  unicode-range:
+    U+20, U+26, U+43, U+50, U+52, U+54, U+57, U+61, U+63-65, U+67-70, U+72-75,
+    U+4e0e, U+4f5c, U+5236, U+53f0, U+5ba2, U+5de5, U+5ea6, U+6237, U+6599,
+    U+65f6, U+671f, U+7406, U+76ee, U+77e5, U+7ba1, U+8d44, U+8fd1, U+901a,
+    U+9879;
+}
+
+:root {
+  color-scheme: light;
+  --intranet-editorial-typeface: "Noto Serif SC Launcher", ui-serif, serif;
+  --background: var(--pw-color-background);
+  --foreground: var(--pw-color-foreground);
+  --card: var(--pw-color-card);
+  --card-foreground: var(--pw-color-card-foreground);
+  --popover: var(--pw-color-popover);
+  --popover-foreground: var(--pw-color-popover-foreground);
+  --primary: var(--pw-color-primary);
+  --primary-foreground: var(--pw-color-primary-foreground);
+  --secondary: var(--pw-color-secondary);
+  --secondary-foreground: var(--pw-color-secondary-foreground);
+  --muted: var(--pw-color-muted);
+  --muted-foreground: var(--pw-color-muted-foreground);
+  --accent: var(--pw-color-accent);
+  --accent-foreground: var(--pw-color-accent-foreground);
+  --destructive: var(--pw-color-destructive);
+  --border: var(--pw-color-border);
+  --input: var(--pw-color-input);
+  --ring: var(--pw-color-ring);
+  --radius: 0.625rem;
+  --brand-navy: var(--project-wing-intranet-brand-navy);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: var(--pw-color-background);
+  --foreground: var(--pw-color-foreground);
+  --card: var(--pw-color-card);
+  --card-foreground: var(--pw-color-card-foreground);
+  --popover: var(--pw-color-popover);
+  --popover-foreground: var(--pw-color-popover-foreground);
+  --primary: var(--pw-color-primary);
+  --primary-foreground: var(--pw-color-primary-foreground);
+  --secondary: var(--pw-color-secondary);
+  --secondary-foreground: var(--pw-color-secondary-foreground);
+  --muted: var(--pw-color-muted);
+  --muted-foreground: var(--pw-color-muted-foreground);
+  --accent: var(--pw-color-accent);
+  --accent-foreground: var(--pw-color-accent-foreground);
+  --border: var(--pw-color-border);
+  --input: var(--pw-color-input);
+  --ring: var(--pw-color-ring);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+
+.knowledge-editor .tiptap {
+  min-height: 20rem;
+  padding: 0.75rem;
+  outline: none;
+}
+
+.knowledge-editor .tiptap h1,
+.knowledge-notice-preview .tiptap h1 {
+  margin-block: 0.75rem 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.knowledge-editor .tiptap h2,
+.knowledge-notice-preview .tiptap h2 {
+  margin-block: 0.7rem 0.45rem;
+  font-size: 1.4rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.knowledge-editor .tiptap h3,
+.knowledge-notice-preview .tiptap h3 {
+  margin-block: 0.6rem 0.4rem;
+  font-size: 1.15rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.knowledge-editor .tiptap hr,
+.knowledge-notice-preview .tiptap hr {
+  margin-block: 1rem;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.knowledge-editor .tiptap blockquote,
+.knowledge-notice-preview .tiptap blockquote {
+  margin-block: 0.75rem;
+  border-left: 3px solid var(--primary);
+  padding-left: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.knowledge-attachment-card {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  width: min(32rem, 100%);
+  margin-block: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--secondary);
+  padding: 0.875rem 1rem;
+}
+
+.knowledge-attachment-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: flex-end;
+  justify-content: center;
+  width: 3rem;
+  height: 3.5rem;
+  border-radius: 0.5rem;
+  background: var(--project-wing-intranet-document);
+  padding-bottom: 0.45rem;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.knowledge-attachment-card[data-file-kind="PDF"] .knowledge-attachment-icon {
+  background: var(--project-wing-intranet-pdf);
+}
+
+.knowledge-attachment-card[data-file-kind="XLS"] .knowledge-attachment-icon {
+  background: var(--primary);
+}
+
+.knowledge-attachment-card[data-file-kind="PPT"] .knowledge-attachment-icon {
+  background: var(--project-wing-intranet-presentation);
+}
+
+.knowledge-attachment-details {
+  min-width: 0;
+  flex: 1;
+}
+
+.knowledge-attachment-name,
+.knowledge-attachment-size {
+  display: block;
+}
+
+.knowledge-attachment-name {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.knowledge-attachment-size {
+  margin-top: 0.125rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.knowledge-editor .tiptap p.is-editor-empty:first-child::before {
+  color: var(--muted-foreground);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.knowledge-notice-preview .tiptap {
+  min-height: 16rem;
+  line-height: 1.65;
+  outline: none;
+}
+
+.knowledge-notice-preview .tiptap ul,
+.knowledge-notice-preview .tiptap ol {
+  margin-block: 0.75rem;
+  padding-left: 1.5rem;
+}
+
+.knowledge-notice-preview .tiptap ul {
+  list-style: disc;
+}
+.knowledge-notice-preview .tiptap ol {
+  list-style: decimal;
+}
+.knowledge-editor .tiptap a,
+.knowledge-notice-preview .tiptap a {
+  color: var(--project-wing-intranet-link);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.knowledge-editor .tiptap a:hover,
+.knowledge-notice-preview .tiptap a:hover {
+  color: var(--project-wing-intranet-link-hover);
+}
+
+.knowledge-attachment-card:has(a) {
+  cursor: pointer;
+}
+
+@theme inline {
+  --font-heading:
+    "Inter", "Noto Sans SC", "Microsoft YaHei", ui-sans-serif, system-ui,
+    sans-serif;
+  --font-sans:
+    "Inter", "Noto Sans SC", "Microsoft YaHei", ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono:
+    "Geist Mono", "Cascadia Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-brand-navy: var(--brand-navy);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+.knowledge-directory-button {
+  position: relative;
+  color: var(--foreground);
+}
+
+.knowledge-directory-button.is-selected {
+  background-color: color-mix(in oklab, var(--muted) 88%, white);
+  color: var(--foreground);
+}
+
+.knowledge-directory-button.is-selected::before {
+  position: absolute;
+  top: 50%;
+  left: 0.375rem;
+  width: 0.1875rem;
+  height: 1.125rem;
+  border-radius: 999px;
+  background: var(--primary);
+  content: "";
+  transform: translateY(-50%);
+}
+
+.knowledge-directory-button.is-selected > span {
+  padding-left: 0.375rem;
+}
+
+.knowledge-pane-header {
+  position: relative;
+}
+
+.knowledge-pane-header::after {
+  position: absolute;
+  z-index: 1;
+  right: 1rem;
+  bottom: 0;
+  left: 1rem;
+  height: 1px;
+  background: color-mix(in oklab, var(--foreground) 18%, transparent);
+  content: "";
+  pointer-events: none;
+}
+
+.knowledge-pane-action {
+  min-height: 1.75rem !important;
+  height: 1.75rem;
+  padding-block: 0.125rem !important;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+}
+
+.fui-DialogSurface.knowledge-publish-dialog-surface {
+  width: min(80rem, calc(100vw - 2rem)) !important;
+  max-width: min(80rem, calc(100vw - 2rem)) !important;
+  max-height: calc(100vh - 3rem);
+}
+
+.knowledge-editor-toolbar {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.knowledge-editor-toolbar > * {
+  flex: 0 0 auto;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

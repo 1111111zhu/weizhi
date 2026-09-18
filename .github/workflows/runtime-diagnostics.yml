@@ -1,0 +1,309 @@
+name: Query runtime diagnostics
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Query API errors, inspect OSS metadata, or audit deployment state
+        required: true
+        default: request-id
+        type: choice
+        options:
+          - request-id
+          - recent-internal-errors
+          - object-metadata
+          - deployment-inventory
+          - deployment-capacity
+      request_id:
+        description: API request UUID to locate in the development log
+        required: false
+        type: string
+      object_key:
+        description: OSS object key to inspect in object-metadata mode
+        required: false
+        type: string
+      expected_size:
+        description: Expected object size in bytes
+        required: false
+        type: string
+      expected_sha256:
+        description: Expected lowercase SHA-256
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  query-api-request:
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 10
+
+    env:
+      PROJECTWING_DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT || vars.DEPLOY_SSH_PORT || '22' }}
+      PROJECTWING_DEPLOY_SSH_KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      NETBIRD_MANAGEMENT_URL: https://netbird.superfx.cn
+      NETBIRD_VERSION: "0.77.1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Validate request ID
+        env:
+          QUERY_MODE: ${{ inputs.mode }}
+          REQUEST_ID: ${{ inputs.request_id }}
+          OBJECT_KEY: ${{ inputs.object_key }}
+          EXPECTED_SIZE: ${{ inputs.expected_size }}
+          EXPECTED_SHA256: ${{ inputs.expected_sha256 }}
+        run: |
+          case "${QUERY_MODE}" in
+            request-id)
+              [[ "${REQUEST_ID}" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]]
+              ;;
+            recent-internal-errors)
+              test -z "${REQUEST_ID}"
+              ;;
+            object-metadata)
+              [[ "${OBJECT_KEY}" =~ ^desktop-master-check-ins/[a-zA-Z0-9_./-]+$ ]]
+              [[ "${EXPECTED_SIZE}" =~ ^[0-9]+$ ]]
+              [[ "${EXPECTED_SHA256}" =~ ^[a-f0-9]{64}$ ]]
+              ;;
+            deployment-inventory|deployment-capacity)
+              test -z "${REQUEST_ID}${OBJECT_KEY}${EXPECTED_SIZE}${EXPECTED_SHA256}"
+              ;;
+            *)
+              exit 1
+              ;;
+          esac
+
+      - name: Connect to Project-Wing over NetBird
+        run: |
+          set -Eeuo pipefail
+          if ! command -v netbird >/dev/null; then
+            curl -fL --retry 5 --retry-all-errors --retry-delay 3 \
+              --connect-timeout 15 --max-time 300 \
+              -o /tmp/netbird.tar.gz \
+              "https://github.com/netbirdio/netbird/releases/download/v${NETBIRD_VERSION}/netbird_${NETBIRD_VERSION}_linux_amd64.tar.gz"
+            tar -xzf /tmp/netbird.tar.gz -C /tmp netbird
+            sudo install -m 0755 /tmp/netbird /usr/local/bin/netbird
+          fi
+          if [[ ! -f /etc/systemd/system/netbird.service ]]; then sudo netbird service install; fi
+          sudo netbird service start
+          if netbird_status="$(sudo netbird status --json 2>/dev/null)" \
+            && jq -e '.management.connected == true and .signal.connected == true' <<<"${netbird_status}" >/dev/null; then
+            echo 'Reusing the existing NetBird overlay connection.'
+          else
+            sudo netbird up \
+              --setup-key "${{ secrets.NETBIRD_SETUP_KEY }}" \
+              --management-url "${NETBIRD_MANAGEMENT_URL}"
+          fi
+          sudo netbird status --json | jq '{cliVersion, daemonVersion, daemonStatus, netbirdIp, management, signal}'
+
+      - name: Configure SSH
+        run: |
+          test -n "${DEPLOY_HOST}"
+          test -n "${DEPLOY_USER}"
+          test -n "${PROJECTWING_DEPLOY_SSH_KNOWN_HOSTS}"
+          PROJECTWING_DEPLOY_SSH_DIR="${RUNNER_TEMP}/projectwing-deploy-ssh"
+          export PROJECTWING_DEPLOY_SSH_DIR
+          echo "PROJECTWING_DEPLOY_SSH_DIR=${PROJECTWING_DEPLOY_SSH_DIR}" >> "${GITHUB_ENV}"
+          bash scripts/ci/cleanup-deploy-ssh.sh
+          mkdir -p "${PROJECTWING_DEPLOY_SSH_DIR}"
+          chmod 700 "${PROJECTWING_DEPLOY_SSH_DIR}"
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}" > "${PROJECTWING_DEPLOY_SSH_DIR}/projectwing_deploy"
+          chmod 600 "${PROJECTWING_DEPLOY_SSH_DIR}/projectwing_deploy"
+          if ! bash scripts/ci/deploy-ssh.sh configure; then
+            sudo netbird status || true
+            exit 1
+          fi
+
+      - name: Query API request log
+        env:
+          QUERY_MODE: ${{ inputs.mode }}
+          REQUEST_ID: ${{ inputs.request_id }}
+          OBJECT_KEY: ${{ inputs.object_key }}
+          EXPECTED_SIZE: ${{ inputs.expected_size }}
+          EXPECTED_SHA256: ${{ inputs.expected_sha256 }}
+        run: |
+          bash scripts/ci/deploy-ssh.sh ssh \
+            bash -s -- "${QUERY_MODE}" "${REQUEST_ID}" "${OBJECT_KEY}" "${EXPECTED_SIZE}" "${EXPECTED_SHA256}" <<'REMOTE'
+          set -euo pipefail
+          query_mode="$1"
+          request_id="${2-}"
+          object_key="${3-}"
+          expected_size="${4-}"
+          expected_sha256="${5-}"
+          release_dir="$(readlink -f /opt/projectwing/current)"
+          test -n "${release_dir}"
+          test -f "${release_dir}/.env.runtime"
+          test -f "${release_dir}/docker-compose.development.yml"
+          export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-projectwing}"
+          if [ "${query_mode}" = "deployment-capacity" ]; then
+            project_root=/opt/projectwing
+            docker_root="$(docker info --format '{{.DockerRootDir}}')"
+            test -n "${docker_root}"
+            echo "current.release=${release_dir}"
+            echo "docker.root=${docker_root}"
+            echo "current.image_keys"
+            grep -E '^PROJECTWING_(API|EMP|CMP|SHOWROOM|TMS|INTRANET|IB|IB_API|WEB|GOTENBERG|TRAEFIK|MAILPIT)_IMAGE=' \
+              "${release_dir}/.env.runtime" | cut -d '=' -f1 | sed 's/^/current.image_key=/' | sort -u
+            echo "capacity.kib"
+            df -Pk "${docker_root}" "${project_root}"
+            echo "capacity.human"
+            df -hP "${docker_root}" "${project_root}"
+            echo "docker.system"
+            docker system df -v
+            echo "docker.containers"
+            docker ps -a --size --format \
+              'container={{.ID}} project={{.Label "com.docker.compose.project"}} service={{.Label "com.docker.compose.service"}} working_dir={{.Label "com.docker.compose.project.working_dir"}} image={{.Image}} status={{.Status}} size={{.Size}}'
+            echo "docker.images"
+            docker image ls --no-trunc --format \
+              'repository={{.Repository}} tag={{.Tag}} image={{.ID}} created={{.CreatedAt}} size={{.Size}}'
+            echo "release.usage_kib"
+            if [ -d "${project_root}/releases" ]; then
+              find "${project_root}/releases" -mindepth 1 -maxdepth 1 -type d -print0 \
+                | sort -z \
+                | xargs -0r du -xsk
+            fi
+            echo "release.backup_usage_kib"
+            if [ -d "${project_root}/releases" ]; then
+              find "${project_root}/releases" -path '*/backups/database' -type d -print0 \
+                | sort -z \
+                | xargs -0r du -xsk
+            fi
+            exit 0
+          fi
+          if [ "${query_mode}" = "deployment-inventory" ]; then
+            required_services=(
+              reverse-proxy gotenberg api preview-worker emp cmp showroom tms
+              intranet ib-api ib mailpit prisma-studio
+            )
+            missing=0
+            echo "current.release=${release_dir}"
+            for service in "${required_services[@]}"; do
+              ids="$(docker ps -q --filter "label=com.docker.compose.service=${service}")"
+              if [ -z "${ids}" ]; then
+                echo "service=${service} status=missing"
+                missing=1
+                continue
+              fi
+              while read -r id; do
+                test -n "${id}" || continue
+                project="$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project"}}' "${id}")"
+                image="$(docker inspect --format '{{.Config.Image}}' "${id}")"
+                state="$(docker inspect --format '{{.State.Status}}' "${id}")"
+                health="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "${id}")"
+                echo "service=${service} project=${project} image=${image} state=${state} health=${health} container=${id}"
+              done <<< "${ids}"
+            done
+            docker network ls --filter name=projectwing --format 'network={{.Name}} id={{.ID}}'
+            exit "${missing}"
+          fi
+          if [ "${query_mode}" = "object-metadata" ]; then
+            docker compose \
+              --env-file "${release_dir}/.env.runtime" \
+              -f "${release_dir}/docker-compose.development.yml" \
+              exec -T -w /app/apps/api \
+              -e "DIAG_OBJECT_KEY=${object_key}" \
+              -e "DIAG_EXPECTED_SIZE=${expected_size}" \
+              -e "DIAG_EXPECTED_SHA256=${expected_sha256}" \
+              api node <<'NODE'
+          const OSS = require("ali-oss");
+
+          const useInternal = process.env.OSS_USE_INTERNAL_ENDPOINT === "true";
+          const client = new OSS({
+            region: process.env.OSS_REGION,
+            bucket: process.env.OSS_BUCKET,
+            endpoint: useInternal
+              ? process.env.OSS_INTERNAL_ENDPOINT ?? process.env.OSS_ENDPOINT
+              : process.env.OSS_ENDPOINT,
+            internal: useInternal,
+            accessKeyId: process.env.OSS_ACCESS_KEY_ID,
+            accessKeySecret: process.env.OSS_ACCESS_KEY_SECRET,
+            secure: true,
+          });
+
+          function header(headers, ...names) {
+            for (const name of names) {
+              const value = headers[name];
+              if (typeof value === "string" && value.trim()) return value;
+            }
+            return null;
+          }
+
+          async function main() {
+            const result = await client.head(process.env.DIAG_OBJECT_KEY);
+            const headers = result.res?.headers ?? {};
+            const expected = {
+              contentLength: Number(process.env.DIAG_EXPECTED_SIZE),
+              contentSha256: process.env.DIAG_EXPECTED_SHA256,
+            };
+            const actual = {
+              contentLength: Number(
+                headers["content-length"] ?? headers["Content-Length"] ?? 0
+              ),
+              contentType: String(
+                headers["content-type"] ??
+                  headers["Content-Type"] ??
+                  "application/octet-stream"
+              ),
+              contentSha256: header(
+                headers,
+                "x-oss-meta-sha256",
+                "X-Oss-Meta-Sha256"
+              ),
+            };
+            console.log(
+              JSON.stringify(
+                {
+                  objectKey: process.env.DIAG_OBJECT_KEY,
+                  expected,
+                  actual,
+                  matches: {
+                    contentLength:
+                      actual.contentLength === expected.contentLength,
+                    contentSha256:
+                      actual.contentSha256 === expected.contentSha256,
+                  },
+                },
+                null,
+                2
+              )
+            );
+          }
+
+          main().catch((error) => {
+            console.error(`${error.name}: ${error.message}`);
+            process.exitCode = 1;
+          });
+          NODE
+            exit
+          fi
+          logs="$(docker compose \
+            --env-file "${release_dir}/.env.runtime" \
+            -f "${release_dir}/docker-compose.development.yml" \
+            logs --no-color \
+            --since "$([ "${query_mode}" = "request-id" ] && printf '6h' || printf '15m')" \
+            api 2>&1)"
+          if [ "${query_mode}" = "request-id" ]; then
+            matches="$(printf '%s\n' "${logs}" \
+              | grep -F -B 1 -A 60 -- "[${request_id}]" \
+              | head -n 120 || true)"
+          else
+            matches="$(printf '%s\n' "${logs}" \
+              | grep -E -A 60 -- '\[[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\]' \
+              | tail -n 240 || true)"
+          fi
+          if [ -z "${matches}" ]; then
+            echo "No matching API exceptions were found."
+            exit 0
+          fi
+          printf '%s\n' "${matches}"
+          REMOTE
+
+      - name: Remove deployment SSH credentials
+        if: always()
+        run: bash scripts/ci/cleanup-deploy-ssh.sh

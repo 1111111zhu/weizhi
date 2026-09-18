@@ -1,0 +1,73 @@
+.flatRow[data-active="true"] {
+  color: var(--foreground);
+  font-weight: var(--font-weight-medium);
+}
+
+.flatRow::after {
+  position: absolute;
+  z-index: -10;
+  inset-block: 0;
+  inset-inline: 0.25rem;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  transition: background-color var(--motion-fast) var(--motion-ease);
+  content: "";
+  pointer-events: none;
+}
+
+.flatRow:hover::after {
+  background-color: var(--workbench-row-hover);
+}
+
+.flatRow[data-active="true"]::after {
+  background-color: color-mix(in oklab, var(--primary) 15%, transparent);
+}
+
+.flatRow[data-active="true"]:hover::after {
+  background-color: color-mix(in oklab, var(--primary) 20%, transparent);
+}
+
+.flatRow.flatDropTarget::after {
+  position: absolute;
+  z-index: 10;
+  inset-block: 0;
+  inset-inline: 0.25rem;
+  border: 1px dashed var(--primary);
+  border-radius: var(--radius-md);
+  background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+  content: "";
+  pointer-events: none;
+}
+
+.tintedRow {
+  background-color: var(--brand-tint);
+}
+
+.tintedRow:hover {
+  background-color: var(--brand-tint);
+}
+
+.selectedNodeRow::before {
+  position: absolute;
+  inset-block: 0.25rem;
+  left: 0;
+  width: 0.125rem;
+  border-radius: 9999px;
+  background-color: var(--primary);
+  content: "";
+}
+
+.fileHighlight::before {
+  background-color: var(--brand-tint);
+  content: "";
+}
+
+.fileHighlight::after {
+  content: "";
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flatRow::after {
+    transition: none;
+  }
+}

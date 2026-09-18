@@ -1,0 +1,34 @@
+@media (width < 48rem) {
+  .searchButton[data-slot="button"] {
+    width: var(--pw-control-target);
+    min-width: var(--pw-control-target);
+    height: var(--pw-control-target);
+    padding: 0;
+    justify-content: center;
+  }
+
+  .searchButton svg {
+    width: var(--md-sys-space-5);
+    height: var(--md-sys-space-5);
+  }
+
+  .searchContent {
+    display: grid;
+    gap: var(--md-sys-space-2);
+    min-width: 0;
+  }
+
+  .resultNavigation {
+    display: flex;
+    gap: var(--md-sys-space-1);
+    align-items: center;
+    min-width: 0;
+  }
+
+  .resultNavigation > output {
+    flex: 1;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: var(--md-sys-type-body-medium);
+    font-variant-numeric: tabular-nums;
+  }
+}

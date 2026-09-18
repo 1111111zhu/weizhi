@@ -1,0 +1,37 @@
+FROM node:24.16.0-bookworm-slim
+
+ENV PNPM_HOME=/pnpm
+ENV PATH=/pnpm:$PATH
+ENV DATABASE_URL=postgresql://projectwing:projectwing@localhost:5432/projectwing?schema=public
+
+WORKDIR /app
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates curl gnupg openssl \
+  && install -d /usr/share/postgresql-common/pgdg \
+  && curl --fail --silent --show-error https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+    | gpg --dearmor -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg \
+  && printf 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.gpg] https://apt.postgresql.org/pub/repos/apt bookworm-pgdg main\n' \
+    > /etc/apt/sources.list.d/pgdg.list \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends postgresql-client-17 \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable
+
+COPY . .
+
+RUN corepack pnpm install --frozen-lockfile
+RUN corepack pnpm --filter @project-wing/shared build
+RUN corepack pnpm --filter @project-wing/api prisma:generate
+RUN corepack pnpm --filter @project-wing/api build
+
+COPY deploy/docker/api-entrypoint.sh /usr/local/bin/projectwing-api-entrypoint
+RUN chmod +x /usr/local/bin/projectwing-api-entrypoint \
+  && chown -R node:node /app
+
+USER node
+
+EXPOSE 3000
+
+ENTRYPOINT ["projectwing-api-entrypoint"]

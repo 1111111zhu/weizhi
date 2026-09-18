@@ -1,0 +1,2 @@
+corepack pnpm exec commitlint --edit "$1"
+node scripts/commit-message-guard.mjs "$1"

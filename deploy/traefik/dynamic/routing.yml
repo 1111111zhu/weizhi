@@ -1,0 +1,247 @@
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+      cipherSuites:
+        - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+        - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+      sniStrict: true
+
+http:
+  middlewares:
+    strip-api-prefix:
+      stripPrefix:
+        prefixes:
+          - "/api"
+    security-headers:
+      headers:
+        sslRedirect: true
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        forceSTSHeader: true
+        contentTypeNosniff: true
+        browserXssFilter: true
+        referrerPolicy: "strict-origin-when-cross-origin"
+        customResponseHeaders:
+          X-Frame-Options: "SAMEORIGIN"
+          X-Content-Type-Options: "nosniff"
+    admin-network:
+      ipAllowList:
+        sourceRange:
+          - "100.64.0.0/10"
+          - "172.19.143.157/32"
+          - "172.19.143.158/32"
+          - "192.0.2.1/32" # Replaced with the exact local Edge network gateway for Blue/Green.
+          - "127.0.0.1/32"
+          - "::1/128"
+    admin-access:
+      chain:
+        middlewares:
+          - admin-network
+          - security-headers
+          - compress
+    compress:
+      compress:
+        excludedContentTypes:
+          - "image/png"
+          - "image/jpeg"
+          - "application/zip"
+          - "application/pdf"
+    buffering-upload:
+      buffering:
+        maxRequestBodyBytes: 536870912
+        memRequestBodyBytes: 2097152
+        maxResponseBodyBytes: 536870912
+        memResponseBodyBytes: 2097152
+
+  services:
+    emp-service:
+      loadBalancer:
+        servers:
+          - url: "http://emp:3001"
+        passHostHeader: true
+    cmp-service:
+      loadBalancer:
+        servers:
+          - url: "http://cmp:3003"
+        passHostHeader: true
+    showroom-service:
+      loadBalancer:
+        servers:
+          - url: "http://showroom:3008"
+        passHostHeader: true
+    tms-service:
+      loadBalancer:
+        servers:
+          - url: "http://tms:3004"
+        passHostHeader: true
+    intranet-service:
+      loadBalancer:
+        servers:
+          - url: "http://intranet:3002"
+        passHostHeader: true
+    ib-service:
+      loadBalancer:
+        servers:
+          - url: "http://ib:3005"
+        passHostHeader: true
+    ib-api-service:
+      loadBalancer:
+        servers:
+          - url: "http://ib-api:3006"
+        passHostHeader: true
+    api-service:
+      loadBalancer:
+        servers:
+          - url: "http://api:3000"
+        passHostHeader: true
+    mailpit-service:
+      loadBalancer:
+        servers:
+          - url: "http://mailpit:8025"
+        passHostHeader: true
+    prisma-studio-service:
+      loadBalancer:
+        servers:
+          - url: "http://prisma-studio:5555"
+        passHostHeader: true
+
+  routers:
+    # 0. Traefik Dashboard & UI Management (traefik.superfx.cn)
+    traefik-dashboard:
+      rule: "Host(`traefik.superfx.cn`)"
+      priority: 100
+      service: api@internal
+      middlewares:
+        - admin-access
+
+    # 1. EMP (wing.superfx.cn, emp.superfx.cn)
+    emp-api:
+      rule: "(Host(`wing.superfx.cn`) || Host(`emp.superfx.cn`) || Host(`127.0.0.1`) || Host(`localhost`)) && (Path(`/api`) || PathPrefix(`/api/`))"
+      priority: 100
+      middlewares:
+        - strip-api-prefix
+        - buffering-upload
+        - security-headers
+        - compress
+      service: api-service
+
+    emp-downloads:
+      rule: "(Host(`wing.superfx.cn`) || Host(`emp.superfx.cn`) || Host(`127.0.0.1`) || Host(`localhost`)) && (Path(`/downloads`) || PathPrefix(`/downloads/`))"
+      priority: 100
+      middlewares:
+        - security-headers
+        - compress
+      service: api-service
+
+    emp-app:
+      rule: "Host(`wing.superfx.cn`) || Host(`emp.superfx.cn`) || Host(`127.0.0.1`) || Host(`localhost`)"
+      priority: 10
+      middlewares:
+        - security-headers
+        - compress
+      service: emp-service
+
+    # 2. Auth (auth.superfx.cn)
+    auth-api:
+      rule: "Host(`auth.superfx.cn`) && (Path(`/auth`) || PathPrefix(`/auth/`))"
+      priority: 100
+      middlewares:
+        - security-headers
+        - compress
+      service: api-service
+
+    # 3. CMP (cmp.superfx.cn)
+    cmp-api:
+      rule: "Host(`cmp.superfx.cn`) && (Path(`/api`) || PathPrefix(`/api/`))"
+      priority: 100
+      middlewares:
+        - strip-api-prefix
+        - buffering-upload
+        - security-headers
+        - compress
+      service: api-service
+
+    cmp-app:
+      rule: "Host(`cmp.superfx.cn`)"
+      priority: 10
+      middlewares:
+        - security-headers
+        - compress
+      service: cmp-service
+
+    # 4. Showroom (showroom.superfx.cn - strictly development only, public access)
+    showroom-app:
+      rule: "Host(`showroom.superfx.cn`)"
+      priority: 10
+      middlewares:
+        - security-headers
+        - compress
+      service: showroom-service
+
+    # 5. TMS (tms.superfx.cn)
+    tms-api:
+      rule: "Host(`tms.superfx.cn`) && (Path(`/api`) || PathPrefix(`/api/`))"
+      priority: 100
+      middlewares:
+        - strip-api-prefix
+        - buffering-upload
+        - security-headers
+        - compress
+      service: api-service
+
+    tms-app:
+      rule: "Host(`tms.superfx.cn`)"
+      priority: 10
+      middlewares:
+        - security-headers
+        - compress
+      service: tms-service
+
+    # 6. Intranet (intranet.superfx.cn)
+    intranet-app:
+      rule: "Host(`intranet.superfx.cn`)"
+      priority: 10
+      middlewares:
+        - security-headers
+        - compress
+      service: intranet-service
+
+    # 7. IB (ib.superfx.cn)
+    ib-api:
+      rule: "Host(`ib.superfx.cn`) && (Path(`/api`) || PathPrefix(`/api/`))"
+      priority: 100
+      middlewares:
+        - buffering-upload
+        - security-headers
+        - compress
+      service: ib-api-service
+
+    ib-app:
+      rule: "Host(`ib.superfx.cn`)"
+      priority: 10
+      middlewares:
+        - security-headers
+        - compress
+      service: ib-service
+
+    # 8. Mailpit Email Inspector (mail.superfx.cn - development only)
+    mail-app:
+      rule: "Host(`mail.superfx.cn`)"
+      priority: 10
+      middlewares:
+        - admin-access
+      service: mailpit-service
+
+    # 9. Prisma Studio (db.superfx.cn - overlay network only)
+    prisma-studio:
+      rule: "Host(`db.superfx.cn`)"
+      priority: 100
+      middlewares:
+        - admin-access
+      service: prisma-studio-service

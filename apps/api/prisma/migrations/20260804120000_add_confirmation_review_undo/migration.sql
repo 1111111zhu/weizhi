@@ -1,0 +1,5 @@
+ALTER TYPE "ConfirmationFollowUpEventType"
+  ADD VALUE IF NOT EXISTS 'REVIEW_RECORDED';
+
+ALTER TYPE "ConfirmationFollowUpEventType"
+  ADD VALUE IF NOT EXISTS 'REVIEW_RETRACTED';

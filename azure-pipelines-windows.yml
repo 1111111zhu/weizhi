@@ -1,0 +1,109 @@
+trigger: none
+pr: none
+
+parameters:
+  - name: releaseVersion
+    type: string
+    default: 0.2.0
+  - name: releaseChannel
+    type: string
+    default: stable
+    values:
+      - preview
+      - stable
+
+name: desktop-agent-windows-$(Date:yyyyMMdd).$(Rev:r)
+
+pool:
+  vmImage: windows-2025-vs2026
+
+jobs:
+  - job: build_windows_installer
+    displayName: Build Windows Desktop Agent installer
+    timeoutInMinutes: 25
+
+    steps:
+      - checkout: self
+        clean: true
+        fetchDepth: 1
+        lfs: false
+        submodules: false
+
+      - pwsh: |
+          $ErrorActionPreference = "Stop"
+          if ((node -p "process.versions.node.split('.')[0]") -ne "22") {
+            throw "The hosted image must provide Node.js 22."
+          }
+          $sdk = dotnet --list-sdks |
+            ForEach-Object { ($_ -split ' ')[0] } |
+            Where-Object { $_ -match '^8\.' } |
+            Select-Object -Last 1
+          if (-not $sdk) { throw "The hosted image must provide a .NET 8 SDK." }
+          @{ sdk = @{ version = $sdk; rollForward = "latestFeature" } } |
+            ConvertTo-Json -Depth 3 | Set-Content -Encoding utf8 global.json
+          if ((dotnet --version) -ne $sdk) { throw "Failed to select .NET SDK $sdk." }
+          corepack enable
+          corepack prepare pnpm@11.5.0 --activate
+          pnpm --filter @project-wing/desktop-agent-desktop... `
+            --config.verify-deps-before-run=false `
+            install --frozen-lockfile --ignore-scripts --reporter=append-only
+        displayName: Install Desktop Agent dependencies
+
+      - pwsh: |
+          $ErrorActionPreference = "Stop"
+          $version = "${{ parameters.releaseVersion }}"
+          $channel = "${{ parameters.releaseChannel }}"
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw "Desktop Agent release must be plain SemVer: $version"
+          }
+          if ($channel -notin @("preview", "stable")) {
+            throw "Unsupported Desktop Agent release channel: $channel"
+          }
+          $env:PROJECT_WING_DESKTOP_RELEASE_CHANNEL = $channel
+          if ($channel -eq "stable") {
+            $env:PROJECT_WING_DESKTOP_UPDATE_URL = "$(DESKTOP_AGENT_VELOPACK_UPDATE_URL)"
+            $env:PROJECT_WING_DESKTOP_RELEASE_REQUIRE_UPDATE_URL = "true"
+          } else {
+            $env:PROJECT_WING_DESKTOP_UPDATE_URL = ""
+            $env:PROJECT_WING_DESKTOP_RELEASE_REQUIRE_UPDATE_URL = "false"
+          }
+          corepack pnpm build:desktop-agent:win
+        displayName: Build Windows VeloPack release
+        env:
+          PROJECT_WING_DESKTOP_VERSION: ${{ parameters.releaseVersion }}
+          PROJECT_WING_DESKTOP_RELEASE_ROOT: output/desktop-agent/windows
+
+      - pwsh: |
+          $ErrorActionPreference = "Stop"
+          $releaseRoot = "output\desktop-agent\windows\releases"
+          $setup = Get-Item -LiteralPath (Join-Path $releaseRoot "com.superfx.projectwing.desktop-agent-win-Setup.exe")
+          $feed = Get-Item -LiteralPath (Join-Path $releaseRoot "releases.win.json")
+          if ($setup.Length -le 0 -or $feed.Length -le 0) { throw "VeloPack release bundle is incomplete." }
+          Write-Host "Verified VeloPack bundle with $($setup.Name) ($($setup.Length) bytes)."
+        displayName: Verify Windows release bundle
+
+      - pwsh: |
+          $ErrorActionPreference = "Stop"
+          $orasVersion = "1.3.0"
+          $archive = Join-Path $env:AGENT_TEMPDIRECTORY "oras.zip"
+          $toolRoot = Join-Path $env:AGENT_TEMPDIRECTORY "oras"
+          for ($attempt = 1; $attempt -le 5; $attempt++) {
+            try {
+              Invoke-WebRequest -Uri "https://github.com/oras-project/oras/releases/download/v$orasVersion/oras_${orasVersion}_windows_amd64.zip" -OutFile $archive
+              break
+            } catch {
+              if ($attempt -eq 5) { throw }
+              Start-Sleep -Seconds ([Math]::Pow(2, $attempt - 1))
+            }
+          }
+          Expand-Archive -LiteralPath $archive -DestinationPath $toolRoot -Force
+          $env:PATH = "$toolRoot;$env:PATH"
+          node scripts/desktop-agent/transfer-release-asset.mjs push windows output/desktop-agent/windows/releases
+        displayName: Push Windows release bundle to GHCR
+        env:
+          GH_TOKEN: $(GHCR_TOKEN)
+          GITHUB_ACTOR: $(GHCR_USERNAME)
+          GITHUB_REPOSITORY_OWNER: $(GHCR_REPOSITORY_OWNER)
+          GITHUB_RUN_ID: $(Build.BuildId)
+          GITHUB_SHA: $(SOURCE_COMMIT)
+          DESKTOP_AGENT_ASSET_TAG_PREFIX: $(GHCR_ASSET_TAG_PREFIX)

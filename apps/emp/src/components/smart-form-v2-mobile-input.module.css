@@ -1,0 +1,100 @@
+.preview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.5rem;
+  padding-block: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.value :is(p, span) {
+  font-size: var(--pw-mobile-type-body, 1rem);
+  line-height: var(--pw-mobile-leading-body, 1.6);
+}
+.value [data-slot="badge"] {
+  border: 0;
+  background: transparent;
+  padding-inline: 0;
+  box-shadow: none;
+}
+.trigger {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+}
+.content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.content [data-slot="smart-form-reference-results"] {
+  height: auto;
+  max-height: 55dvh;
+}
+.content [role="toolbar"] {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+.content [role="toolbar"] button {
+  min-height: 2.75rem;
+  flex-shrink: 0;
+}
+.options {
+  display: grid;
+}
+.options button {
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  justify-content: space-between;
+  white-space: normal;
+  text-align: left;
+}
+
+@media (width < 48rem) {
+  .preview {
+    position: relative;
+    align-items: center;
+    min-height: var(--pw-control-target);
+    gap: var(--md-sys-space-2);
+    padding-block: 0;
+    border-bottom: 0;
+  }
+  .preview[data-inline-choice="true"] {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: var(--md-sys-space-3) var(--pw-control-target);
+    border-radius: var(--md-sys-shape-small);
+    background: var(--md-sys-color-surface-container-low);
+  }
+  .preview[data-inline-choice="true"] .trigger {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-end;
+    padding-inline: var(--md-sys-space-3);
+    border-radius: inherit;
+    background: transparent;
+  }
+  .trigger {
+    min-height: var(--pw-control-target);
+    min-width: var(--pw-control-target);
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  .value {
+    padding-block: var(--md-sys-space-2);
+  }
+  .options {
+    gap: var(--md-sys-space-1);
+  }
+  .options button {
+    min-height: var(--pw-control-target);
+    padding: var(--md-sys-space-3);
+    border: 0;
+    border-radius: var(--md-sys-shape-small);
+  }
+  .options button[aria-pressed="true"] {
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+  }
+}

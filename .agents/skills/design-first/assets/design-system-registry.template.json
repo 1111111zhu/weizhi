@@ -1,0 +1,19 @@
+{
+  "$schema": "./design-system-registry.schema.json",
+  "schemaVersion": 1,
+  "project": {
+    "name": "PROJECT_NAME",
+    "scale": "long-lived",
+    "archetype": "TO_BE_INFERRED",
+    "designSystemRoot": "src/design-system",
+    "publicEntry": "src/design-system/index.ts",
+    "showroomRoot": "src/showroom"
+  },
+  "approval": {
+    "status": "proposed",
+    "approvedBy": null,
+    "approvedAt": null
+  },
+  "components": [],
+  "exceptions": []
+}

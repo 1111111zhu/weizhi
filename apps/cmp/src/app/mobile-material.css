@@ -1,0 +1,476 @@
+/* Application composition only; shared controls and colors are owned by UI. */
+@media screen and (width < 48rem) {
+  :root .cmp-fee-note-document {
+    min-height: 0;
+    border: 0;
+    box-shadow: none;
+    padding: var(--md-sys-space-4);
+    background: var(--md-sys-color-surface-container-lowest);
+  }
+  :root
+    .cmp-fee-note-document
+    :is(input, textarea, [data-slot="select-trigger"]) {
+    min-height: var(--pw-control-target);
+    max-width: 100%;
+    font-size: var(--md-sys-type-body-large);
+  }
+  :root
+    :is(
+      .cmp-fee-note-meta,
+      .cmp-fee-note-currency,
+      .cmp-fee-note-bank-grid,
+      .cmp-fee-note-account-line,
+      .cmp-fee-note-footer
+    ) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--md-sys-space-3);
+  }
+  :root .cmp-fee-note-bank-grid > div {
+    grid-column: auto;
+  }
+  :root .cmp-fee-note-currency > [aria-hidden="true"] {
+    display: none;
+  }
+  :root .cmp-fee-note-line-header {
+    display: none;
+  }
+  :root .cmp-fee-note-line {
+    grid-template-columns: minmax(0, 1fr) var(--pw-control-target);
+    gap: var(--md-sys-space-2);
+    padding-block: var(--md-sys-space-2);
+  }
+  :root .cmp-fee-note-line > :first-child {
+    grid-column: 1 / -1;
+  }
+  :root [data-testid="cmp-fee-note-remittance-divider"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--md-sys-space-3);
+  }
+  :root [data-testid="cmp-fee-note-remittance-divider"] > div {
+    width: 100%;
+  }
+  :root .cmp-billing-list-heading > div:first-child {
+    display: none;
+  }
+  :root .cmp-mobile-billing-overview {
+    margin: 0 var(--md-sys-space-4) var(--md-sys-space-3);
+    width: calc(100% - 2 * var(--md-sys-space-4));
+    height: auto;
+    white-space: normal;
+  }
+  :root .cmp-billing-flat-grid {
+    padding: 0 var(--md-sys-space-4);
+  }
+  :root .cmp-group-relationship-table {
+    border: 0;
+    overflow: visible;
+  }
+  :root .cmp-group-relationship-table > div:first-child {
+    display: none;
+  }
+  :root .cmp-group-relationship-table > :is(div, p) {
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: 0;
+  }
+  :root .cmp-group-relationship-table .truncate {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  :root .cmp-map-plane {
+    height: 100%;
+    min-height: 0;
+  }
+  :root .cmp-map-plane > header,
+  :root .cmp-map-plane > nav {
+    padding: var(--md-sys-space-3) var(--md-sys-space-4);
+    gap: var(--md-sys-space-2);
+  }
+  :root .cmp-map-plane > header > div p {
+    display: none;
+  }
+  :root .cmp-map-plane > header > button {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+  :root .cmp-relationship-section {
+    padding: var(--md-sys-space-3) 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  :root .cmp-relationship-section > div:nth-child(2) {
+    border: 0;
+  }
+  :root .cmp-relationship-section > div:nth-child(2) > div:first-child {
+    display: none;
+  }
+  :root .cmp-relationship-record {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--md-sys-space-2);
+    padding: var(--md-sys-space-3) 0;
+  }
+  :root .cmp-record-preview-page {
+    padding-block: var(--md-sys-space-3);
+    background: var(--md-sys-color-surface);
+  }
+  :root .cmp-record-preview-document {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  :root .cmp-record-preview-document > header {
+    padding: var(--md-sys-space-4) 0;
+  }
+  :root .cmp-record-preview-document .cmp-document-sections {
+    padding-inline: 0;
+  }
+  :root .cmp-record-preview-page > div > header {
+    gap: var(--md-sys-space-2);
+    flex-wrap: wrap;
+  }
+  :root .cmp-form-workspace-content [data-acceptance-form-section],
+  :root .cmp-form-workspace-content [data-acceptance-form-section-navigation],
+  :root .cmp-form-workspace-content [data-slot="accordion-content"] {
+    padding-inline: 0;
+  }
+  :root .cmp-client-form-workspace .cmp-form-workspace-frame {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  :root .cmp-form-workspace-title > div:first-child {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--md-sys-space-2);
+  }
+  :root .cmp-form-workspace-title > div:first-child > input {
+    width: 100%;
+    min-width: 0;
+  }
+  :root .cmp-form-workspace-title > div:first-child > h1 {
+    font-size: var(--md-sys-type-title-medium);
+    line-height: var(--md-sys-type-leading-title);
+  }
+  :root .cmp-version-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  :root .cmp-version-filter-trigger {
+    grid-row: 1;
+    width: 100%;
+  }
+  :root .cmp-version-filters {
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+  :root .cmp-version-filters > div:first-child {
+    display: none;
+  }
+  :root .cmp-version-hero {
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  :root .cmp-version-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border: 0;
+    box-shadow: none;
+  }
+  :root .cmp-version-list {
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  :root .cmp-version-row {
+    padding: var(--md-sys-space-3) 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--md-sys-space-2);
+  }
+  :root :is(.cmp-client-management-panel, .cmp-clients-table-panel) {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  :root body {
+    min-width: 0;
+    font-family: var(--md-sys-typeface);
+  }
+  :root :is(.pw-button[data-size], [data-slot="button"]) {
+    min-height: var(--pw-control-target);
+  }
+  :root :is(.pw-button[data-size^="icon"], .pw-mobile-icon-action) {
+    min-width: var(--pw-control-target);
+  }
+  :root .cmp-shell {
+    height: 100dvh;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  :root .cmp-shell-body {
+    min-height: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+  :root .cmp-main {
+    height: 100%;
+    overflow: auto;
+  }
+  :root
+    :is(
+      .cmp-dashboard,
+      .cmp-clients-workspace,
+      .cmp-acceptance-workspace,
+      .cmp-engagements-workspace
+    ) {
+    padding: var(--md-sys-space-4);
+  }
+  :root .cmp-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--md-sys-space-3);
+  }
+  :root .cmp-stat-card {
+    padding: var(--md-sys-space-3);
+    border: 0;
+    box-shadow: none;
+    border-radius: var(--md-sys-shape-medium);
+    background: var(--md-sys-color-surface-container-low);
+  }
+  :root .cmp-stat-card strong {
+    font-size: var(--md-sys-type-headline);
+  }
+  :root .cmp-stat-card p {
+    display: none;
+  }
+  :root .cmp-panel-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--md-sys-space-4);
+  }
+  :root .cmp-hero {
+    display: none;
+  }
+  :root .cmp-horizontal-data-scrollbar:has([data-testid="cmp-mobile-records"]),
+  :root
+    .cmp-horizontal-data-scrollbar:has([data-testid="cmp-mobile-records"])
+    > div {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: visible;
+  }
+  :root [data-slot="frame"]:has([data-testid="cmp-mobile-records"]) {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  :root [data-slot="frame-panel"]:has([data-testid="cmp-mobile-records"]) {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  :root .cmp-acceptance-view-panel {
+    min-width: 0;
+  }
+  :root :is(.cmp-modal, .cmp-client-preview-dialog) {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+  }
+  :root
+    :is(
+      .cmp-acceptance-detail-header,
+      .cmp-acceptance-detail-body,
+      .cmp-acceptance-detail-footer
+    ) {
+    padding: var(--md-sys-space-4);
+  }
+  :root
+    :is(
+      .cmp-acceptance-metadata-grid,
+      .cmp-approval-role-grid,
+      .cmp-read-only-form-grid,
+      .cmp-panel-grid
+    ) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root :is(.cmp-acceptance-metadata-grid, .cmp-read-only-form-grid) > * {
+    grid-column: auto;
+  }
+  :root .cmp-approval-stepper {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root .cmp-acceptance-detail-footer {
+    flex-wrap: wrap;
+    gap: var(--md-sys-space-2);
+  }
+  :root .cmp-mobile-stepper {
+    padding: var(--md-sys-space-3);
+    min-width: 0;
+  }
+  :root .cmp-mobile-stepper button {
+    min-height: var(--pw-control-target);
+  }
+  :root .cmp-mobile-personal-settings {
+    width: 100%;
+    grid-template-columns: max-content var(--md-sys-space-4) minmax(0, 1fr);
+    row-gap: var(--md-sys-space-4);
+  }
+  :root .cmp-mobile-personal-settings > [aria-hidden="true"] {
+    display: none;
+  }
+  :root .cmp-mobile-personal-settings > .contents > :first-child {
+    text-align: start;
+    font-size: var(--md-sys-type-body-medium);
+  }
+  :root .cmp-mobile-personal-settings > .contents > :last-child {
+    width: 100%;
+    justify-self: stretch;
+  }
+  :root .cmp-settings-options {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: var(--md-sys-space-1);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  :root .cmp-settings-options > button {
+    width: 100%;
+  }
+  :root .cmp-related-parties {
+    padding: var(--md-sys-space-4);
+  }
+  :root .cmp-related-parties > div > div:first-child {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--md-sys-space-3);
+  }
+  :root .cmp-related-parties > div > div:first-child > div:first-child {
+    min-width: 0;
+  }
+  :root .cmp-related-parties [data-slot="button-group"] {
+    flex-wrap: wrap;
+    gap: var(--md-sys-space-2);
+  }
+  :root .cmp-related-parties [data-slot="button-group"] > button {
+    flex: 1 1 auto;
+    min-height: var(--pw-control-target);
+  }
+  :root .cmp-main {
+    min-width: 0;
+    background: var(--md-sys-color-surface);
+  }
+  :root .cmp-clients-workspace,
+  :root .cmp-client-management-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  :root .cmp-client-management-panel,
+  :root .cmp-client-management-panel > div {
+    min-width: 0;
+    max-width: 100%;
+  }
+  :root .cmp-client-form-workspace.cmp-form-wizard-workspace {
+    gap: var(--md-sys-space-2);
+    padding: 0;
+  }
+  :root
+    .cmp-form-wizard-workspace[data-actions-placement="header"]
+    > .cmp-form-workspace-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--md-sys-space-2);
+    align-content: start;
+    padding: 0;
+  }
+  :root .cmp-form-workspace-header .cmp-form-workspace-title {
+    flex: 0 1 auto;
+    align-content: start;
+    gap: var(--md-sys-space-2);
+    grid-column: 1;
+  }
+  :root .cmp-form-workspace-title h1,
+  :root .cmp-form-workspace-title h3 {
+    font-size: var(--md-sys-type-title-medium);
+    line-height: var(--md-sys-type-leading-title);
+    overflow-wrap: anywhere;
+  }
+  :root .cmp-form-header-actions {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: end;
+    flex-wrap: wrap;
+  }
+  :root .cmp-form-workspace-header .cmp-form-close-button {
+    position: static;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    min-width: var(--pw-control-target);
+    min-height: var(--pw-control-target);
+  }
+  :root .cmp-client-form-workspace .cmp-form-workspace-content {
+    padding: var(--md-sys-space-3) 0;
+    scroll-padding-block: var(--md-sys-space-4);
+  }
+  :root .cmp-client-form-accordion {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  :root .cmp-client-form-accordion [data-slot="accordion-content"] > div {
+    padding: var(--md-sys-space-3) 0;
+  }
+  :root .cmp-form-subsection {
+    padding-inline: 0;
+  }
+  :root .cmp-form-subsection-grid,
+  :root .cmp-form-subsection-grid-two,
+  :root .cmp-form-field-row,
+  :root .cmp-client-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--md-sys-space-3);
+  }
+  :root .cmp-form-field-row > *,
+  :root .cmp-form-subsection-grid > * {
+    min-width: 0;
+    grid-column: auto;
+  }
+  :root .cmp-form-subsection-heading {
+    margin-block: 0 var(--md-sys-space-3);
+  }
+  :root .cmp-form-review-field dd {
+    border: 0;
+    border-radius: 0;
+    padding-inline: 0;
+    background: transparent;
+  }
+  :root .cmp-form-actions {
+    gap: var(--md-sys-space-2);
+    padding: var(--md-sys-space-3);
+    padding-bottom: max(var(--md-sys-space-3), env(safe-area-inset-bottom));
+    background: var(--md-sys-color-surface-container-lowest);
+  }
+  :root .cmp-form-section-nav,
+  :root .cmp-form-workspace-frame-panel > [data-slot="stepper"] {
+    box-shadow: none;
+    background: var(--md-sys-color-surface-container-low);
+  }
+  :root .cmp-client-form-shell :is(input, select, textarea) {
+    font-size: var(--md-sys-type-body-large);
+  }
+  :root .cmp-client-form-shell input:not([type="checkbox"]):not([type="radio"]),
+  :root .cmp-client-form-shell [data-slot="select-trigger"] {
+    min-height: var(--pw-control-target);
+  }
+}

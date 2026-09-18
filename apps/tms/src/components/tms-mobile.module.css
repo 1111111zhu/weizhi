@@ -1,0 +1,360 @@
+@media (width < 48rem) {
+  .appHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-space-2);
+    height: calc(var(--pw-control-target) + var(--md-sys-space-3));
+    padding-inline: var(--md-sys-space-3);
+    background: var(--md-sys-color-surface);
+    border-bottom: var(--md-sys-border-width) solid
+      var(--md-sys-color-outline-variant);
+  }
+  .appHeader strong {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--md-sys-type-title-medium);
+  }
+  .appHeader > button {
+    flex: none;
+    width: var(--pw-control-target);
+    min-height: var(--pw-control-target);
+    padding: 0;
+  }
+  .root {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    gap: var(--md-sys-space-3);
+    color: var(--md-sys-color-on-surface);
+    background: var(--md-sys-color-surface);
+  }
+  .padded {
+    padding: var(--md-sys-space-4);
+  }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--md-sys-space-2);
+    min-width: 0;
+  }
+  .timesheetPeriodBar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto var(--pw-control-target);
+    align-items: center;
+    gap: var(--md-sys-space-1);
+  }
+  .timesheetPeriodBar > button[data-size] {
+    min-width: 0;
+    min-height: var(--pw-control-target);
+    height: auto;
+    padding-inline: var(--md-sys-space-2);
+  }
+  .timesheetPeriodBar .controlLabel {
+    white-space: pre-line;
+    text-align: start;
+  }
+  .controlLabel {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .projectOptionButton {
+    height: auto;
+    padding: var(--md-sys-space-3);
+    text-align: start;
+  }
+  .projectOption {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    gap: var(--md-sys-space-1);
+    line-height: var(--md-sys-type-leading-body);
+    text-align: start;
+    overflow-wrap: anywhere;
+  }
+  .toolbar h2 {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: var(--md-sys-type-title-medium);
+    overflow-wrap: anywhere;
+  }
+  .toolbar > :first-child {
+    min-width: 0;
+  }
+  .toolbar > :last-child {
+    margin-inline-start: auto;
+  }
+  .toolbar > :global([data-slot="select-trigger"]),
+  .toolbar > input {
+    flex: 1;
+    width: 0;
+    min-width: 0;
+    min-height: var(--pw-control-target);
+  }
+  .menu,
+  .fields {
+    display: grid;
+    min-width: 0;
+    gap: var(--md-sys-space-3);
+  }
+  .settingsOptions {
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+    border: 0;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: var(--md-sys-space-2);
+  }
+  .settingsOptions > button {
+    width: 100%;
+    min-height: var(--pw-control-target);
+  }
+  .menu > button {
+    width: 100%;
+    min-height: var(--pw-control-target);
+    justify-content: flex-start;
+    white-space: normal;
+  }
+  .menu > button :global(.pw-button-label) {
+    justify-content: flex-start;
+  }
+  .fields label {
+    display: grid;
+    gap: var(--md-sys-space-2);
+    font-size: var(--md-sys-type-body-medium);
+    min-width: 0;
+  }
+  .fields > button {
+    width: 100%;
+    min-height: var(--pw-control-target);
+  }
+  .fields :is(input, textarea, [data-slot="select-trigger"]) {
+    min-height: var(--pw-control-target);
+    width: 100%;
+    font-size: var(--md-sys-type-body-large);
+  }
+  .list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .record {
+    padding-block: var(--md-sys-space-4);
+    border-bottom: var(--md-sys-border-width) solid
+      var(--md-sys-color-outline-variant);
+    min-width: 0;
+  }
+  .record[data-highlighted="true"] {
+    background: var(--md-sys-color-secondary-container);
+  }
+  .identity {
+    display: flex;
+    align-items: flex-start;
+    min-width: 0;
+    gap: var(--md-sys-space-2);
+  }
+  .identity > div {
+    flex: 1;
+    min-width: 0;
+  }
+  .identity strong {
+    display: block;
+    font-size: var(--md-sys-type-body-large);
+    font-weight: var(--md-sys-type-weight-emphasis);
+    overflow-wrap: anywhere;
+  }
+  .identity p,
+  .muted {
+    margin: var(--md-sys-space-1) 0 0;
+    font-size: var(--md-sys-type-body-medium);
+    color: var(--md-sys-color-on-surface-variant);
+    overflow-wrap: anywhere;
+  }
+  .identity > button {
+    flex: none;
+    width: var(--pw-control-target);
+    min-height: var(--pw-control-target);
+    padding: 0;
+  }
+  .hours {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--md-sys-space-3);
+    margin-top: var(--md-sys-space-3);
+    font-size: var(--md-sys-type-body-medium);
+  }
+  .hours input {
+    width: calc(var(--pw-control-target) * 2);
+    min-height: var(--pw-control-target);
+    font-size: var(--md-sys-type-body-large);
+    text-align: center;
+    background: var(--md-sys-color-surface-container-lowest);
+    border-radius: var(--md-sys-shape-medium);
+  }
+  .hours[data-state="returned"] input {
+    border-color: var(--md-sys-color-error);
+  }
+  .hours[data-state="approved"] {
+    color: var(--md-sys-color-primary);
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--md-sys-space-1);
+    padding: var(--md-sys-space-1) var(--md-sys-space-2);
+    border-radius: var(--md-sys-shape-small);
+    background: var(--md-sys-color-surface-container);
+    font-size: var(--md-sys-type-label-small);
+  }
+  .dayBar {
+    display: grid;
+    grid-template-columns: var(--pw-control-target) minmax(0, 1fr) var(
+        --pw-control-target
+      );
+    gap: var(--md-sys-space-2);
+    align-items: center;
+  }
+  .dayBar button {
+    min-height: var(--pw-control-target);
+    width: 100%;
+  }
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--md-sys-space-2);
+    padding-block: var(--md-sys-space-3);
+  }
+  .actions > button[data-size] {
+    width: 100%;
+    min-height: var(--pw-control-target);
+    height: auto;
+    white-space: normal;
+  }
+  .periodContext {
+    margin: 0;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: var(--md-sys-type-body-medium);
+    font-variant-numeric: tabular-nums;
+  }
+  .approvalDayHeader {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--md-sys-color-surface);
+  }
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--md-sys-space-3);
+  }
+  .metric {
+    display: grid;
+    gap: var(--md-sys-space-1);
+    padding: var(--md-sys-space-3);
+    border-radius: var(--md-sys-shape-medium);
+    background: var(--md-sys-color-surface-container-low);
+    font-size: var(--md-sys-type-body-medium);
+  }
+  .metric strong {
+    font-size: var(--md-sys-type-title-large);
+  }
+  .details {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--md-sys-space-3);
+    margin: 0;
+  }
+  .details dt {
+    font-size: var(--md-sys-type-label-small);
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  .details dd {
+    margin: var(--md-sys-space-1) 0 0;
+    overflow-wrap: anywhere;
+    font-size: var(--md-sys-type-body-medium);
+  }
+  .feedback {
+    padding: var(--md-sys-space-3);
+    border-radius: var(--md-sys-shape-medium);
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+    font-size: var(--md-sys-type-body-medium);
+  }
+  .empty {
+    min-width: 0;
+    padding: var(--md-sys-space-8) var(--md-sys-space-4);
+    text-align: center;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  .notice {
+    padding: var(--md-sys-space-3);
+    border-radius: var(--md-sys-shape-medium);
+    background: var(--md-sys-color-surface-container-low);
+    color: var(--md-sys-color-on-surface);
+    font-size: var(--md-sys-type-body-medium);
+  }
+  .approvalDay {
+    margin: 0;
+    min-width: 0;
+    border: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) repeat(
+        2,
+        calc(var(--pw-control-target) * 1.5)
+      );
+    gap: var(--md-sys-space-2);
+    align-items: center;
+    padding-block: var(--md-sys-space-2);
+    border-bottom: var(--md-sys-border-width) solid
+      var(--md-sys-color-outline-variant);
+    font-size: var(--md-sys-type-body-medium);
+  }
+  .approvalDay input {
+    width: 100%;
+    min-height: var(--pw-control-target);
+    font-size: var(--md-sys-type-body-large);
+    text-align: center;
+  }
+  .addForm :is(input, [data-slot="select-trigger"], button) {
+    min-height: var(--pw-control-target);
+    font-size: var(--md-sys-type-body-large);
+  }
+  .addForm :global([data-slot="dialog-footer"]) {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    display: grid;
+  }
+  .addForm :global([data-slot="button-group"]) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: var(--md-sys-space-2);
+  }
+  .addForm :global([data-slot="button-group"]) > button {
+    width: 100%;
+  }
+  .addForm p[aria-live] {
+    white-space: normal;
+    overflow: visible;
+  }
+  .addForm p[aria-live]:empty {
+    display: none;
+  }
+  .addForm :global([data-chargeable-fields]) > label > div > div[aria-label] {
+    position: static;
+    max-width: 100%;
+    box-shadow: none;
+  }
+}

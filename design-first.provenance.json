@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "implementationRoots": [
+    {
+      "path": "packages/ui/src",
+      "scope": "shared",
+      "kind": "shared-design-system",
+      "publicImport": "@project-wing/ui",
+      "publicEntry": "packages/ui/src/index.ts"
+    },
+    {
+      "path": "apps/emp/src/components/ui",
+      "scope": "emp",
+      "kind": "app-wrapper"
+    },
+    {
+      "path": "apps/emp/src/components/reui",
+      "scope": "emp",
+      "kind": "vendored-registry"
+    },
+    {
+      "path": "apps/emp/src/components/extend/ui",
+      "scope": "emp",
+      "kind": "vendored-registry"
+    },
+    {
+      "path": "apps/emp/src/components/extend",
+      "scope": "emp",
+      "kind": "third-party-adapter"
+    },
+    {
+      "path": "apps/emp/src/components/motion",
+      "scope": "emp",
+      "kind": "motion-component"
+    },
+    {
+      "path": "apps/emp/src/components",
+      "scope": "emp",
+      "kind": "application-component"
+    },
+    {
+      "path": "apps/cmp/src/components/ui",
+      "scope": "cmp",
+      "kind": "app-wrapper"
+    },
+    {
+      "path": "apps/cmp/src/components/reui",
+      "scope": "cmp",
+      "kind": "vendored-registry"
+    },
+    {
+      "path": "apps/cmp/src/components",
+      "scope": "cmp",
+      "kind": "application-component"
+    },
+    {
+      "path": "apps/tms/src/components/ui",
+      "scope": "tms",
+      "kind": "app-wrapper"
+    },
+    {
+      "path": "apps/tms/src/components",
+      "scope": "tms",
+      "kind": "application-component"
+    },
+    {
+      "path": "apps/intranet/src/components/ui",
+      "scope": "intranet",
+      "kind": "app-wrapper"
+    },
+    {
+      "path": "apps/intranet/src/components",
+      "scope": "intranet",
+      "kind": "application-component"
+    },
+    {
+      "path": "apps/ib/src/components",
+      "scope": "ib",
+      "kind": "application-component"
+    },
+    {
+      "path": "apps/ui-showroom/registry/new-york",
+      "scope": "showroom",
+      "kind": "showroom-specimen"
+    },
+    {
+      "path": "apps/ui-showroom/components/ui",
+      "scope": "showroom",
+      "kind": "showroom-wrapper"
+    },
+    {
+      "path": "apps/ui-showroom/components",
+      "scope": "showroom",
+      "kind": "showroom-chrome"
+    }
+  ],
+  "consumerRoots": [
+    "packages/ui/src",
+    "apps/emp/src",
+    "apps/cmp/src",
+    "apps/tms/src",
+    "apps/intranet/src",
+    "apps/ib/src",
+    "apps/ui-showroom"
+  ],
+  "tokenRoots": [
+    "packages/ui/src",
+    "apps/emp/src",
+    "apps/cmp/src",
+    "apps/tms/src",
+    "apps/intranet/src",
+    "apps/ib/src",
+    "apps/ui-showroom/constants",
+    "apps/ui-showroom/lib",
+    "apps/ui-showroom/styles"
+  ],
+  "manifestPaths": [
+    "package.json",
+    "packages/ui/package.json",
+    "apps/emp/package.json",
+    "apps/cmp/package.json",
+    "apps/tms/package.json",
+    "apps/intranet/package.json",
+    "apps/ib/package.json",
+    "apps/ui-showroom/package.json"
+  ],
+  "excludeGlobs": [
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/.next-*/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/*.d.ts",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "apps/ui-showroom/public/r/**"
+  ],
+  "outputPath": "docs/ui-provenance.generated.json"
+}

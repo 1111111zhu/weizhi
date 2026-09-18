@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/design-first/design-system-registry.schema.json",
+  "title": "DesignFirst Design System Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "project",
+    "approval",
+    "components",
+    "exceptions"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "scale",
+        "archetype",
+        "designSystemRoot",
+        "publicEntry",
+        "showroomRoot"
+      ],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "scale": { "enum": ["compact", "long-lived"] },
+        "archetype": { "type": "string", "minLength": 1 },
+        "designSystemRoot": { "type": "string", "minLength": 1 },
+        "publicEntry": { "type": "string", "minLength": 1 },
+        "showroomRoot": { "type": "string", "minLength": 1 }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "approvedBy", "approvedAt", "provenanceHash"],
+      "properties": {
+        "status": { "enum": ["proposed", "revision-requested", "approved"] },
+        "approvedBy": { "type": ["string", "null"] },
+        "approvedAt": { "type": ["string", "null"], "format": "date-time" },
+        "provenanceHash": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/component" }
+    },
+    "exceptions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/exception" }
+    }
+  },
+  "$defs": {
+    "testPaths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interaction",
+        "keyboard",
+        "accessibility",
+        "visual",
+        "responsive"
+      ],
+      "properties": {
+        "interaction": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "keyboard": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "accessibility": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "visual": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "responsive": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "layer",
+        "category",
+        "status",
+        "publicExport",
+        "sourcePath",
+        "showroomPath",
+        "showroomSource",
+        "requiredStates",
+        "coveredStates",
+        "tests",
+        "replacement",
+        "notes"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "name": { "type": "string", "minLength": 1 },
+        "layer": {
+          "enum": ["foundation", "primitive", "pattern", "layout", "archetype"]
+        },
+        "category": { "type": "string", "minLength": 1 },
+        "status": {
+          "enum": ["planned", "experimental", "ready", "deprecated"]
+        },
+        "publicExport": { "type": ["string", "null"] },
+        "sourcePath": { "type": ["string", "null"] },
+        "showroomPath": { "type": ["string", "null"] },
+        "showroomSource": { "type": ["string", "null"] },
+        "requiredStates": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "coveredStates": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "tests": { "$ref": "#/$defs/testPaths" },
+        "replacement": { "type": ["string", "null"] },
+        "notes": { "type": "string" }
+      }
+    },
+    "exception": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capabilityId",
+        "status",
+        "reason",
+        "futureCost",
+        "disposition",
+        "approvedBy",
+        "approvedAt"
+      ],
+      "properties": {
+        "capabilityId": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "status": { "enum": ["proposed", "approved", "rejected"] },
+        "reason": { "type": "string", "minLength": 1 },
+        "futureCost": { "type": "string", "minLength": 1 },
+        "disposition": { "enum": ["permanent", "deferred"] },
+        "approvedBy": { "type": ["string", "null"] },
+        "approvedAt": { "type": ["string", "null"], "format": "date-time" }
+      }
+    }
+  }
+}

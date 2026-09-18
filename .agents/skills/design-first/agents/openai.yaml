@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design First"
+  short_description: "Lock the UI system before product implementation"
+  default_prompt: "Use $design-first to establish and approve the design system before building product screens."

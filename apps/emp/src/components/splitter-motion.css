@@ -1,0 +1,47 @@
+/* EMP panel toggles share the confirmation navigation's motion. */
+[data-slot="resizable-panel-group"]:has(> [data-slot="splitter-rail"])
+  > [data-panel],
+.emp-splitter-panel {
+  transition-property:
+    width, height, flex-grow, flex-basis, opacity, padding, border-color;
+  transition-duration: var(--motion-panel);
+  transition-timing-function: var(--motion-ease-emphasized);
+}
+
+/* Never interpolate live pointer movement, including nested panel groups. */
+[data-slot="resizable-panel-group"][data-restoring-layout="true"]
+  > [data-panel],
+[data-slot="resizable-panel-group"]:has(
+    [data-resize-state="dragging"],
+    [data-separator="active"]
+  )
+  > [data-panel],
+.emp-splitter-layout:has(> [data-resize-state="dragging"])
+  > .emp-splitter-panel,
+.emp-splitter-panel:has([data-resize-state="dragging"]) {
+  transition: none;
+}
+
+.emp-splitter-detail-closing {
+  pointer-events: none;
+  overflow: hidden;
+  animation: emp-splitter-close var(--motion-panel)
+    var(--motion-ease-emphasized) forwards;
+}
+
+@keyframes emp-splitter-close {
+  to {
+    width: 0;
+    min-width: 0;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="resizable-panel-group"]:has(> [data-slot="splitter-rail"])
+    > [data-panel],
+  .emp-splitter-panel {
+    transition: none;
+    animation: none;
+  }
+}

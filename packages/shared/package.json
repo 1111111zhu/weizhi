@@ -1,0 +1,70 @@
+{
+  "name": "@project-wing/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./pdf-rich-note": {
+      "types": "./dist/pdf-rich-note.d.ts",
+      "import": "./dist/pdf-rich-note.js",
+      "require": "./dist/pdf-rich-note.js",
+      "default": "./dist/pdf-rich-note.js"
+    },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./cmp-client-profile": {
+      "types": "./dist/cmp-client-profile.d.ts",
+      "import": "./dist/cmp-client-profile.js",
+      "require": "./dist/cmp-client-profile.js",
+      "default": "./dist/cmp-client-profile.js"
+    },
+    "./cmp-entity-graph": {
+      "types": "./dist/cmp-entity-graph.d.ts",
+      "import": "./dist/cmp-entity-graph.js",
+      "require": "./dist/cmp-entity-graph.js",
+      "default": "./dist/cmp-entity-graph.js"
+    },
+    "./cmp-entity-maps": {
+      "types": "./dist/cmp-entity-maps.d.ts",
+      "import": "./dist/cmp-entity-maps.js",
+      "require": "./dist/cmp-entity-maps.js",
+      "default": "./dist/cmp-entity-maps.js"
+    },
+    "./cmp-record-preview": {
+      "types": "./dist/cmp-record-preview.d.ts",
+      "import": "./dist/cmp-record-preview.js",
+      "require": "./dist/cmp-record-preview.js",
+      "default": "./dist/cmp-record-preview.js"
+    },
+    "./desktop": {
+      "types": "./dist/desktop.d.ts",
+      "import": "./dist/desktop.js",
+      "require": "./dist/desktop.js",
+      "default": "./dist/desktop.js"
+    },
+    "./confirmation-logistics": {
+      "types": "./dist/confirmation-logistics.d.ts",
+      "import": "./dist/confirmation-logistics.js",
+      "require": "./dist/confirmation-logistics.js",
+      "default": "./dist/confirmation-logistics.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node --input-type=module -e \"import('./dist/index.js')\"",
+    "test": "vitest run src",
+    "test:ci": "vitest run src",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.15"
+  }
+}

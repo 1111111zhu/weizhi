@@ -1,0 +1,111 @@
+.navigationPanel {
+  transition-property: width, opacity, padding, border-color;
+  transition-duration: var(--motion-panel);
+  transition-timing-function: var(--motion-ease-emphasized);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navigationPanel {
+    transition: none;
+  }
+}
+
+.navigationWidth184 {
+  width: 184px;
+}
+
+.navigationWidth192 {
+  width: 192px;
+}
+
+.navigationWidth200 {
+  width: 200px;
+}
+
+.navigationWidth208 {
+  width: 208px;
+}
+
+.navigationWidth216 {
+  width: 216px;
+}
+
+.navigationWidth224 {
+  width: 224px;
+}
+
+.navigationWidth232 {
+  width: 232px;
+}
+
+.navigationWidth240 {
+  width: 240px;
+}
+
+.navigationWidth248 {
+  width: 248px;
+}
+
+.navigationWidth256 {
+  width: 256px;
+}
+
+.navigationWidth264 {
+  width: 264px;
+}
+
+.navigationWidth272 {
+  width: 272px;
+}
+
+.navigationWidth280 {
+  width: 280px;
+}
+
+.navigationWidth288 {
+  width: 288px;
+}
+
+.navigationWidth296 {
+  width: 296px;
+}
+
+.navigationWidth304 {
+  width: 304px;
+}
+
+.navigationWidth312 {
+  width: 312px;
+}
+
+.navigationWidth320 {
+  width: 320px;
+}
+
+.overviewTable {
+  min-width: 62rem;
+}
+
+.projectColumn {
+  width: 24%;
+}
+
+.timelineColumn {
+  width: 22%;
+}
+
+.progressColumn {
+  width: 34%;
+}
+
+.countColumn {
+  width: 10%;
+}
+
+.progressLabels {
+  font-size: 11px;
+}
+
+.skeletonRow {
+  grid-template-columns: 1.3fr 1fr 1.4fr 0.55fr 0.45fr;
+}

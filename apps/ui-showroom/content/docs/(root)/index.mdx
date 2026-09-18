@@ -1,0 +1,71 @@
+---
+title: Introduction
+description: ProjectWing UI Showroom and registry for shared component review.
+---
+
+The **ProjectWing UI Showroom** is the review surface for Project Wing's shared UI and registry components. It brings implementation examples, provenance signals, and installable registry output into one place.
+
+## What You Get
+
+- **Shared component specimens** - Inspect the states and usage patterns represented by the Showroom.
+- **Provenance and review context** - See whether an item comes from the shared package, the Showroom registry, or another implementation layer.
+- **Registry distribution** - Install published items with the shadcn CLI and inspect the source before adopting it.
+- **Machine-readable discovery** - Use the Showroom's documentation, registry, and discovery endpoints when integrating with tools.
+- **Repository governance** - Contributions remain subject to Project Wing's design-system registry, evidence, and review process.
+
+## How It Works
+
+1. Open a component specimen and inspect its documented states.
+2. Review the item's source and provenance before treating it as an accepted shared contract.
+3. Install an item from the published registry, or propose a change in the [ProjectWing repository](https://github.com/fin-agent-lab/ProjectWing).
+
+The Showroom is evidence and documentation for the repository. A visible specimen is not, by itself, an approval for product use.
+
+## Registry Usage
+
+The registry is generated from `apps/ui-showroom/registry.json`. The generated item endpoints are versioned with the repository and should be reviewed alongside their source files and dependency declarations.
+
+<RegistryInstallCommand name="button" />
+
+Before installing an item, check its provenance, dependencies, and target conventions. The registry distributes source code for inspection and adaptation; it does not replace the repository review process.
+
+## Contribution Review
+
+ProjectWing changes are proposed through the repository and evaluated against the design-system registry, implementation provenance, accessibility, interaction evidence, and UI stack guardrails. The review state shown by the Showroom should be read together with that repository evidence.
+
+<Accordion type="multiple">
+
+<AccordionItem value="faq-1">
+<AccordionTrigger>
+Why publish source instead of a package?
+</AccordionTrigger>
+<AccordionContent>
+
+Registry items keep the implementation visible and adaptable. You can inspect the source, review its dependencies, and make an informed decision about how it fits your application.
+
+</AccordionContent>
+</AccordionItem>
+
+<AccordionItem value="faq-2">
+<AccordionTrigger>
+How should I propose a change?
+</AccordionTrigger>
+<AccordionContent>
+
+Open an issue or pull request in the [ProjectWing repository](https://github.com/fin-agent-lab/ProjectWing) with the affected source, intended behavior, and the verification evidence required by the design-system registry.
+
+</AccordionContent>
+</AccordionItem>
+
+<AccordionItem value="faq-3">
+<AccordionTrigger>
+What does a Showroom item mean?
+</AccordionTrigger>
+<AccordionContent>
+
+A Showroom item is a documented implementation or registry entry. Its provenance and review state explain how it relates to Project Wing; visibility alone does not mark it as approved for every product surface.
+
+</AccordionContent>
+</AccordionItem>
+
+</Accordion>

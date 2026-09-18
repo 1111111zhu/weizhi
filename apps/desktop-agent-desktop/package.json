@@ -1,0 +1,43 @@
+{
+  "name": "@project-wing/desktop-agent-desktop",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Project Wing Desktop Agent tray host",
+  "author": "Project Wing",
+  "type": "module",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "package:dir": "corepack pnpm build && electron-builder --dir --config electron-builder.config.mjs",
+    "package:macos": "node scripts/package-macos.mjs",
+    "package:windows": "node scripts/package-velopack.mjs"
+  },
+  "dependencies": {
+    "@fluentui/react-icons": "^2.0.334",
+    "@fontsource-variable/geist": "5.3.0",
+    "@project-wing/ui": "workspace:*",
+    "lucide-react": "^0.562.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "velopack": "1.2.0"
+  },
+  "devDependencies": {
+    "@electron-toolkit/preload": "3.0.2",
+    "@electron-toolkit/utils": "4.0.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "^24.10.2",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "6.1.0",
+    "electron": "43.4.1",
+    "electron-builder": "26.15.3",
+    "electron-vite": "5.0.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "^6.0.3",
+    "vite": "8.0.16",
+    "vitest": "^4.0.15"
+  }
+}

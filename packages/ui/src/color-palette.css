@@ -1,0 +1,101 @@
+/* Canonical enterprise palette. Apps alias these roles; never use a filled
+ * status foreground on a subtle status surface. Keep light/dark pairs tested. */
+:root {
+  --pw-color-background: #f7f8f6;
+  --pw-color-foreground: #232824;
+  --pw-color-card: #ffffff;
+  --pw-color-card-foreground: #232824;
+  --pw-color-popover: #ffffff;
+  --pw-color-popover-foreground: #232824;
+  --pw-color-primary: #008542;
+  --pw-color-primary-foreground: #ffffff;
+  --pw-color-secondary: #f2f5f1;
+  --pw-color-secondary-foreground: #3f4742;
+  --pw-color-muted: #f5f7f4;
+  --pw-color-muted-foreground: #68716a;
+  --pw-color-surface: #ffffff;
+  --pw-color-surface-foreground: #3f4742;
+  --pw-color-accent: #eaf7ef;
+  --pw-color-accent-foreground: #145a36;
+  --pw-color-border: #e3e7e2;
+  --pw-color-input: #7d897f;
+  --pw-color-ring: #008542;
+  --pw-color-success: #08783b;
+  --pw-color-success-foreground: #ffffff;
+  --pw-color-success-subtle: #e7f6ed;
+  --pw-color-success-text: #08783b;
+  --pw-color-warning: #b05d00;
+  --pw-color-warning-foreground: #ffffff;
+  --pw-color-warning-subtle: #fff1d6;
+  --pw-color-warning-text: #a65300;
+  --pw-color-info: #087ca7;
+  --pw-color-info-foreground: #ffffff;
+  --pw-color-info-subtle: #e9f5fc;
+  --pw-color-info-text: #086f99;
+  --pw-color-destructive: #d13b3b;
+  --pw-color-destructive-foreground: #ffffff;
+  --pw-color-destructive-subtle: #fff0ef;
+  --pw-color-destructive-text: #b82f2f;
+  /* Graphic accents are independent of small-text colors. A readable label
+     must not force every status indicator to become a dark, muted color. */
+  --pw-color-success-accent: #16b364;
+  --pw-color-success-accent-foreground: #073018;
+  --pw-color-warning-accent: #ff9f1c;
+  --pw-color-warning-accent-foreground: #3b260a;
+  --pw-color-info-accent: #1687e8;
+  --pw-color-info-accent-foreground: #05182a;
+  --pw-color-destructive-accent: #ef5350;
+  --pw-color-destructive-accent-foreground: #360e12;
+  --pw-color-brand-tint-source: #008542;
+  --pw-color-brand-tint: #edf7f1;
+  --pw-color-brand-tint-soft: #f6fbf8;
+}
+
+.dark {
+  --pw-color-background: #151d25;
+  --pw-color-foreground: #edf2f5;
+  --pw-color-card: #202b35;
+  --pw-color-card-foreground: #edf2f5;
+  --pw-color-popover: #202b35;
+  --pw-color-popover-foreground: #edf2f5;
+  --pw-color-primary: #74d3a0;
+  --pw-color-primary-foreground: #10291b;
+  --pw-color-secondary: #293640;
+  --pw-color-secondary-foreground: #e3eaef;
+  --pw-color-muted: #26323c;
+  --pw-color-muted-foreground: #b4c1cb;
+  --pw-color-surface: #1c2730;
+  --pw-color-surface-foreground: #d7e1e8;
+  --pw-color-accent: #243f31;
+  --pw-color-accent-foreground: #b1e6c8;
+  --pw-color-border: #43515d;
+  --pw-color-input: #728390;
+  --pw-color-ring: #74d3a0;
+  --pw-color-success: #80d5a4;
+  --pw-color-success-foreground: #10291b;
+  --pw-color-success-subtle: #223e30;
+  --pw-color-success-text: #a4e1bd;
+  --pw-color-warning: #eac17b;
+  --pw-color-warning-foreground: #302008;
+  --pw-color-warning-subtle: #423522;
+  --pw-color-warning-text: #f1d49a;
+  --pw-color-info: #8ac9e6;
+  --pw-color-info-foreground: #102b3a;
+  --pw-color-info-subtle: #223b49;
+  --pw-color-info-text: #acd9ee;
+  --pw-color-destructive: #f19c9c;
+  --pw-color-destructive-foreground: #391919;
+  --pw-color-destructive-subtle: #462b30;
+  --pw-color-destructive-text: #f5bbbb;
+  --pw-color-success-accent: #16b364;
+  --pw-color-success-accent-foreground: #073018;
+  --pw-color-warning-accent: #ff9f1c;
+  --pw-color-warning-accent-foreground: #3b260a;
+  --pw-color-info-accent: #1687e8;
+  --pw-color-info-accent-foreground: #05182a;
+  --pw-color-destructive-accent: #ef5350;
+  --pw-color-destructive-accent-foreground: #360e12;
+  --pw-color-brand-tint-source: #74d3a0;
+  --pw-color-brand-tint: #243f31;
+  --pw-color-brand-tint-soft: #21342b;
+}

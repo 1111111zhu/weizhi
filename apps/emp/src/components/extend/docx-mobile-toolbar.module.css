@@ -1,0 +1,174 @@
+@media (width < 48rem) {
+  .toolbar {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    min-width: 0;
+    padding: var(--md-sys-space-1);
+    color: var(--md-sys-color-on-surface-variant);
+    background: var(--md-sys-color-surface);
+    border-bottom: var(--md-sys-border-width) solid
+      var(--md-sys-color-outline-variant);
+  }
+
+  .pageNavigation {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toolbar .iconButton,
+  .tools .iconButton {
+    width: var(--pw-control-target);
+    min-width: var(--pw-control-target);
+    height: var(--pw-control-target);
+    padding: 0;
+    justify-content: center;
+  }
+
+  .toolbar svg,
+  .tools svg {
+    width: var(--md-sys-space-5);
+    height: var(--md-sys-space-5);
+  }
+
+  .toolbar[data-docx-mobile-toolbar]
+    [data-slot="button"]:is(:disabled, [aria-disabled="true"]) {
+    background: transparent;
+    border-color: transparent;
+    color: var(--md-sys-color-on-surface-variant);
+    opacity: var(--md-sys-state-disabled-opacity);
+    box-shadow: none;
+  }
+
+  .toolbar .pageButton {
+    min-width: calc(var(--md-sys-space-6) * 2);
+    min-height: var(--pw-control-target);
+    height: auto;
+    padding-inline: var(--md-sys-space-1);
+    font-size: var(--md-sys-type-body-medium);
+    font-weight: var(--md-sys-type-weight-emphasis);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pageTotal {
+    color: var(--md-sys-color-on-surface-variant);
+    font-weight: var(--md-sys-type-weight-regular);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pageForm,
+  .zoomStepper {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-space-2);
+    min-width: 0;
+  }
+
+  .pageForm [data-slot="input-control"] {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .tools {
+    display: grid;
+    gap: var(--md-sys-space-3);
+    min-width: 0;
+  }
+
+  .zoomStepper > span {
+    flex: 1;
+    font-size: var(--md-sys-type-body-medium);
+    font-weight: var(--md-sys-type-weight-emphasis);
+  }
+
+  .zoomStepper output {
+    min-width: var(--md-sys-space-12);
+    text-align: center;
+    font-size: var(--md-sys-type-body-medium);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .zoomPresets {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--md-sys-space-1);
+  }
+
+  .fitModes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--md-sys-space-1);
+  }
+
+  .zoomPresets [data-slot="button"],
+  .fitModes [data-slot="button"] {
+    width: 100%;
+    min-height: var(--pw-control-target);
+    height: auto;
+    padding: var(--md-sys-space-1);
+    justify-content: center;
+    font-size: var(--md-sys-type-label-large);
+    border-radius: var(--md-sys-shape-small);
+    white-space: normal;
+  }
+
+  .tools [aria-pressed="true"] {
+    color: var(--md-sys-color-on-secondary-container);
+    background: var(--md-sys-color-secondary-container);
+  }
+
+  .optionList {
+    display: grid;
+    gap: var(--md-sys-space-1);
+    border-top: var(--md-sys-border-width) solid
+      var(--md-sys-color-outline-variant);
+    padding-top: var(--md-sys-space-2);
+  }
+
+  .tools .option {
+    width: 100%;
+    min-height: var(--pw-control-target);
+    justify-content: flex-start;
+    font-size: var(--md-sys-type-body-medium);
+    border-radius: var(--md-sys-shape-small);
+  }
+
+  .option > :global(.pw-button-label) {
+    width: 100%;
+  }
+
+  .optionContent {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-space-3);
+    width: 100%;
+  }
+
+  .optionContent > span {
+    flex: 1;
+    text-align: start;
+  }
+
+  .unchecked {
+    visibility: hidden;
+  }
+
+  .extraActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--md-sys-space-2);
+    padding-top: var(--md-sys-space-2);
+    border-top: var(--md-sys-border-width) solid
+      var(--md-sys-color-outline-variant);
+  }
+
+  .extraActions [data-slot="button"] {
+    width: var(--pw-control-target);
+    height: var(--pw-control-target);
+    justify-content: center;
+  }
+}

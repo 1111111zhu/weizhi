@@ -1,0 +1,284 @@
+:root {
+  --emp-motion-enter: 260ms;
+  --emp-motion-exit: 180ms;
+  --emp-motion-menu-enter: 220ms;
+  --emp-motion-menu-exit: 180ms;
+  --emp-motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --emp-motion-dialog-enter: 280ms;
+  --emp-motion-dialog-exit: 200ms;
+  --emp-motion-sheet-enter: 280ms;
+  --emp-motion-sheet-exit: 200ms;
+  --emp-motion-collapsible-enter: 240ms;
+  --emp-motion-collapsible-exit: 180ms;
+}
+
+.emp-surface-motion-backdrop {
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: var(--emp-motion-enter);
+  transition-timing-function: var(--emp-motion-ease);
+}
+
+.emp-surface-motion-backdrop[data-starting-style],
+.emp-surface-motion-backdrop[data-ending-style] {
+  opacity: 0;
+}
+
+.emp-surface-motion-backdrop[data-ending-style] {
+  transition-duration: var(--emp-motion-exit);
+}
+
+.emp-surface-motion-dialog {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0) scale(1);
+  transition-property: opacity, transform;
+  transition-duration: var(--emp-motion-dialog-enter);
+  transition-timing-function: var(--emp-motion-ease);
+}
+
+.emp-surface-motion-dialog[data-starting-style],
+.emp-surface-motion-dialog[data-ending-style] {
+  opacity: 0;
+  transform: translate(-50%, -50%) translateY(6px) scale(0.96);
+  will-change: opacity, transform;
+}
+
+.emp-surface-motion-dialog[data-ending-style] {
+  transition-duration: var(--emp-motion-dialog-exit);
+}
+
+.emp-surface-motion-anchored,
+.emp-surface-motion-menu {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+  transition-property: opacity, transform;
+  transition-duration: var(--emp-motion-enter);
+  transition-timing-function: var(--emp-motion-ease);
+}
+
+.emp-surface-motion-menu {
+  transition-duration: var(--emp-motion-menu-enter);
+}
+
+/* Base UI's Viewport supplies measured sizes when document tools change content. */
+.emp-surface-motion-resizable {
+  transition-property: width, height, opacity, transform;
+}
+
+.emp-surface-motion-anchored[data-side="bottom"],
+.emp-surface-motion-menu[data-side="bottom"] {
+  --emp-surface-motion-offset-x: 0;
+  --emp-surface-motion-offset-y: -6px;
+}
+
+.emp-surface-motion-anchored[data-side="top"],
+.emp-surface-motion-menu[data-side="top"] {
+  --emp-surface-motion-offset-x: 0;
+  --emp-surface-motion-offset-y: 6px;
+}
+
+.emp-surface-motion-anchored[data-side="left"],
+.emp-surface-motion-menu[data-side="left"],
+.emp-surface-motion-anchored[data-side="inline-start"],
+.emp-surface-motion-menu[data-side="inline-start"] {
+  --emp-surface-motion-offset-x: 6px;
+  --emp-surface-motion-offset-y: 0;
+}
+
+.emp-surface-motion-anchored[data-side="right"],
+.emp-surface-motion-menu[data-side="right"],
+.emp-surface-motion-anchored[data-side="inline-end"],
+.emp-surface-motion-menu[data-side="inline-end"] {
+  --emp-surface-motion-offset-x: -6px;
+  --emp-surface-motion-offset-y: 0;
+}
+
+.emp-surface-motion-anchored[data-align-trigger="true"],
+.emp-surface-motion-menu[data-align-trigger="true"] {
+  --emp-surface-motion-offset-x: 0;
+  --emp-surface-motion-offset-y: 0;
+}
+
+.emp-surface-motion-anchored[data-starting-style],
+.emp-surface-motion-anchored[data-ending-style],
+.emp-surface-motion-menu[data-starting-style],
+.emp-surface-motion-menu[data-ending-style] {
+  opacity: 0;
+  transform: translate(
+      var(--emp-surface-motion-offset-x, 0),
+      var(--emp-surface-motion-offset-y, 0)
+    )
+    scale(0.96);
+}
+
+.emp-surface-motion-anchored[data-ending-style],
+.emp-surface-motion-menu[data-ending-style] {
+  transition-duration: var(--emp-motion-exit);
+}
+
+.emp-surface-motion-menu[data-ending-style] {
+  transition-duration: var(--emp-motion-menu-exit);
+}
+
+.emp-surface-motion-menu[data-ending-style] {
+  overflow: hidden;
+}
+
+/* Shared data-grid headers render their menu through the shared package. Keep
+   those EMP consumers on the same Base UI transition contract without
+   changing the shared package. */
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu),
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu) {
+  animation: none;
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+  transition-property: opacity, transform;
+  transition-duration: var(--emp-motion-menu-enter);
+  transition-timing-function: var(--emp-motion-ease);
+}
+
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-side="bottom"],
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-side="bottom"] {
+  --emp-surface-motion-offset-x: 0;
+  --emp-surface-motion-offset-y: -6px;
+}
+
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-side="top"],
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-side="top"] {
+  --emp-surface-motion-offset-x: 0;
+  --emp-surface-motion-offset-y: 6px;
+}
+
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-side="left"],
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-side="left"],
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-side="inline-start"],
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-side="inline-start"] {
+  --emp-surface-motion-offset-x: 6px;
+  --emp-surface-motion-offset-y: 0;
+}
+
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-side="right"],
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-side="right"],
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-side="inline-end"],
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-side="inline-end"] {
+  --emp-surface-motion-offset-x: -6px;
+  --emp-surface-motion-offset-y: 0;
+}
+
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-align-trigger="true"],
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-align-trigger="true"] {
+  --emp-surface-motion-offset-x: 0;
+  --emp-surface-motion-offset-y: 0;
+}
+
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-starting-style],
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-ending-style],
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-starting-style],
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-ending-style] {
+  opacity: 0;
+  transform: translate(
+      var(--emp-surface-motion-offset-x, 0),
+      var(--emp-surface-motion-offset-y, 0)
+    )
+    scale(0.96);
+}
+
+[data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-ending-style],
+[data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-ending-style] {
+  overflow: hidden;
+  transition-duration: var(--emp-motion-menu-exit);
+}
+
+.emp-surface-motion-sheet {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+  transition-property: opacity, transform;
+  transition-duration: var(--emp-motion-sheet-enter);
+  transition-timing-function: var(--emp-motion-ease);
+}
+
+.emp-surface-motion-sheet[data-side="bottom"][data-starting-style],
+.emp-surface-motion-sheet[data-side="bottom"][data-ending-style] {
+  opacity: 0;
+  transform: translate(0, 6px) scale(0.99);
+}
+
+.emp-surface-motion-sheet[data-side="top"][data-starting-style],
+.emp-surface-motion-sheet[data-side="top"][data-ending-style] {
+  opacity: 0;
+  transform: translate(0, -6px) scale(0.99);
+}
+
+.emp-surface-motion-sheet[data-side="left"][data-starting-style],
+.emp-surface-motion-sheet[data-side="left"][data-ending-style] {
+  opacity: 0;
+  transform: translate(-6px, 0) scale(0.99);
+}
+
+.emp-surface-motion-sheet[data-side="right"][data-starting-style],
+.emp-surface-motion-sheet[data-side="right"][data-ending-style] {
+  opacity: 0;
+  transform: translate(6px, 0) scale(0.99);
+}
+
+.emp-surface-motion-sheet[data-ending-style] {
+  transition-duration: var(--emp-motion-sheet-exit);
+}
+
+.emp-surface-motion-collapsible {
+  height: var(--collapsible-panel-height);
+  opacity: 1;
+  overflow: hidden;
+  transition-property: height, opacity;
+  transition-duration: var(--emp-motion-collapsible-enter);
+  transition-timing-function: var(--emp-motion-ease);
+}
+
+.emp-surface-motion-collapsible[data-starting-style],
+.emp-surface-motion-collapsible[data-ending-style] {
+  height: 0;
+  opacity: 0;
+}
+
+.emp-surface-motion-collapsible[data-ending-style] {
+  transition-duration: var(--emp-motion-collapsible-exit);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emp-surface-motion-backdrop,
+  .emp-surface-motion-dialog,
+  .emp-surface-motion-anchored,
+  .emp-surface-motion-menu,
+  .emp-surface-motion-sheet,
+  .emp-surface-motion-collapsible,
+  [data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu),
+  [data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu) {
+    animation: none !important;
+    transition-property: opacity !important;
+    transition-duration: 120ms !important;
+    transition-timing-function: linear;
+  }
+
+  .emp-surface-motion-dialog[data-starting-style],
+  .emp-surface-motion-dialog[data-ending-style],
+  .emp-surface-motion-anchored[data-starting-style],
+  .emp-surface-motion-anchored[data-ending-style],
+  .emp-surface-motion-menu[data-starting-style],
+  .emp-surface-motion-menu[data-ending-style],
+  .emp-surface-motion-sheet[data-starting-style],
+  .emp-surface-motion-sheet[data-ending-style] {
+    transform: translate(0, 0) scale(1) !important;
+  }
+
+  [data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-starting-style],
+  [data-slot="dropdown-menu-content"]:not(.emp-surface-motion-menu)[data-ending-style],
+  [data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-starting-style],
+  [data-slot="dropdown-menu-sub-content"]:not(.emp-surface-motion-menu)[data-ending-style] {
+    transform: none !important;
+  }
+
+  .emp-surface-motion-dialog[data-starting-style],
+  .emp-surface-motion-dialog[data-ending-style] {
+    transform: translate(-50%, -50%) translateY(0) scale(1) !important;
+  }
+}

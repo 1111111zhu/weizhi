@@ -1,0 +1,81 @@
+.fillHeight {
+  height: 100%;
+}
+
+.resizeHandleDot {
+  inset: 4px;
+}
+
+.fieldDeleteAction {
+  width: 18px;
+  height: 18px;
+  right: -28px;
+}
+
+.horizontalRuler {
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0,
+    transparent 15px,
+    color-mix(in srgb, var(--muted-foreground) 55%, transparent) 15px,
+    color-mix(in srgb, var(--muted-foreground) 55%, transparent) 16px
+  );
+}
+
+.verticalRuler {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 15px,
+    color-mix(in srgb, var(--muted-foreground) 55%, transparent) 15px,
+    color-mix(in srgb, var(--muted-foreground) 55%, transparent) 16px
+  );
+}
+
+.inspector {
+  width: 330px;
+  max-width: 42%;
+  display: flex;
+  flex-direction: column;
+}
+
+.canvasSection {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.canvasHeading {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-basis: 100%;
+}
+
+.headingDivider {
+  flex: 1;
+  border-top: 1px solid var(--border);
+}
+
+.sectionHeading {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.sidebarPopup {
+  max-height: min(480px, 75vh);
+  overflow-y: auto;
+  width: 310px;
+}

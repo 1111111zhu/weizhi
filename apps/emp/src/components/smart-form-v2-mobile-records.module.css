@@ -1,0 +1,89 @@
+.records {
+  display: none;
+}
+
+@media (width < 48rem) {
+  .records {
+    display: block;
+    min-width: 0;
+  }
+  .record {
+    padding-block: var(--md-sys-space-4);
+    border-bottom: var(--md-sys-border-width) solid
+      var(--md-sys-color-outline-variant);
+  }
+  .record[data-row-role="group"] {
+    padding-block: 0.75rem;
+    background: var(--muted);
+  }
+  .heading {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .heading [data-smart-form-procedure-depth] {
+    margin-inline: 0;
+    padding-inline: 0;
+    gap: 0.375rem;
+  }
+  .heading [data-smart-form-procedure-spacer] {
+    display: none;
+  }
+  .fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--md-sys-space-3);
+    margin-top: var(--md-sys-space-3);
+  }
+  .field {
+    min-width: 0;
+  }
+  .field[data-field-span="full"] {
+    grid-column: 1 / -1;
+  }
+  .label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-size: var(--pw-mobile-type-label, 0.8125rem);
+    line-height: 1.5;
+    color: var(--muted-foreground);
+  }
+  .headerPath {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  .value {
+    min-width: 0;
+    margin-top: 0.25rem;
+    font-size: var(--pw-mobile-type-body, 1rem);
+    line-height: var(--pw-mobile-leading-body, 1.6);
+    overflow-wrap: anywhere;
+  }
+  .fields dd {
+    margin-inline: 0;
+    margin-bottom: 0;
+  }
+  .record:last-child {
+    border-bottom: 0;
+  }
+  .value :global(.truncate) {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  .scrollTable {
+    display: block;
+    border-radius: 0;
+  }
+  .scrollTable table {
+    width: max-content;
+    min-width: 100%;
+    table-layout: auto;
+  }
+  .scrollTable :is(th, td) {
+    max-width: none;
+    min-width: 9rem;
+  }
+}

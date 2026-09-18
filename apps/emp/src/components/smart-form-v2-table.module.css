@@ -1,0 +1,107 @@
+.headerSurface {
+  background-color: var(--smart-form-table-header);
+}
+
+.headerBorder {
+  border-color: var(--smart-form-table-header-border);
+}
+
+.headerForeground {
+  color: var(--smart-form-table-header-foreground);
+}
+
+.headerInteractive {
+  color: var(--smart-form-table-header-foreground);
+}
+
+.headerInteractive:hover {
+  background-color: var(--smart-form-table-header);
+  color: var(--smart-form-table-header-foreground);
+}
+
+.groupSurface {
+  background-color: var(--smart-form-table-group);
+}
+
+.groupSurfaceMuted {
+  background-color: color-mix(
+    in oklab,
+    var(--smart-form-table-group) 70%,
+    transparent
+  );
+}
+
+.groupInteractive {
+  background-color: var(--smart-form-table-group);
+}
+
+.groupInteractive:hover {
+  background-color: var(--smart-form-table-group);
+}
+
+.groupRow:hover {
+  background-color: color-mix(
+    in oklab,
+    var(--smart-form-table-group) 55%,
+    transparent
+  );
+}
+
+.groupAccentStart {
+  border-inline-start-color: var(--smart-form-table-group-accent);
+}
+
+.groupAccentLeft {
+  border-left-color: var(--smart-form-table-group-accent);
+}
+
+.procedureColumn {
+  width: 37%;
+}
+
+.testRequiredColumn {
+  width: 12%;
+}
+
+.resultColumn {
+  width: 14%;
+}
+
+.referenceColumn {
+  width: 22%;
+}
+
+.commentsColumn {
+  width: 15%;
+}
+
+.referencePicker {
+  width: min(32rem, calc(100vw - 2rem));
+}
+
+.referencePickerTree {
+  height: min(30rem, 50dvh);
+  min-height: 12rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.designerDialog {
+  height: min(56rem, calc(100dvh - 2rem));
+  max-height: calc(100dvh - 2rem);
+}
+
+.designerDialog [data-slot="dialog-description"] {
+  display: none;
+}
+
+.designerDialog [data-slot="table-container"] {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 767px) {
+  .designerDialog [data-smart-form-table-grid] :global(.sticky) {
+    position: static;
+  }
+}

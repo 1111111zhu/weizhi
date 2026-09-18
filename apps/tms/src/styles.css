@@ -1,0 +1,561 @@
+@import "tailwindcss";
+@import "./mobile-material.css";
+@import "@project-wing/ui/styles.css";
+@source "./app/**/*.{ts,tsx}";
+@source "./components/**/*.{ts,tsx}";
+@source "./lib/**/*.{ts,tsx}";
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.timesheet-progress-group {
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  column-gap: 1.75rem;
+}
+
+.timesheet-open-date-badges {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+}
+
+:root {
+  font-size: 16px;
+  --login-action: #006b3f;
+  --background: var(--pw-color-background);
+  --foreground: var(--pw-color-foreground);
+  --card: var(--pw-color-card);
+  --card-foreground: var(--pw-color-card-foreground);
+  --popover: var(--pw-color-popover);
+  --popover-foreground: var(--pw-color-popover-foreground);
+  --primary: var(--pw-color-primary);
+  --primary-foreground: var(--pw-color-primary-foreground);
+  --brand-tint-source: var(--pw-color-brand-tint-source);
+  --brand-tint: var(--pw-color-brand-tint);
+  --brand-tint-soft: var(--pw-color-brand-tint-soft);
+  --secondary: var(--pw-color-secondary);
+  --secondary-foreground: var(--pw-color-secondary-foreground);
+  --muted: var(--pw-color-muted);
+  --muted-foreground: var(--pw-color-muted-foreground);
+  --accent: var(--pw-color-accent);
+  --accent-foreground: var(--pw-color-accent-foreground);
+  --destructive: var(--pw-color-destructive);
+  --destructive-foreground: var(--pw-color-destructive-foreground);
+  --border: var(--pw-color-border);
+  --input: var(--pw-color-input);
+  --ring: var(--pw-color-ring);
+  --success: var(--pw-color-success);
+  --warning: var(--pw-color-warning);
+  --info: var(--pw-color-info);
+  --motion-fast: 120ms;
+  --motion-normal: 160ms;
+  --motion-panel: 180ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--foreground);
+  background: var(--background);
+  font-family:
+    Inter,
+    "Noto Sans SC",
+    "Microsoft YaHei",
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.tms-login-title-font {
+  font-family:
+    "Noto Serif SC", "Source Han Serif SC", "IBM Plex Serif", Georgia,
+    "Times New Roman", ui-serif, serif;
+}
+
+.tms-login-hero-brand {
+  font-family: "IBM Plex Serif", Georgia, "Times New Roman", ui-serif, serif;
+}
+
+.tms-login-submit {
+  background: var(--foreground);
+  box-shadow: none;
+  color: var(--background);
+}
+
+.tms-login-submit:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--foreground) 90%, transparent);
+  box-shadow: none;
+}
+
+.tms-auth-aside {
+  background-color: color-mix(
+    in srgb,
+    var(--background) 98%,
+    var(--foreground)
+  );
+}
+
+.tms-auth-grid {
+  position: absolute;
+  inset: -40% -14%;
+  opacity: 0.72;
+  pointer-events: none;
+  transform: rotate(-14deg);
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--border) 62%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--border) 62%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 40px 40px;
+}
+
+.dark .tms-auth-aside {
+  background-color: color-mix(
+    in srgb,
+    var(--background) 94%,
+    var(--foreground)
+  );
+}
+
+.dark {
+  --background: var(--pw-color-background);
+  --foreground: var(--pw-color-foreground);
+  --card: var(--pw-color-card);
+  --card-foreground: var(--pw-color-card-foreground);
+  --popover: var(--pw-color-popover);
+  --popover-foreground: var(--pw-color-popover-foreground);
+  --primary: var(--pw-color-primary);
+  --primary-foreground: var(--pw-color-primary-foreground);
+  --brand-tint-source: var(--pw-color-brand-tint-source);
+  --brand-tint: var(--pw-color-brand-tint);
+  --brand-tint-soft: var(--pw-color-brand-tint-soft);
+  --secondary: var(--pw-color-secondary);
+  --secondary-foreground: var(--pw-color-secondary-foreground);
+  --muted: var(--pw-color-muted);
+  --muted-foreground: var(--pw-color-muted-foreground);
+  --accent: var(--pw-color-accent);
+  --accent-foreground: var(--pw-color-accent-foreground);
+  --destructive: var(--pw-color-destructive);
+  --destructive-foreground: var(--pw-color-destructive-foreground);
+  --border: var(--pw-color-border);
+  --input: var(--pw-color-input);
+  --ring: var(--pw-color-ring);
+  --success: var(--pw-color-success);
+  --warning: var(--pw-color-warning);
+  --info: var(--pw-color-info);
+  color: var(--foreground);
+  background: var(--background);
+}
+
+html.font-size-sm {
+  font-size: 14px;
+}
+
+html.font-size-md {
+  font-size: 16px;
+}
+
+html.font-size-lg {
+  font-size: 18px;
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-color: color-mix(in srgb, var(--muted-foreground) 55%, transparent)
+    transparent;
+  scrollbar-width: thin;
+}
+
+.tms-native-scrollbar-hidden {
+  scrollbar-width: none;
+}
+
+.tms-native-scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@keyframes tms-query-results-in {
+  from {
+    opacity: 0;
+    filter: blur(1.5px);
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.query-mode-active-indicator {
+  transition: translate 280ms var(--motion-ease-emphasized);
+  will-change: translate;
+}
+
+.query-mode-trigger {
+  z-index: 10;
+  height: 24px;
+  min-width: 40px;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  padding: 0 8px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  box-shadow: none;
+  transition: color 160ms var(--motion-ease);
+}
+
+.query-mode-trigger::after {
+  display: none;
+}
+
+.query-mode-trigger[data-active] {
+  background: transparent;
+  color: var(--primary-foreground);
+  box-shadow: none;
+}
+
+.query-results-frame {
+  transition:
+    opacity 180ms var(--motion-ease),
+    filter 180ms var(--motion-ease),
+    transform 180ms var(--motion-ease);
+}
+
+.query-results-frame[data-query-results-state="leaving"] {
+  opacity: 0.52;
+  filter: blur(0.75px);
+  transform: translateY(4px);
+}
+
+@keyframes tms-query-results-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.query-results-transition {
+  animation: tms-query-results-in 280ms var(--motion-ease-emphasized) both;
+}
+
+@keyframes tms-approval-records-in {
+  from {
+    opacity: 0;
+    filter: blur(0.8px);
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.approval-records-transition {
+  animation: tms-approval-records-in 280ms var(--motion-ease-emphasized) both;
+}
+
+@keyframes tms-approval-detail-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+::view-transition-group(*) {
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 180ms;
+  animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+.approval-detail-row {
+  pointer-events: auto;
+}
+
+.approval-detail-row-closing {
+  pointer-events: none;
+}
+
+.approval-detail-cell-motion {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  animation: tms-approval-detail-content-in var(--motion-panel)
+    var(--motion-ease-emphasized) both;
+  transition:
+    opacity var(--motion-panel) var(--motion-ease-emphasized),
+    transform var(--motion-panel) var(--motion-ease-emphasized);
+  will-change: opacity, transform;
+}
+
+.approval-detail-cell-motion-entering,
+.approval-detail-cell-motion-closing {
+  animation: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+}
+
+.approval-total-motion {
+  position: relative;
+  overflow: visible;
+}
+
+.approval-total-motion-fill {
+  display: block;
+  height: 28px;
+  min-height: 28px;
+}
+
+.approval-total-aggregate,
+.approval-total-details,
+.approval-total-detail {
+  transition:
+    opacity var(--motion-panel) var(--motion-ease-emphasized),
+    transform var(--motion-panel) var(--motion-ease-emphasized);
+}
+
+.approval-total-aggregate {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.approval-total-details {
+  position: absolute;
+  inset: 0;
+  display: grid;
+}
+
+.approval-total-details-fluid {
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+}
+
+[data-approval-total-state="open"] .approval-total-details-fluid,
+[data-approval-total-state="closing"] .approval-total-details-fluid {
+  position: relative;
+  inset: auto;
+  height: 84px;
+}
+
+[data-approval-total-state="open"] .approval-total-motion-fill,
+[data-approval-total-state="closing"] .approval-total-motion-fill {
+  height: 84px;
+  min-height: 84px;
+}
+
+.approval-total-detail {
+  display: grid;
+  place-items: center;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+}
+
+.approval-total-detail:last-child {
+  border-bottom: 0;
+}
+
+.approval-total-detail:nth-child(2) {
+  transform: translateY(-100%);
+}
+
+.approval-total-detail:nth-child(3) {
+  transform: translateY(-200%);
+}
+
+[data-approval-total-state="open"] .approval-total-aggregate {
+  opacity: 0;
+  transform: scale(0.94);
+}
+
+[data-approval-total-state="open"] .approval-total-detail {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-approval-total-state="collapsed"] .approval-total-details,
+[data-approval-total-state="closing"] .approval-total-details {
+  pointer-events: none;
+}
+
+.approval-type-column {
+  width: 64px;
+  min-width: 64px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    width var(--motion-panel) var(--motion-ease-emphasized),
+    min-width var(--motion-panel) var(--motion-ease-emphasized),
+    padding var(--motion-panel) var(--motion-ease-emphasized),
+    opacity var(--motion-panel) var(--motion-ease-emphasized),
+    border-color var(--motion-panel) var(--motion-ease-emphasized);
+}
+
+.approval-type-column-closing {
+  width: 0 !important;
+  min-width: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  opacity: 0;
+  border-right-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .query-mode-active-indicator {
+    transition-duration: 160ms !important;
+  }
+
+  .query-results-frame {
+    transition-duration: 120ms !important;
+  }
+
+  .query-results-frame[data-query-results-state="leaving"] {
+    opacity: 0.72;
+    filter: none;
+    transform: none;
+  }
+
+  .approval-records-transition {
+    animation: tms-query-results-fade 180ms var(--motion-ease) both !important;
+  }
+
+  ::view-transition-group(*) {
+    animation-duration: 140ms;
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 120ms;
+  }
+  .query-results-transition {
+    animation: tms-query-results-fade 180ms var(--motion-ease) both !important;
+  }
+
+  .approval-detail-cell-motion {
+    transition-duration: 180ms;
+  }
+
+  .approval-detail-cell-motion-closing {
+    animation: none;
+  }
+
+  .approval-type-column {
+    transition-duration: 180ms;
+  }
+}
+
+.donut-normal {
+  stroke: var(--primary);
+  background-color: var(--primary);
+}
+
+.donut-ot {
+  stroke: var(--warning);
+  background-color: var(--warning);
+}
+
+.donut-absent {
+  stroke: var(--info);
+  background-color: var(--info);
+}
+
+.donut-client-0 {
+  stroke: var(--primary);
+  background-color: var(--primary);
+}
+
+.donut-client-1 {
+  stroke: var(--warning);
+  background-color: var(--warning);
+}
+
+.donut-client-2 {
+  stroke: var(--info);
+  background-color: var(--info);
+}
+
+.donut-client-3 {
+  stroke: #7c3aed;
+  background-color: #7c3aed;
+}
+
+.donut-client-4 {
+  stroke: #e11d48;
+  background-color: #e11d48;
+}
+
+.donut-client-5 {
+  stroke: #14b8a6;
+  background-color: #14b8a6;
+}

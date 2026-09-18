@@ -1,0 +1,61 @@
+{
+  "$schema": "./design-first-boundary.schema.json",
+  "schemaVersion": 1,
+  "scanRoots": ["src"],
+  "designSystemRoots": ["src/design-system"],
+  "showroomChromeRoots": ["src/showroom/chrome"],
+  "excludeGlobs": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/*.d.ts"
+  ],
+  "fileExtensions": [
+    ".js",
+    ".jsx",
+    ".ts",
+    ".tsx",
+    ".css",
+    ".scss",
+    ".sass",
+    ".less"
+  ],
+  "publicImports": ["@/design-system"],
+  "underlyingUiPackages": [],
+  "nativeInteractiveTags": [
+    "button",
+    "input",
+    "select",
+    "textarea",
+    "dialog",
+    "table"
+  ],
+  "suspiciousComponentNames": [
+    "Button",
+    "IconButton",
+    "Input",
+    "Select",
+    "Dialog",
+    "Modal",
+    "Popover",
+    "Tooltip",
+    "Toast",
+    "Card",
+    "Toolbar",
+    "DataTable",
+    "PageHeader",
+    "AppShell"
+  ],
+  "rules": {
+    "direct-ui-import": "error",
+    "design-system-deep-import": "error",
+    "relative-design-system-import": "error",
+    "native-interactive": "error",
+    "raw-color": "error",
+    "inline-style": "error",
+    "arbitrary-value": "error",
+    "local-reusable-ui": "warning"
+  },
+  "exceptions": []
+}

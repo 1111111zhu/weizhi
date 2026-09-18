@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: projectwing-postgres
+    environment:
+      POSTGRES_USER: projectwing
+      POSTGRES_PASSWORD: projectwing
+      POSTGRES_DB: projectwing
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U projectwing -d projectwing"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  gotenberg:
+    image: projectwing-gotenberg:local
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.gotenberg
+      args:
+        GOTENBERG_IMAGE: ${PROJECTWING_GOTENBERG_BASE_IMAGE:-gotenberg/gotenberg:8}
+    container_name: projectwing-gotenberg
+    ports:
+      - "3003:3000"
+
+  mailpit:
+    image: ${PROJECTWING_MAILPIT_IMAGE:-axllent/mailpit:v1.30.7}
+    container_name: projectwing-mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  postgres_data:

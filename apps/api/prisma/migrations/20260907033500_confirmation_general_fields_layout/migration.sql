@@ -1,0 +1,6 @@
+CREATE TABLE "confirmation_general_fields_layout" (
+  "id" TEXT NOT NULL PRIMARY KEY DEFAULT 'default',
+  "layout" JSONB NOT NULL,
+  "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

@@ -1,0 +1,52 @@
+{
+  "name": "@project-wing/cmp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev -H 0.0.0.0 -p 3002",
+    "build": "next build",
+    "preview": "next start -H 0.0.0.0 -p 3002",
+    "test": "vitest run --passWithNoTests",
+    "lint": "pnpm --filter @project-wing/shared build && tsc --noEmit"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.5.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@project-wing/document-viewer": "workspace:*",
+    "@project-wing/shared": "workspace:*",
+    "@project-wing/ui": "workspace:*",
+    "@tanstack/react-query": "^5.100.14",
+    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-virtual": "^3.13.26",
+    "@xyflow/react": "^12.11.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "lucide-react": "^0.562.0",
+    "motion": "^12.42.2",
+    "next": "^16.3.0",
+    "react": "^19.2.3",
+    "react-day-picker": "^10.0.1",
+    "react-dom": "^19.2.3",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^24.10.2",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "happy-dom": "^20.11.1",
+    "jsdom": "^27.4.0",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^6.0.3",
+    "vitest": "^4.0.15"
+  }
+}

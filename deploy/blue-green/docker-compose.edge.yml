@@ -1,0 +1,32 @@
+networks:
+  proxy:
+    external: true
+    name: ${PROJECTWING_PROXY_NETWORK:-projectwing-proxy}
+
+services:
+  maintenance:
+    image: ${PROJECTWING_TRAEFIK_IMAGE:-traefik:v3.7.1@sha256:6b9cbca6fac42ab0075f5437d8dc1685cfd188626d8d515839ea94f8b6271c42}
+    entrypoint: ["/maintenance/maintenance-server.sh"]
+    restart: unless-stopped
+    volumes:
+      - ${PROJECTWING_EDGE_MAINTENANCE_DIR:?PROJECTWING_EDGE_MAINTENANCE_DIR is required}:/maintenance:ro
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q -O- http://127.0.0.1:8080/healthz | grep -Fq projectwing-maintenance",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 6
+      start_period: 5s
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+
+volumes:
+  traefik_acme:
+    external: true
+    name: ${PROJECTWING_TRAEFIK_ACME_VOLUME:-projectwing_traefik_acme}

@@ -1,0 +1,94 @@
+trigger: none
+pr: none
+
+parameters:
+  - name: releaseVersion
+    type: string
+    default: 0.2.0
+  - name: releaseChannel
+    type: string
+    default: stable
+    values:
+      - preview
+      - stable
+  - name: runtimeIdentifier
+    type: string
+    default: osx-arm64
+    values:
+      - osx-arm64
+
+name: desktop-agent-macos-$(Date:yyyyMMdd).$(Rev:r)
+
+pool:
+  vmImage: macOS-15
+
+jobs:
+  - job: build_macos_installer
+    displayName: Build macOS Desktop Agent installer
+    timeoutInMinutes: 30
+
+    steps:
+      - checkout: self
+        clean: true
+        fetchDepth: 1
+        lfs: false
+        submodules: false
+
+      - bash: |
+          set -euo pipefail
+          sudo xcode-select -s /Applications/Xcode_16.4.app
+          test "$(node -p "process.versions.node.split('.')[0]")" = "22"
+          sdk="$(dotnet --list-sdks | awk '/^8\./ { version=$1 } END { print version }')"
+          test -n "$sdk"
+          printf '{"sdk":{"version":"%s","rollForward":"latestFeature"}}\n' "$sdk" > global.json
+          test "$(dotnet --version)" = "$sdk"
+          corepack enable
+          corepack prepare pnpm@11.5.0 --activate
+          pnpm --filter @project-wing/desktop-agent-desktop... \
+            --config.verify-deps-before-run=false \
+            install --frozen-lockfile --ignore-scripts --reporter=append-only
+        displayName: Install Desktop Agent dependencies
+
+      - bash: |
+          set -euo pipefail
+          version='${{ parameters.releaseVersion }}'
+          runtime='${{ parameters.runtimeIdentifier }}'
+          channel='${{ parameters.releaseChannel }}'
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ "$channel" == "preview" || "$channel" == "stable" ]]
+          PROJECT_WING_DESKTOP_RELEASE_CHANNEL="$channel" \
+            PROJECT_WING_DESKTOP_UPDATE_URL="$(DESKTOP_AGENT_VELOPACK_UPDATE_URL)" \
+            PROJECT_WING_DESKTOP_VERSION="$version" \
+            PROJECT_WING_DESKTOP_MACOS_RUNTIME="$runtime" \
+            PROJECT_WING_DESKTOP_RELEASE_ROOT="output/desktop-agent/macos/arm64" \
+            corepack pnpm build:desktop-agent:mac
+        displayName: Build macOS VeloPack release
+
+      - bash: |
+          set -euo pipefail
+          release_root="output/desktop-agent/macos/arm64/releases"
+          test -s "$release_root/com.superfx.projectwing.desktop-agent-osx-Setup.pkg"
+          test -s "$release_root/releases.osx.json"
+          find "$release_root" -maxdepth 1 -name '*-full.nupkg' -size +0c | grep -q .
+        displayName: Verify macOS release bundle
+
+      - bash: |
+          set -euo pipefail
+          oras_version=1.3.0
+          archive="$(Agent.TempDirectory)/oras.tar.gz"
+          tool_root="$(Agent.TempDirectory)/oras"
+          curl --fail --location --retry 5 --retry-all-errors \
+            --output "$archive" \
+            "https://github.com/oras-project/oras/releases/download/v${oras_version}/oras_${oras_version}_darwin_arm64.tar.gz"
+          mkdir -p "$tool_root"
+          tar -xzf "$archive" -C "$tool_root" oras
+          PATH="$tool_root:$PATH" node scripts/desktop-agent/transfer-release-asset.mjs \
+            push macos output/desktop-agent/macos/arm64/releases
+        displayName: Push macOS release bundle to GHCR
+        env:
+          GH_TOKEN: $(GHCR_TOKEN)
+          GITHUB_ACTOR: $(GHCR_USERNAME)
+          GITHUB_REPOSITORY_OWNER: $(GHCR_REPOSITORY_OWNER)
+          GITHUB_RUN_ID: $(Build.BuildId)
+          GITHUB_SHA: $(SOURCE_COMMIT)
+          DESKTOP_AGENT_ASSET_TAG_PREFIX: $(GHCR_ASSET_TAG_PREFIX)

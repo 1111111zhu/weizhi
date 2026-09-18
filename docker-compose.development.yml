@@ -1,0 +1,427 @@
+services:
+  reverse-proxy:
+    image: ${PROJECTWING_TRAEFIK_IMAGE:-traefik:v3.7.1@sha256:6b9cbca6fac42ab0075f5437d8dc1685cfd188626d8d515839ea94f8b6271c42}
+    restart: unless-stopped
+    ports:
+      - "${PROJECTWING_TRAEFIK_BIND_ADDRESS:-0.0.0.0}:${PROJECTWING_TRAEFIK_HTTP_PORT:-80}:80"
+      - "${PROJECTWING_TRAEFIK_BIND_ADDRESS:-0.0.0.0}:${PROJECTWING_TRAEFIK_HTTPS_PORT:-443}:443"
+    volumes:
+      - ${PROJECTWING_TRAEFIK_CONFIG_FILE:-./deploy/traefik/traefik.yml}:/etc/traefik/traefik.yml:ro
+      - ${PROJECTWING_TRAEFIK_DYNAMIC_DIR:-./deploy/traefik/dynamic}:/etc/traefik/dynamic:ro
+      - traefik_acme:/acme
+    environment:
+      ALICLOUD_ACCESS_KEY_FILE: /run/secrets/traefik_alidns_access_key
+      ALICLOUD_SECRET_KEY_FILE: /run/secrets/traefik_alidns_secret_key
+    secrets:
+      - traefik_alidns_access_key
+      - traefik_alidns_secret_key
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "5"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+    networks:
+      - proxy
+
+  emp:
+    image: ${PROJECTWING_EMP_IMAGE:-projectwing-emp:latest}
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.next-app
+      args:
+        NODE_IMAGE: ${PROJECTWING_NODE_IMAGE:-node:22-bookworm-slim}
+        APP_NAME: emp
+        APP_PACKAGE: "@project-wing/emp"
+        APP_PORT: "3001"
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_EMP_API_BASE_URL:-https://emp.superfx.cn/api}
+        NEXT_PUBLIC_AUTH_BASE_URL: ${NEXT_PUBLIC_AUTH_BASE_URL:-https://auth.superfx.cn}
+        NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX: ${PROJECTWING_DOMAIN_SUFFIX:-superfx.cn}
+        NEXT_PUBLIC_DESKTOP_AGENT_WINDOWS_DOWNLOAD_URL: ${NEXT_PUBLIC_DESKTOP_AGENT_WINDOWS_DOWNLOAD_URL:-https://emp.superfx.cn/api/downloads/desktop-agent/windows/latest}
+        NEXT_PUBLIC_DESKTOP_AGENT_MACOS_DOWNLOAD_URL: ${NEXT_PUBLIC_DESKTOP_AGENT_MACOS_DOWNLOAD_URL:-https://emp.superfx.cn/api/downloads/desktop-agent/macos/latest}
+        NEXT_PUBLIC_DESKTOP_AGENT_MINIMUM_VERSION: ${NEXT_PUBLIC_DESKTOP_AGENT_MINIMUM_VERSION:-0.2.0}
+        NEXT_PUBLIC_DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION: ${NEXT_PUBLIC_DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION:-0.1.10}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PROJECTWING_ENVIRONMENT: development
+      PORT: "3001"
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_EMP_API_BASE_URL:-https://emp.superfx.cn/api}
+      NEXT_PUBLIC_AUTH_BASE_URL: ${NEXT_PUBLIC_AUTH_BASE_URL:-https://auth.superfx.cn}
+      NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX: ${PROJECTWING_DOMAIN_SUFFIX:-superfx.cn}
+      NEXT_PUBLIC_DESKTOP_AGENT_WINDOWS_DOWNLOAD_URL: ${NEXT_PUBLIC_DESKTOP_AGENT_WINDOWS_DOWNLOAD_URL:-https://emp.superfx.cn/api/downloads/desktop-agent/windows/latest}
+      NEXT_PUBLIC_DESKTOP_AGENT_MACOS_DOWNLOAD_URL: ${NEXT_PUBLIC_DESKTOP_AGENT_MACOS_DOWNLOAD_URL:-https://emp.superfx.cn/api/downloads/desktop-agent/macos/latest}
+      NEXT_PUBLIC_DESKTOP_AGENT_MINIMUM_VERSION: ${NEXT_PUBLIC_DESKTOP_AGENT_MINIMUM_VERSION:-0.2.0}
+      NEXT_PUBLIC_DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION: ${NEXT_PUBLIC_DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION:-0.1.10}
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://127.0.0.1:3001/'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 120s
+      start_interval: 5s
+    networks:
+      - default
+      - proxy
+
+  cmp:
+    image: ${PROJECTWING_CMP_IMAGE:-projectwing-cmp:latest}
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.next-app
+      args:
+        NODE_IMAGE: ${PROJECTWING_NODE_IMAGE:-node:22-bookworm-slim}
+        APP_NAME: cmp
+        APP_PACKAGE: "@project-wing/cmp"
+        APP_PORT: "3003"
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_CMP_API_BASE_URL:-https://cmp.superfx.cn/api}
+        NEXT_PUBLIC_AUTH_BASE_URL: ${NEXT_PUBLIC_AUTH_BASE_URL:-https://auth.superfx.cn}
+        NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX: ${PROJECTWING_DOMAIN_SUFFIX:-superfx.cn}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PROJECTWING_ENVIRONMENT: development
+      PORT: "3003"
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_CMP_API_BASE_URL:-https://cmp.superfx.cn/api}
+      NEXT_PUBLIC_AUTH_BASE_URL: ${NEXT_PUBLIC_AUTH_BASE_URL:-https://auth.superfx.cn}
+      NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX: ${PROJECTWING_DOMAIN_SUFFIX:-superfx.cn}
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://127.0.0.1:3003/'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 120s
+      start_interval: 5s
+    networks:
+      - default
+      - proxy
+
+  showroom:
+    image: ${PROJECTWING_SHOWROOM_IMAGE:-projectwing-showroom:latest}
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.next-app
+      args:
+        NODE_IMAGE: ${PROJECTWING_NODE_IMAGE:-node:22-bookworm-slim}
+        APP_NAME: ui-showroom
+        APP_PACKAGE: "@project-wing/ui-showroom"
+        APP_PORT: "3008"
+        NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX: ${PROJECTWING_DOMAIN_SUFFIX:-superfx.cn}
+        NEXT_PUBLIC_SHOWROOM_BASE_PATH: ${NEXT_PUBLIC_SHOWROOM_BASE_PATH:-}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PROJECTWING_ENVIRONMENT: development
+      PORT: "3008"
+      HOSTNAME: 0.0.0.0
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://127.0.0.1:3008/'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 120s
+      start_interval: 5s
+    networks:
+      - default
+      - proxy
+
+  tms:
+    image: ${PROJECTWING_TMS_IMAGE:-projectwing-tms:latest}
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.next-app
+      args:
+        NODE_IMAGE: ${PROJECTWING_NODE_IMAGE:-node:22-bookworm-slim}
+        APP_NAME: tms
+        APP_PACKAGE: "@project-wing/tms"
+        APP_PORT: "3004"
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_TMS_API_BASE_URL:-https://tms.superfx.cn/api}
+        NEXT_PUBLIC_AUTH_BASE_URL: ${NEXT_PUBLIC_AUTH_BASE_URL:-https://auth.superfx.cn}
+        NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX: ${PROJECTWING_DOMAIN_SUFFIX:-superfx.cn}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PROJECTWING_ENVIRONMENT: development
+      PORT: "3004"
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_TMS_API_BASE_URL:-https://tms.superfx.cn/api}
+      NEXT_PUBLIC_AUTH_BASE_URL: ${NEXT_PUBLIC_AUTH_BASE_URL:-https://auth.superfx.cn}
+      NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX: ${PROJECTWING_DOMAIN_SUFFIX:-superfx.cn}
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://127.0.0.1:3004/'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 120s
+      start_interval: 5s
+    networks:
+      - default
+      - proxy
+
+  intranet:
+    image: ${PROJECTWING_INTRANET_IMAGE:-projectwing-intranet:latest}
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.next-app
+      args:
+        NODE_IMAGE: ${PROJECTWING_NODE_IMAGE:-node:22-bookworm-slim}
+        APP_NAME: intranet
+        APP_PACKAGE: "@project-wing/intranet"
+        APP_PORT: "3002"
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_EMP_API_BASE_URL:-https://emp.superfx.cn/api}
+        NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX: ${PROJECTWING_DOMAIN_SUFFIX:-superfx.cn}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PROJECTWING_ENVIRONMENT: development
+      PORT: "3002"
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_EMP_API_BASE_URL:-https://emp.superfx.cn/api}
+      NEXT_PUBLIC_PROJECTWING_DOMAIN_SUFFIX: ${PROJECTWING_DOMAIN_SUFFIX:-superfx.cn}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://127.0.0.1:3002/'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 120s
+      start_interval: 5s
+    networks:
+      - default
+      - proxy
+
+  ib:
+    image: ${PROJECTWING_IB_IMAGE:-projectwing-ib:latest}
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.next-app
+      args:
+        NODE_IMAGE: ${PROJECTWING_NODE_IMAGE:-node:22-bookworm-slim}
+        APP_NAME: ib
+        APP_PACKAGE: "@project-wing/ib"
+        APP_PORT: "3005"
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_IB_API_BASE_URL:-https://ib.superfx.cn/api}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PROJECTWING_ENVIRONMENT: development
+      PORT: "3005"
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_IB_API_BASE_URL:-https://ib.superfx.cn/api}
+    depends_on:
+      ib-api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://127.0.0.1:3005/'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 120s
+      start_interval: 5s
+    networks:
+      - default
+      - proxy
+
+  api:
+    image: ${PROJECTWING_API_IMAGE:-projectwing-api:latest}
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      args:
+        NODE_IMAGE: ${PROJECTWING_NODE_IMAGE:-node:22-bookworm-slim}
+    restart: unless-stopped
+    env_file:
+      - ./secrets/projectwing.env
+      - ./secrets/projectwing-oss.env
+    environment:
+      NODE_ENV: production
+      PROJECTWING_ENVIRONMENT: development
+      RUN_MIGRATIONS: "false"
+      RUN_SEED: "false"
+      DOCUMENT_CONVERSION_TIMEOUT_MS: ${DOCUMENT_CONVERSION_TIMEOUT_MS:-120000}
+      PROJECTWING_CMP_URL: ${PROJECTWING_CMP_URL:-https://cmp.superfx.cn}
+      FRONTEND_URLS: ${FRONTEND_URLS:-https://emp.superfx.cn,https://cmp.superfx.cn,https://tms.superfx.cn,https://intranet.superfx.cn,https://wing.superfx.cn}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-https://auth.superfx.cn}
+      BETTER_AUTH_COOKIE_DOMAIN: ${BETTER_AUTH_COOKIE_DOMAIN:-.superfx.cn}
+      BETTER_AUTH_TRUSTED_ORIGINS: ${BETTER_AUTH_TRUSTED_ORIGINS:-https://emp.superfx.cn,https://cmp.superfx.cn,https://tms.superfx.cn,https://intranet.superfx.cn}
+    volumes:
+      - api_uploads:/data/uploads
+    depends_on:
+      gotenberg:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://127.0.0.1:3000/healthz'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - default
+      - proxy
+
+  preview-worker:
+    image: ${PROJECTWING_API_IMAGE:-projectwing-api:latest}
+    restart: unless-stopped
+    command: ["preview-worker"]
+    env_file:
+      - ./secrets/projectwing.env
+      - ./secrets/projectwing-oss.env
+    environment:
+      NODE_ENV: production
+      PROJECTWING_ENVIRONMENT: development
+      NODE_OPTIONS: ${PREVIEW_WORKER_NODE_OPTIONS:---max-old-space-size=768}
+      RUN_MIGRATIONS: "false"
+      RUN_SEED: "false"
+      DOCUMENT_CONVERSION_TIMEOUT_MS: ${DOCUMENT_CONVERSION_TIMEOUT_MS:-120000}
+      PREVIEW_EXCEL_MAX_FILE_BYTES: ${PREVIEW_EXCEL_MAX_FILE_BYTES:-268435456}
+      PREVIEW_EXCEL_MAX_CELLS: ${PREVIEW_EXCEL_MAX_CELLS:-10000000}
+      PREVIEW_EXCEL_MAX_COLUMNS: ${PREVIEW_EXCEL_MAX_COLUMNS:-4096}
+      PREVIEW_EXCEL_MAX_SHEETS: ${PREVIEW_EXCEL_MAX_SHEETS:-256}
+      PREVIEW_EXCEL_CHUNK_ROWS: ${PREVIEW_EXCEL_CHUNK_ROWS:-200}
+      PREVIEW_EXCEL_MAX_CHUNK_BYTES: ${PREVIEW_EXCEL_MAX_CHUNK_BYTES:-2097152}
+    volumes:
+      - api_uploads:/data/uploads
+    depends_on:
+      api:
+        condition: service_healthy
+      gotenberg:
+        condition: service_started
+    mem_limit: ${PREVIEW_WORKER_MEMORY_LIMIT:-1024m}
+
+  ib-api:
+    image: ${PROJECTWING_IB_API_IMAGE:-projectwing-ib-api:latest}
+    build:
+      context: .
+      dockerfile: apps/ib-api/Dockerfile
+      args:
+        NODE_IMAGE: ${PROJECTWING_NODE_IMAGE:-node:22-bookworm-slim}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PROJECTWING_ENVIRONMENT: development
+      PORT: "3006"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://127.0.0.1:3006/api/health'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - default
+      - proxy
+
+  gotenberg:
+    image: ${PROJECTWING_GOTENBERG_IMAGE:-projectwing-gotenberg:latest}
+    build:
+      context: .
+      dockerfile: deploy/docker/Dockerfile.gotenberg
+      args:
+        GOTENBERG_IMAGE: ${PROJECTWING_GOTENBERG_BASE_IMAGE:-gotenberg/gotenberg:8@sha256:87c16b9f364279d321bc9772d31fa58aa6abe036423c270698bd636c3a8e9466}
+    restart: unless-stopped
+
+  mailpit:
+    image: ${PROJECTWING_MAILPIT_IMAGE:-axllent/mailpit:v1.30.7}
+    restart: unless-stopped
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_SMTP_AUTH_ACCEPT_ANY: "true"
+      MP_DATABASE: /data/mailpit.db
+    volumes:
+      - mailpit_data:/data
+    networks:
+      - proxy
+
+  prisma-studio:
+    image: ${PROJECTWING_API_IMAGE:-projectwing-api:latest}
+    restart: unless-stopped
+    command: ["studio"]
+    env_file:
+      - ./secrets/projectwing.env
+      - ./secrets/projectwing-oss.env
+    environment:
+      NODE_ENV: production
+      PROJECTWING_ENVIRONMENT: development
+      RUN_MIGRATIONS: "false"
+      RUN_SEED: "false"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://127.0.0.1:5555/'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    networks:
+      - proxy
+
+volumes:
+  api_uploads:
+    name: ${PROJECTWING_API_UPLOADS_VOLUME:-projectwing_api_uploads}
+  mailpit_data:
+    name: ${PROJECTWING_MAILPIT_VOLUME:-projectwing_mailpit_data}
+  traefik_acme:
+    name: ${PROJECTWING_TRAEFIK_ACME_VOLUME:-projectwing_traefik_acme}
+
+networks:
+  proxy:
+    name: ${PROJECTWING_PROXY_NETWORK:-projectwing-proxy}
+
+secrets:
+  traefik_alidns_access_key:
+    file: ${PROJECTWING_TRAEFIK_SECRETS_DIR:-./secrets}/traefik-alidns-access-key
+  traefik_alidns_secret_key:
+    file: ${PROJECTWING_TRAEFIK_SECRETS_DIR:-./secrets}/traefik-alidns-secret-key

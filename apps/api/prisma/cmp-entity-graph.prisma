@@ -1,0 +1,222 @@
+enum CmpEntityKind {
+  COMPANY
+  PERSON
+  TRUST
+  PARTNERSHIP
+  OTHER_ORGANISATION
+}
+
+enum CmpClientEntityRole {
+  ROOT
+  RELATED
+}
+
+enum CmpEntityStatus {
+  ACTIVE
+  INACTIVE
+  DISSOLVED
+  DECEASED
+  UNKNOWN
+}
+
+enum CmpCompanyType {
+  PRIVATE
+  LISTED
+  OTHER
+}
+
+enum CmpEntityRelationshipType {
+  OWNS
+  DIRECTOR_OF
+  BENEFICIAL_OWNER_OF
+  COMPANY_SECRETARY_OF
+  MANAGES
+  OTHER
+}
+
+enum CmpGroupRelationshipType {
+  ASSOCIATE
+  JOINT_VENTURE
+}
+
+enum CmpGroupRelationshipMethod {
+  OWNERSHIP
+  OTHER
+}
+
+model CmpEntity {
+  id                 String                  @id @default(cuid())
+  kind               CmpEntityKind
+  displayName        String                  @map("display_name")
+  companyCode        String?                 @map("company_code")
+  nameZh             String?                 @map("name_zh")
+  nameEn             String?                 @map("name_en")
+  jurisdiction       String?
+  registrationNumber String?                 @map("registration_number")
+  incorporationDate  DateTime?               @map("incorporation_date")
+  dateOfBirth        DateTime?               @map("date_of_birth")
+  nationality        String?
+  status             CmpEntityStatus         @default(ACTIVE)
+  remarks            String?
+  createdAt          DateTime                @default(now()) @map("created_at")
+  updatedAt          DateTime                @updatedAt @map("updated_at")
+  clientScopes       CmpClientEntityScope[]
+  legacyMapNodes     CmpEntityMapNode[]
+  relationshipsFrom  CmpEntityRelationship[] @relation("CmpEntityRelationshipFrom")
+  relationshipsTo    CmpEntityRelationship[] @relation("CmpEntityRelationshipTo")
+  groupRelationshipTargets CmpGroupRelationship[] @relation("CmpGroupRelationshipTarget")
+  groupRelationshipParticipations CmpGroupRelationshipParticipant[]
+  companyProfile     CmpCompanyProfile?
+  personProfile      CmpPersonProfile?
+
+  @@index([kind, displayName])
+  @@index([jurisdiction, registrationNumber])
+  @@map("cmp_entities")
+}
+
+model CmpCompanyProfile {
+  entityId                 String         @id @map("entity_id")
+  identifierType           String         @map("identifier_type")
+  identifierValue          String         @map("identifier_value")
+  incorporationDate        DateTime?      @map("incorporation_date")
+  companyType              CmpCompanyType @map("company_type")
+  industryClassification   String?        @map("industry_classification")
+  registeredAddress        String?        @map("registered_address")
+  principalBusinessAddress String?        @map("principal_business_address")
+  createdAt                DateTime       @default(now()) @map("created_at")
+  updatedAt                DateTime       @updatedAt @map("updated_at")
+  entity                   CmpEntity      @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@index([identifierType, identifierValue])
+  @@map("cmp_company_profiles")
+}
+
+model CmpPersonProfile {
+  entityId              String    @id @map("entity_id")
+  dateOfBirth           DateTime? @map("date_of_birth")
+  identifierType        String?   @map("identifier_type")
+  identifierValue       String?   @map("identifier_value")
+  nationality           String?
+  residenceJurisdiction String?   @map("residence_jurisdiction")
+  correspondenceAddress String?   @map("correspondence_address")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+  entity                CmpEntity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@index([identifierType, identifierValue])
+  @@map("cmp_person_profiles")
+}
+
+model CmpClientEntityScope {
+  clientId  String              @map("client_id")
+  entityId  String              @map("entity_id")
+  role      CmpClientEntityRole @default(RELATED)
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+  entity    CmpEntity           @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@id([clientId, entityId])
+  @@index([clientId, role])
+  @@index([entityId, role])
+  @@map("cmp_client_entity_scopes")
+}
+
+model CmpEntityRelationship {
+  id                  String                    @id @default(cuid())
+  fromEntityId        String                    @map("from_entity_id")
+  toEntityId          String                    @map("to_entity_id")
+  type                CmpEntityRelationshipType
+  ownershipPercentage Decimal?                  @map("ownership_percentage") @db.Decimal(5, 2)
+  effectiveFrom       DateTime?                 @map("effective_from")
+  effectiveTo         DateTime?                 @map("effective_to")
+  remarks             String?
+  createdById         String?                   @map("created_by_id")
+  reviewedById        String?                   @map("reviewed_by_id")
+  sourceDocument      String?                   @map("source_document")
+  legacyMapId         String?                   @map("map_id")
+  createdAt           DateTime                  @default(now()) @map("created_at")
+  updatedAt           DateTime                  @updatedAt @map("updated_at")
+  fromEntity          CmpEntity                 @relation("CmpEntityRelationshipFrom", fields: [fromEntityId], references: [id], onDelete: Restrict)
+  toEntity            CmpEntity                 @relation("CmpEntityRelationshipTo", fields: [toEntityId], references: [id], onDelete: Restrict)
+  legacyMap           CmpEntityMap?             @relation(fields: [legacyMapId], references: [id], onDelete: SetNull)
+
+  @@index([fromEntityId, effectiveTo])
+  @@index([toEntityId, effectiveTo])
+  @@index([type, effectiveTo])
+  @@index([legacyMapId])
+  @@map("cmp_entity_relationships")
+}
+
+model CmpGroupRelationship {
+  id             String                   @id @default(cuid())
+  targetEntityId String                   @map("target_entity_id")
+  type           CmpGroupRelationshipType
+  effectiveFrom  DateTime?                @map("effective_from")
+  effectiveTo    DateTime?                @map("effective_to")
+  remarks        String?
+  createdById    String?                  @map("created_by_id")
+  reviewedById   String?                  @map("reviewed_by_id")
+  sourceDocument String?                  @map("source_document")
+  createdAt      DateTime                 @default(now()) @map("created_at")
+  updatedAt      DateTime                 @updatedAt @map("updated_at")
+  targetEntity   CmpEntity                @relation("CmpGroupRelationshipTarget", fields: [targetEntityId], references: [id], onDelete: Restrict)
+  participants   CmpGroupRelationshipParticipant[]
+
+  @@index([targetEntityId, effectiveTo])
+  @@index([type, effectiveTo])
+  @@map("cmp_group_relationships")
+}
+
+model CmpGroupRelationshipParticipant {
+  relationshipId      String                     @map("relationship_id")
+  entityId            String                     @map("entity_id")
+  method              CmpGroupRelationshipMethod
+  ownershipPercentage Decimal?                   @map("ownership_percentage") @db.Decimal(5, 2)
+  otherDescription    String?                    @map("other_description")
+  createdAt           DateTime                   @default(now()) @map("created_at")
+  updatedAt           DateTime                   @updatedAt @map("updated_at")
+  relationship        CmpGroupRelationship       @relation(fields: [relationshipId], references: [id], onDelete: Cascade)
+  entity              CmpEntity                  @relation(fields: [entityId], references: [id], onDelete: Restrict)
+
+  @@id([relationshipId, entityId])
+  @@index([entityId])
+  @@map("cmp_group_relationship_participants")
+}
+
+model CmpEntityMap {
+  id          String                  @id @default(cuid())
+  name        String
+  description String?
+  version     Int                     @default(1)
+  createdById String                  @map("created_by_id")
+  updatedById String                  @map("updated_by_id")
+  createdAt   DateTime                @default(now()) @map("created_at")
+  updatedAt   DateTime                @updatedAt @map("updated_at")
+  nodes       CmpEntityMapNode[]
+  edges       CmpEntityRelationship[]
+
+  @@index([updatedAt])
+  @@map("cmp_entity_maps")
+}
+
+model CmpEntityMapNode {
+  id                    String       @id @default(cuid())
+  mapId                 String       @map("map_id")
+  entityId              String       @map("entity_id")
+  positionX             Float        @map("position_x")
+  positionY             Float        @map("position_y")
+  displayNameOverride   String?      @map("display_name_override")
+  companyNumberOverride String?      @map("company_number_override")
+  jurisdictionOverride  String?      @map("jurisdiction_override")
+  pendingAcceptanceId   String?      @unique @map("pending_acceptance_id")
+  pendingClientCode     String?      @map("pending_client_code")
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
+  map                   CmpEntityMap @relation(fields: [mapId], references: [id], onDelete: Cascade)
+  entity                CmpEntity    @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@unique([mapId, entityId])
+  @@index([mapId])
+  @@index([pendingClientCode])
+  @@map("cmp_entity_map_nodes")
+}

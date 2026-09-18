@@ -1,0 +1,174 @@
+@media (width < 48rem) {
+  .sheetBody {
+    height: min(65dvh, 34rem);
+    min-height: 0;
+    overflow: hidden;
+  }
+  .page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    gap: var(--md-sys-space-3);
+  }
+  .toolbar,
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: var(--md-sys-space-2);
+  }
+  .toolbar h3 {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: var(--md-sys-type-body-large);
+    line-height: var(--md-sys-type-leading-title);
+    overflow-wrap: anywhere;
+  }
+  .breadcrumbs {
+    flex: none;
+    overflow-x: auto;
+    white-space: nowrap;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: var(--md-sys-type-label-small);
+  }
+  .breadcrumbs button {
+    flex: none;
+    min-height: var(--pw-control-target);
+    font-size: inherit;
+  }
+  .list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-space-1);
+    min-width: 0;
+    border-bottom: var(--md-sys-border-width) solid
+      var(--md-sys-color-outline-variant);
+  }
+  .row[data-current="true"] {
+    border-radius: var(--md-sys-shape-medium);
+    background: var(--md-sys-color-secondary-container);
+  }
+  .row .entry {
+    width: 100%;
+    flex: 1;
+    min-width: 0;
+    min-height: var(--pw-control-target);
+    padding: var(--md-sys-space-3) var(--md-sys-space-2);
+    border-radius: var(--md-sys-shape-medium);
+    text-align: start;
+    white-space: normal;
+  }
+  .entry :global(.pw-button-label) {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    gap: var(--md-sys-space-3);
+  }
+  .identity {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+    gap: var(--md-sys-space-1);
+    overflow-wrap: anywhere;
+  }
+  .identity strong {
+    font-size: var(--md-sys-type-body-large);
+    line-height: var(--md-sys-type-leading-title);
+    font-weight: var(--md-sys-type-weight-medium);
+  }
+  .identity small {
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: var(--md-sys-type-label-small);
+    font-weight: var(--md-sys-type-weight-regular);
+  }
+  .row .more,
+  .toolbar > button {
+    flex: none;
+    width: var(--pw-control-target);
+    height: var(--pw-control-target);
+    padding: 0;
+  }
+  .actions,
+  .form {
+    display: grid;
+    min-width: 0;
+    gap: var(--md-sys-space-3);
+  }
+  .actions > button {
+    width: 100%;
+    justify-content: flex-start;
+    min-height: var(--pw-control-target);
+  }
+  .form {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    align-content: start;
+  }
+  .form input,
+  .page input {
+    width: 100%;
+    min-height: var(--pw-control-target);
+    font-size: var(--md-sys-type-body-large);
+  }
+  .formActions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--md-sys-space-2);
+  }
+  .formActions > button {
+    width: 100%;
+    min-height: var(--pw-control-target);
+  }
+  .rename :global([data-slot="field-group"]) > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rename {
+    width: 100%;
+    min-width: 0;
+  }
+  .rename :global([data-slot="dialog-footer"]) {
+    margin-inline: 0;
+    margin-bottom: 0;
+    padding: var(--md-sys-space-3) 0 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .rename input,
+  .rename button {
+    min-height: var(--pw-control-target);
+    font-size: var(--md-sys-type-body-large);
+  }
+  .rename :global([data-slot="button-group"]) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: var(--md-sys-space-2);
+  }
+  .rename :global([data-slot="button-group"]) > button {
+    width: 100%;
+  }
+  .clipboard {
+    margin: 0;
+    padding: var(--md-sys-space-2) var(--md-sys-space-3);
+    border-radius: var(--md-sys-shape-small);
+    background: var(--md-sys-color-surface-container-low);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: var(--md-sys-type-label-small);
+    overflow-wrap: anywhere;
+  }
+}

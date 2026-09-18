@@ -1,0 +1,61 @@
+export type DataGridLocale = "zh-CN" | "en-US";
+
+const en = {
+  columns: "Columns",
+  restoreColumns: "Restore default columns",
+  clearSelection: "Clear selection",
+  selectionSummary: "{selected} selected",
+  previousPage: "Previous page",
+  nextPage: "Next page",
+  rowsPerPage: "Rows per page",
+  moreActions: "More actions",
+  closeActions: "Close actions",
+  selectRow: "Select row",
+  selectAll: "Select all rows on this page",
+  empty: "No data available",
+  loading: "Loading records…",
+  sortAscending: "Sort ascending",
+  sortDescending: "Sort descending",
+  pinLeft: "Pin to left",
+  pinRight: "Pin to right",
+  moveLeft: "Move left",
+  moveRight: "Move right",
+  rowAction: "Press Enter or Space to activate this row.",
+  pinRow: "Pin row",
+  unpinRow: "Unpin row",
+  page: (page: number) => `Page ${page}`,
+  resizeColumn: (column: string) => `Resize ${column} column`,
+  unpinColumn: (column: string) => `Unpin ${column} column`,
+};
+
+const zh: typeof en = {
+  columns: "显示列",
+  restoreColumns: "恢复默认列",
+  clearSelection: "取消选择",
+  selectionSummary: "已选 {selected} 项",
+  previousPage: "上一页",
+  nextPage: "下一页",
+  rowsPerPage: "每页条数",
+  moreActions: "更多操作",
+  closeActions: "关闭操作",
+  selectRow: "选择此行",
+  selectAll: "选择本页全部",
+  empty: "暂无数据",
+  loading: "正在加载记录…",
+  sortAscending: "升序排列",
+  sortDescending: "降序排列",
+  pinLeft: "固定到左侧",
+  pinRight: "固定到右侧",
+  moveLeft: "向左移动",
+  moveRight: "向右移动",
+  rowAction: "按 Enter 或空格键操作此行。",
+  pinRow: "固定此行",
+  unpinRow: "取消固定此行",
+  page: (page) => `第 ${page} 页`,
+  resizeColumn: (column) => `调整${column}列宽`,
+  unpinColumn: (column) => `取消固定${column}列`,
+};
+
+export function getDataGridCopy(locale: DataGridLocale = "en-US") {
+  return locale === "zh-CN" ? zh : en;
+}

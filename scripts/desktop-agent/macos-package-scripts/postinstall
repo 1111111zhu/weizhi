@@ -1,0 +1,99 @@
+#!/bin/bash
+
+set -euo pipefail
+
+app_path="/Applications/Project Wing Desktop Agent.app"
+version="$(
+  /usr/libexec/PlistBuddy \
+    -c "Print :CFBundleShortVersionString" \
+    "${app_path}/Contents/Info.plist"
+)"
+if [[ ! "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+  exit 1
+fi
+
+console_user="$(/usr/bin/stat -f "%Su" /dev/console)"
+if [[ -z "${console_user}" || "${console_user}" == "root" || "${console_user}" == "loginwindow" ]]; then
+  exit 0
+fi
+
+console_uid="$(/usr/bin/id -u "${console_user}")"
+console_group="$(/usr/bin/id -gn "${console_user}")"
+home_record="$(
+  /usr/bin/dscl . \
+    -read "/Users/${console_user}" \
+    NFSHomeDirectory
+)"
+user_home="${home_record#NFSHomeDirectory: }"
+state_root="${user_home}/Library/Application Support/ProjectWing/AgentState"
+status_path="${state_root}/update-status.json"
+status_tmp="${status_path}.tmp"
+runtime_root="${app_path}/Contents/Resources/DesktopRuntime"
+launch_agent_label="cn.superfx.projectwing.desktopagent"
+launch_agents_root="${user_home}/Library/LaunchAgents"
+launch_agent_path="${launch_agents_root}/${launch_agent_label}.plist"
+
+/bin/launchctl bootout "gui/${console_uid}" "${launch_agent_path}" \
+  >/dev/null 2>&1 || true
+
+/usr/bin/pkill -u "${console_uid}" -f \
+  "${app_path}/Contents/MacOS/ProjectWingDesktopAgent" 2>/dev/null || true
+/usr/bin/pkill -u "${console_uid}" -f \
+  "${runtime_root}/manager/.*/ProjectWing.AgentManager" 2>/dev/null || true
+/usr/bin/pkill -u "${console_uid}" -f \
+  "${runtime_root}/runtime/.*/ProjectWing.DesktopAgent.Runtime" 2>/dev/null || true
+
+/bin/mkdir -p "${state_root}"
+/usr/sbin/chown "${console_user}:${console_group}" "${state_root}"
+/bin/mkdir -p "${launch_agents_root}"
+/usr/sbin/chown "${console_user}:${console_group}" "${launch_agents_root}"
+/bin/cat >"${launch_agent_path}" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>${launch_agent_label}</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/sh</string>
+    <string>-c</string>
+    <string>if [ ! -x "${app_path}/Contents/MacOS/ProjectWingDesktopAgent" ]; then /bin/rm -f "\$HOME/Library/LaunchAgents/${launch_agent_label}.plist"; exit 0; fi; exec "${app_path}/Contents/MacOS/ProjectWingDesktopAgent"</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <false/>
+  </dict>
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>LimitLoadToSessionType</key>
+  <string>Aqua</string>
+  <key>AssociatedBundleIdentifiers</key>
+  <array>
+    <string>cn.superfx.projectwing.desktopagent</string>
+  </array>
+  <key>ThrottleInterval</key>
+  <integer>5</integer>
+  <key>StandardOutPath</key>
+  <string>/dev/null</string>
+  <key>StandardErrorPath</key>
+  <string>/dev/null</string>
+</dict>
+</plist>
+PLIST
+/usr/sbin/chown "${console_user}:${console_group}" "${launch_agent_path}"
+/bin/chmod 0644 "${launch_agent_path}"
+/usr/bin/printf \
+  '{"ok":true,"status":"READY","stage":"READY","message":"Desktop Agent update is ready.","expectedVersion":"%s","currentVersion":"%s"}\n' \
+  "${version}" \
+  "${version}" \
+  >"${status_tmp}"
+/usr/sbin/chown "${console_user}:${console_group}" "${status_tmp}"
+/bin/mv -f "${status_tmp}" "${status_path}"
+
+/bin/launchctl bootstrap "gui/${console_uid}" "${launch_agent_path}"
+
+exit 0

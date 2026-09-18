@@ -1,0 +1,84 @@
+definitions:
+  environment: &macos_environment
+    node: 22
+    xcode: 16.4
+    cocoapods: default
+  scripts:
+    - &install_dependencies
+      name: Install toolchain and Desktop Agent dependencies
+      script: |
+        set -euo pipefail
+        (
+          export DOTNET_ROOT="$HOME/.dotnet"
+          export PATH="$DOTNET_ROOT:$PATH"
+          if ! dotnet --list-sdks 2>/dev/null | grep -q '^8\.'; then
+            curl -fsSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh
+            bash /tmp/dotnet-install.sh --channel 8.0 --install-dir "$DOTNET_ROOT"
+          fi
+          printf 'DOTNET_ROOT=%s\nPATH=%s\n' "$DOTNET_ROOT" "$PATH" >> "$CM_ENV"
+        ) &
+        dotnet_pid=$!
+        cd "$CM_BUILD_DIR"
+        corepack enable
+        corepack prepare pnpm@11.5.0 --activate
+        pnpm --filter @project-wing/desktop-agent-desktop... \
+          --config.verify-deps-before-run=false \
+          install --frozen-lockfile --ignore-scripts --reporter=append-only
+        wait "$dotnet_pid"
+    - &build_installer
+      name: Build macOS installer
+      script: |
+        set -euo pipefail
+        cd "$CM_BUILD_DIR"
+        version="${DESKTOP_AGENT_RELEASE_VERSION:-$(node -p "require('./apps/desktop-agent-desktop/package.json').version")}"
+        runtime="${DESKTOP_AGENT_RUNTIME_IDENTIFIER:-osx-arm64}"
+        channel="${DESKTOP_AGENT_RELEASE_CHANNEL:-stable}"
+        if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          printf 'Desktop Agent release must use plain SemVer: %s\n' "$version" >&2
+          exit 1
+        fi
+        PROJECT_WING_DESKTOP_RELEASE_CHANNEL="$channel" \
+          PROJECT_WING_DESKTOP_UPDATE_URL="${DESKTOP_AGENT_VELOPACK_UPDATE_URL:-}" \
+          PROJECT_WING_DESKTOP_VERSION="$version" \
+          PROJECT_WING_DESKTOP_MACOS_RUNTIME="$runtime" \
+          PROJECT_WING_DESKTOP_RELEASE_ROOT="output/desktop-agent/macos/arm64" \
+          corepack pnpm build:desktop-agent:mac
+    - &verify_installer
+      name: Verify macOS installer
+      script: |
+        set -euo pipefail
+        cd "$CM_BUILD_DIR"
+        release_root="output/desktop-agent/macos/arm64/releases"
+        installer="$release_root/com.superfx.projectwing.desktop-agent-osx-Setup.pkg"
+        test -s "$installer"
+        test -s "$release_root/releases.osx.json"
+        find "$release_root" -maxdepth 1 -name '*-full.nupkg' -size +0c | grep -q .
+        printf 'Verified %s (%s bytes).\n' "$installer" "$(stat -f '%z' "$installer")"
+    - &push_release
+      name: Push macOS release bundle to GHCR
+      script: |
+        set -euo pipefail
+        cd "$CM_BUILD_DIR"
+        oras_version=1.3.0
+        curl --fail --location --retry 5 --retry-all-errors \
+          --output /tmp/oras.tar.gz \
+          "https://github.com/oras-project/oras/releases/download/v${oras_version}/oras_${oras_version}_darwin_arm64.tar.gz"
+        mkdir -p /tmp/oras
+        tar -xzf /tmp/oras.tar.gz -C /tmp/oras oras
+        PATH="/tmp/oras:$PATH" node scripts/desktop-agent/transfer-release-asset.mjs \
+          push macos output/desktop-agent/macos/arm64/releases
+
+workflows:
+  desktop-agent-macos:
+    name: Desktop Agent macOS arm64
+    instance_type: mac_mini_m2
+    max_build_duration: 20
+    environment:
+      <<: *macos_environment
+      vars:
+        DESKTOP_AGENT_RUNTIME_IDENTIFIER: osx-arm64
+    scripts:
+      - *install_dependencies
+      - *build_installer
+      - *verify_installer
+      - *push_release

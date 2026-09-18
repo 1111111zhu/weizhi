@@ -1,0 +1,21 @@
+/* Consistent readable links in editable and rendered rich text. */
+:root {
+  --pw-text-link-color: #0f6cbd;
+}
+.dark {
+  --pw-text-link-color: #8fc7ff;
+}
+.pw-text-link,
+.pw-text-link:visited {
+  color: var(--pw-text-link-color);
+  text-decoration-line: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+.pw-text-link:hover {
+  text-decoration-thickness: 2px;
+}
+.pw-text-link:focus-visible {
+  outline: 2px solid var(--pw-text-link-color);
+  outline-offset: 2px;
+}

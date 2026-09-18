@@ -1,0 +1,10 @@
+@import "./material3-tokens.css";
+@import "./material3-components.css";
+@media (width < 48rem) {
+  body {
+    margin: 0;
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    font-family: var(--md-sys-typeface);
+  }
+}

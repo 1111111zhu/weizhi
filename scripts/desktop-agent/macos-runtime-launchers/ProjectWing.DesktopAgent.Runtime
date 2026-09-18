@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -euo pipefail
+
+case "$(uname -m)" in
+  arm64) runtime_identifier="osx-arm64" ;;
+  x86_64) runtime_identifier="osx-x64" ;;
+  *) printf 'Unsupported macOS architecture: %s\n' "$(uname -m)" >&2; exit 1 ;;
+esac
+
+script_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "${script_root}/${runtime_identifier}/runtime/ProjectWing.DesktopAgent.Runtime" "$@"

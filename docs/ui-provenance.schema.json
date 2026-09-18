@@ -1,0 +1,442 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/project-wing/ui-provenance.schema.json",
+  "title": "ProjectWing UI provenance inventory",
+  "description": "Generated, unreviewed evidence about UI implementations, exports, consumers, dependencies, variants, and CSS tokens.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sourceRevision",
+    "lifecycle",
+    "disposition",
+    "implementationRoots",
+    "consumerRoots",
+    "tokenRoots",
+    "manifestPaths",
+    "files",
+    "implementations",
+    "families",
+    "consumers",
+    "tokens",
+    "dependencies",
+    "unresolvedImports",
+    "summary"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schemaVersion": { "const": 1 },
+    "sourceRevision": { "type": ["string", "null"] },
+    "lifecycle": { "$ref": "#/$defs/unreviewed" },
+    "disposition": { "$ref": "#/$defs/unreviewed" },
+    "implementationRoots": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/rootEntry" },
+      "uniqueItems": true
+    },
+    "consumerRoots": { "$ref": "#/$defs/pathArray" },
+    "tokenRoots": { "$ref": "#/$defs/pathArray" },
+    "manifestPaths": { "$ref": "#/$defs/pathArray" },
+    "files": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fileRecord" },
+      "uniqueItems": true
+    },
+    "implementations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/implementation" },
+      "uniqueItems": true
+    },
+    "families": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/family" },
+      "uniqueItems": true
+    },
+    "consumers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/consumer" },
+      "uniqueItems": true
+    },
+    "tokens": { "$ref": "#/$defs/tokens" },
+    "dependencies": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/dependency" },
+      "uniqueItems": true
+    },
+    "unresolvedImports": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/unresolvedImport" },
+      "uniqueItems": true
+    },
+    "summary": { "$ref": "#/$defs/summary" }
+  },
+  "$defs": {
+    "path": { "type": "string", "minLength": 1 },
+    "pathArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/path" },
+      "uniqueItems": true
+    },
+    "nullableString": { "type": ["string", "null"] },
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "unreviewed": { "const": "unreviewed" },
+    "rootEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "scope": { "$ref": "#/$defs/nullableString" },
+        "kind": { "$ref": "#/$defs/nullableString" },
+        "publicImport": { "$ref": "#/$defs/nullableString" },
+        "publicEntry": { "$ref": "#/$defs/nullableString" }
+      }
+    },
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "values"],
+      "properties": {
+        "name": { "$ref": "#/$defs/nonEmptyString" },
+        "values": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/nonEmptyString" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "library": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "versions", "sources"],
+      "properties": {
+        "package": { "$ref": "#/$defs/nonEmptyString" },
+        "versions": { "$ref": "#/$defs/pathArray" },
+        "sources": { "$ref": "#/$defs/pathArray" }
+      }
+    },
+    "reexport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "names"],
+      "properties": {
+        "source": { "$ref": "#/$defs/nonEmptyString" },
+        "names": { "$ref": "#/$defs/pathArray" }
+      }
+    },
+    "import": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "line",
+        "kind",
+        "specifiers",
+        "symbols",
+        "resolved",
+        "workspace",
+        "publicImport",
+        "package",
+        "versions"
+      ],
+      "properties": {
+        "source": { "$ref": "#/$defs/nonEmptyString" },
+        "line": { "type": "integer", "minimum": 1 },
+        "kind": {
+          "enum": ["import", "re-export", "require", "dynamic-import"]
+        },
+        "specifiers": { "$ref": "#/$defs/pathArray" },
+        "symbols": { "$ref": "#/$defs/symbolMap" },
+        "resolved": { "$ref": "#/$defs/nullableString" },
+        "workspace": { "type": "boolean" },
+        "publicImport": { "$ref": "#/$defs/nullableString" },
+        "package": { "$ref": "#/$defs/nullableString" },
+        "versions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "unresolvedImport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file", "source", "line", "kind"],
+      "properties": {
+        "file": { "$ref": "#/$defs/path" },
+        "source": { "$ref": "#/$defs/nonEmptyString" },
+        "line": { "type": "integer", "minimum": 1 },
+        "kind": { "enum": ["import", "re-export", "require", "dynamic-import"] }
+      }
+    },
+    "fileRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file",
+        "scope",
+        "kind",
+        "publicImport",
+        "publicExports",
+        "exports",
+        "reexports",
+        "imports",
+        "variants",
+        "classNameTokens",
+        "unresolvedImports"
+      ],
+      "properties": {
+        "file": { "$ref": "#/$defs/path" },
+        "scope": { "$ref": "#/$defs/nullableString" },
+        "kind": { "$ref": "#/$defs/nullableString" },
+        "publicImport": { "$ref": "#/$defs/nullableString" },
+        "publicExports": { "$ref": "#/$defs/pathArray" },
+        "exports": { "$ref": "#/$defs/pathArray" },
+        "reexports": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/reexport" },
+          "uniqueItems": true
+        },
+        "imports": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/import" },
+          "uniqueItems": true
+        },
+        "variants": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/variant" },
+          "uniqueItems": true
+        },
+        "classNameTokens": { "$ref": "#/$defs/pathArray" },
+        "unresolvedImports": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/unresolvedImport" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "file",
+        "scope",
+        "kind",
+        "publicImport",
+        "family",
+        "exports",
+        "variants",
+        "libraries",
+        "classNameTokens",
+        "imports",
+        "consumers",
+        "public",
+        "lifecycle",
+        "disposition"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/nonEmptyString" },
+        "name": { "$ref": "#/$defs/nonEmptyString" },
+        "file": { "$ref": "#/$defs/path" },
+        "scope": { "$ref": "#/$defs/nullableString" },
+        "kind": { "$ref": "#/$defs/nullableString" },
+        "publicImport": { "$ref": "#/$defs/nullableString" },
+        "family": { "$ref": "#/$defs/nonEmptyString" },
+        "exports": { "$ref": "#/$defs/pathArray" },
+        "variants": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/variant" },
+          "uniqueItems": true
+        },
+        "libraries": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/library" },
+          "uniqueItems": true
+        },
+        "classNameTokens": { "$ref": "#/$defs/pathArray" },
+        "imports": { "$ref": "#/$defs/pathArray" },
+        "consumers": { "$ref": "#/$defs/pathArray" },
+        "public": { "type": "boolean" },
+        "lifecycle": { "$ref": "#/$defs/unreviewed" },
+        "disposition": { "$ref": "#/$defs/unreviewed" }
+      }
+    },
+    "family": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "implementations",
+        "scopes",
+        "kinds",
+        "lifecycle",
+        "disposition"
+      ],
+      "properties": {
+        "name": { "$ref": "#/$defs/nonEmptyString" },
+        "implementations": { "$ref": "#/$defs/pathArray" },
+        "scopes": { "$ref": "#/$defs/pathArray" },
+        "kinds": { "$ref": "#/$defs/pathArray" },
+        "lifecycle": { "$ref": "#/$defs/unreviewed" },
+        "disposition": { "$ref": "#/$defs/unreviewed" }
+      }
+    },
+    "consumer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file",
+        "source",
+        "publicImport",
+        "resolved",
+        "line",
+        "kind",
+        "specifiers",
+        "symbols",
+        "broad"
+      ],
+      "properties": {
+        "file": { "$ref": "#/$defs/path" },
+        "source": { "$ref": "#/$defs/nonEmptyString" },
+        "publicImport": { "$ref": "#/$defs/nullableString" },
+        "resolved": { "$ref": "#/$defs/nullableString" },
+        "line": { "type": "integer", "minimum": 1 },
+        "kind": {
+          "enum": ["import", "re-export", "require", "dynamic-import"]
+        },
+        "specifiers": { "$ref": "#/$defs/pathArray" },
+        "broad": { "type": "boolean" },
+        "symbols": { "$ref": "#/$defs/symbolMap" }
+      }
+    },
+    "symbolMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["file", "name"],
+        "properties": {
+          "file": { "$ref": "#/$defs/nullableString" },
+          "name": { "$ref": "#/$defs/nonEmptyString" }
+        }
+      }
+    },
+    "tokenDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "file", "line", "value", "selector", "kind"],
+      "properties": {
+        "name": { "pattern": "^--[A-Za-z0-9_-]+$", "type": "string" },
+        "file": { "$ref": "#/$defs/path" },
+        "line": { "type": "integer", "minimum": 1 },
+        "value": { "$ref": "#/$defs/nonEmptyString" },
+        "selector": { "$ref": "#/$defs/nullableString" },
+        "kind": { "const": "css-variable" }
+      }
+    },
+    "tokenUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "file", "line", "kind"],
+      "properties": {
+        "name": { "pattern": "^--[A-Za-z0-9_-]+$", "type": "string" },
+        "file": { "$ref": "#/$defs/path" },
+        "line": { "type": "integer", "minimum": 1 },
+        "kind": { "enum": ["css-variable", "css-variable-use"] }
+      }
+    },
+    "tokenConflict": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "values", "files", "evidence"],
+      "properties": {
+        "name": { "pattern": "^--[A-Za-z0-9_-]+$", "type": "string" },
+        "values": { "$ref": "#/$defs/pathArray" },
+        "files": { "$ref": "#/$defs/pathArray" },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/tokenDefinition" },
+          "minItems": 2,
+          "uniqueItems": true
+        }
+      }
+    },
+    "rawValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "file", "line", "kind"],
+      "properties": {
+        "value": { "$ref": "#/$defs/nonEmptyString" },
+        "file": { "$ref": "#/$defs/path" },
+        "line": { "type": "integer", "minimum": 1 },
+        "kind": { "enum": ["css-color", "source-color"] }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["definitions", "usages", "conflicts", "rawValues"],
+      "properties": {
+        "definitions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/tokenDefinition" },
+          "uniqueItems": true
+        },
+        "usages": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/tokenUsage" },
+          "uniqueItems": true
+        },
+        "conflicts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/tokenConflict" },
+          "uniqueItems": true
+        },
+        "rawValues": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/rawValue" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "versions", "sources", "files"],
+      "properties": {
+        "package": { "$ref": "#/$defs/nonEmptyString" },
+        "versions": { "$ref": "#/$defs/pathArray" },
+        "sources": { "$ref": "#/$defs/pathArray" },
+        "files": { "$ref": "#/$defs/pathArray" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "files",
+        "implementationFiles",
+        "implementations",
+        "families",
+        "dependencies",
+        "consumers",
+        "unresolvedImports",
+        "tokenDefinitions",
+        "tokenConflicts"
+      ],
+      "properties": {
+        "files": { "type": "integer", "minimum": 0 },
+        "implementationFiles": { "type": "integer", "minimum": 0 },
+        "implementations": { "type": "integer", "minimum": 0 },
+        "families": { "type": "integer", "minimum": 0 },
+        "dependencies": { "type": "integer", "minimum": 0 },
+        "consumers": { "type": "integer", "minimum": 0 },
+        "unresolvedImports": { "type": "integer", "minimum": 0 },
+        "tokenDefinitions": { "type": "integer", "minimum": 0 },
+        "tokenConflicts": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

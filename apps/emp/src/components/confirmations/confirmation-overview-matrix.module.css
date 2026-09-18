@@ -1,0 +1,100 @@
+.revealDuration {
+  transition-duration: 180ms;
+}
+
+.valueDelay20 {
+  transition-delay: 20ms;
+}
+
+.valueDelay40 {
+  transition-delay: 40ms;
+}
+
+.valueDelay60 {
+  transition-delay: 60ms;
+}
+
+.valueDelay80 {
+  transition-delay: 80ms;
+}
+
+.widthBothGroups {
+  min-width: 88rem;
+}
+
+.widthSentGroup {
+  min-width: 82rem;
+}
+
+.widthReceivedGroup {
+  min-width: 70rem;
+}
+
+.widthCollapsedGroups {
+  min-width: 64rem;
+}
+
+.surface {
+  box-shadow: 0 18px 45px -32px
+    color-mix(in srgb, var(--foreground) 42%, transparent);
+}
+
+.modeIndicatorMotion {
+  transition-property: translate;
+  transition-duration: var(--motion-fast);
+  transition-timing-function: var(--motion-ease);
+  will-change: translate;
+}
+
+.headerShadow {
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--border) 75%, transparent);
+}
+
+.stickyHeaderLabel {
+  background: color-mix(in srgb, var(--muted) 95%, var(--card));
+}
+
+.stickyHeaderLabel::before {
+  background: color-mix(in srgb, var(--muted) 95%, var(--card));
+  content: "";
+}
+
+.denseStageColumn {
+  min-width: 5.5rem;
+}
+
+.stickyRowLabel::before {
+  content: "";
+}
+
+.stickyTotalLabel {
+  background: color-mix(in srgb, var(--muted) 40%, var(--card));
+}
+
+.stickyTotalLabel::before {
+  background: color-mix(in srgb, var(--muted) 40%, var(--card));
+}
+
+.dataRevealMotion {
+  transition-property: opacity, transform;
+  transition-duration: var(--motion-panel);
+  transition-timing-function: var(--motion-ease-emphasized);
+}
+
+.groupRevealMotion {
+  transition-property: width, opacity, transform, clip-path;
+  transition-timing-function: var(--motion-ease-emphasized);
+}
+
+.cellMotion {
+  transition-property:
+    background-color, border-color, box-shadow, color, transform;
+  transition-duration: var(--motion-fast);
+  transition-timing-function: var(--motion-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reducedRevealDuration {
+    transition-duration: 80ms !important;
+  }
+}

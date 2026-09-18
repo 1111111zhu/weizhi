@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "capabilities": [
+    {
+      "id": "surface",
+      "name": "Surface",
+      "layer": "primitive",
+      "category": "layout",
+      "requiredStates": ["default"]
+    },
+    {
+      "id": "container",
+      "name": "Container",
+      "layer": "primitive",
+      "category": "layout",
+      "requiredStates": ["default", "narrow"]
+    },
+    {
+      "id": "stack",
+      "name": "Stack",
+      "layer": "primitive",
+      "category": "layout",
+      "requiredStates": ["default", "narrow"]
+    },
+    {
+      "id": "inline",
+      "name": "Inline",
+      "layer": "primitive",
+      "category": "layout",
+      "requiredStates": ["default", "wrap"]
+    },
+    {
+      "id": "grid",
+      "name": "Grid",
+      "layer": "primitive",
+      "category": "layout",
+      "requiredStates": ["default", "narrow"]
+    },
+    {
+      "id": "divider",
+      "name": "Divider",
+      "layer": "primitive",
+      "category": "layout",
+      "requiredStates": ["default"]
+    },
+    {
+      "id": "scroll-area",
+      "name": "ScrollArea",
+      "layer": "primitive",
+      "category": "layout",
+      "requiredStates": ["default", "overflow"]
+    },
+
+    {
+      "id": "button",
+      "name": "Button",
+      "layer": "primitive",
+      "category": "actions",
+      "requiredStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "loading",
+        "destructive"
+      ]
+    },
+    {
+      "id": "icon-button",
+      "name": "IconButton",
+      "layer": "primitive",
+      "category": "actions",
+      "requiredStates": ["default", "hover", "focus", "disabled", "loading"]
+    },
+    {
+      "id": "button-group",
+      "name": "ButtonGroup",
+      "layer": "primitive",
+      "category": "actions",
+      "requiredStates": ["default", "narrow"]
+    },
+    {
+      "id": "split-button",
+      "name": "SplitButton",
+      "layer": "primitive",
+      "category": "actions",
+      "requiredStates": ["default", "hover", "focus", "disabled", "open"]
+    },
+    {
+      "id": "link",
+      "name": "Link",
+      "layer": "primitive",
+      "category": "actions",
+      "requiredStates": ["default", "hover", "focus"]
+    },
+    {
+      "id": "toggle-button",
+      "name": "ToggleButton",
+      "layer": "primitive",
+      "category": "actions",
+      "requiredStates": ["default", "hover", "focus", "selected", "disabled"]
+    },
+    {
+      "id": "toggle-group",
+      "name": "ToggleGroup",
+      "layer": "primitive",
+      "category": "actions",
+      "requiredStates": ["default", "focus", "selected", "disabled"]
+    },
+
+    {
+      "id": "field",
+      "name": "Field",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": [
+        "default",
+        "required",
+        "disabled",
+        "read-only",
+        "invalid"
+      ]
+    },
+    {
+      "id": "input",
+      "name": "Input",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": ["default", "focus", "disabled", "read-only", "invalid"]
+    },
+    {
+      "id": "text-area",
+      "name": "TextArea",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": ["default", "focus", "disabled", "read-only", "invalid"]
+    },
+    {
+      "id": "search-input",
+      "name": "SearchInput",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": ["default", "focus", "filled", "disabled", "invalid"]
+    },
+    {
+      "id": "number-input",
+      "name": "NumberInput",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": ["default", "focus", "disabled", "read-only", "invalid"]
+    },
+    {
+      "id": "select",
+      "name": "Select",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": [
+        "default",
+        "focus",
+        "open",
+        "selected",
+        "disabled",
+        "invalid"
+      ]
+    },
+    {
+      "id": "combobox",
+      "name": "Combobox",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": [
+        "default",
+        "focus",
+        "open",
+        "selected",
+        "empty",
+        "disabled",
+        "invalid"
+      ]
+    },
+    {
+      "id": "checkbox",
+      "name": "Checkbox",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": [
+        "default",
+        "focus",
+        "selected",
+        "indeterminate",
+        "disabled",
+        "invalid"
+      ]
+    },
+    {
+      "id": "radio-group",
+      "name": "RadioGroup",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": ["default", "focus", "selected", "disabled", "invalid"]
+    },
+    {
+      "id": "switch",
+      "name": "Switch",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": ["default", "focus", "selected", "disabled"]
+    },
+    {
+      "id": "slider",
+      "name": "Slider",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": ["default", "focus", "disabled", "read-only"]
+    },
+    {
+      "id": "date-time-picker",
+      "name": "DateTimePicker",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": [
+        "default",
+        "focus",
+        "open",
+        "selected",
+        "disabled",
+        "read-only",
+        "invalid"
+      ]
+    },
+    {
+      "id": "file-upload",
+      "name": "FileUpload",
+      "layer": "primitive",
+      "category": "forms",
+      "requiredStates": [
+        "default",
+        "focus",
+        "drag-active",
+        "loading",
+        "disabled",
+        "invalid"
+      ]
+    },
+
+    {
+      "id": "tabs",
+      "name": "Tabs",
+      "layer": "primitive",
+      "category": "navigation",
+      "requiredStates": ["default", "focus", "selected", "disabled", "narrow"]
+    },
+    {
+      "id": "breadcrumbs",
+      "name": "Breadcrumbs",
+      "layer": "primitive",
+      "category": "navigation",
+      "requiredStates": ["default", "narrow"]
+    },
+    {
+      "id": "menu",
+      "name": "Menu",
+      "layer": "primitive",
+      "category": "navigation",
+      "requiredStates": [
+        "default",
+        "open",
+        "focus",
+        "selected",
+        "disabled",
+        "destructive",
+        "nested"
+      ]
+    },
+    {
+      "id": "context-menu",
+      "name": "ContextMenu",
+      "layer": "primitive",
+      "category": "navigation",
+      "requiredStates": ["default", "open", "focus", "disabled", "destructive"]
+    },
+    {
+      "id": "side-nav",
+      "name": "SideNav",
+      "layer": "pattern",
+      "category": "navigation",
+      "requiredStates": ["default", "focus", "selected", "collapsed", "narrow"]
+    },
+    {
+      "id": "pagination",
+      "name": "Pagination",
+      "layer": "primitive",
+      "category": "navigation",
+      "requiredStates": ["default", "focus", "selected", "disabled", "narrow"]
+    },
+    {
+      "id": "toolbar",
+      "name": "Toolbar",
+      "layer": "pattern",
+      "category": "navigation",
+      "requiredStates": ["default", "focus", "disabled", "overflow", "narrow"]
+    },
+    {
+      "id": "command-palette",
+      "name": "CommandPalette",
+      "layer": "pattern",
+      "category": "navigation",
+      "requiredStates": ["default", "open", "focus", "empty", "loading"]
+    },
+
+    {
+      "id": "card",
+      "name": "Card",
+      "layer": "primitive",
+      "category": "data-content",
+      "requiredStates": ["default", "hover", "focus", "selected", "disabled"]
+    },
+    {
+      "id": "badge",
+      "name": "Badge",
+      "layer": "primitive",
+      "category": "data-content",
+      "requiredStates": ["default", "success", "warning", "danger", "info"]
+    },
+    {
+      "id": "tag",
+      "name": "Tag",
+      "layer": "primitive",
+      "category": "data-content",
+      "requiredStates": [
+        "default",
+        "focus",
+        "selected",
+        "removable",
+        "disabled"
+      ]
+    },
+    {
+      "id": "avatar",
+      "name": "Avatar",
+      "layer": "primitive",
+      "category": "data-content",
+      "requiredStates": ["default", "fallback", "loading"]
+    },
+    {
+      "id": "list",
+      "name": "List",
+      "layer": "primitive",
+      "category": "data-content",
+      "requiredStates": [
+        "default",
+        "focus",
+        "selected",
+        "disabled",
+        "empty",
+        "loading"
+      ]
+    },
+    {
+      "id": "data-table",
+      "name": "DataTable",
+      "layer": "pattern",
+      "category": "data-content",
+      "requiredStates": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "selected",
+        "sorting",
+        "overflow",
+        "narrow"
+      ]
+    },
+    {
+      "id": "tree-view",
+      "name": "TreeView",
+      "layer": "pattern",
+      "category": "data-content",
+      "requiredStates": [
+        "default",
+        "focus",
+        "selected",
+        "expanded",
+        "disabled",
+        "loading"
+      ]
+    },
+    {
+      "id": "accordion",
+      "name": "Accordion",
+      "layer": "primitive",
+      "category": "data-content",
+      "requiredStates": ["default", "focus", "expanded", "disabled"]
+    },
+    {
+      "id": "description-list",
+      "name": "DescriptionList",
+      "layer": "pattern",
+      "category": "data-content",
+      "requiredStates": ["default", "long-text", "narrow"]
+    },
+
+    {
+      "id": "alert",
+      "name": "Alert",
+      "layer": "primitive",
+      "category": "feedback",
+      "requiredStates": ["default", "success", "warning", "danger", "info"]
+    },
+    {
+      "id": "toast",
+      "name": "Toast",
+      "layer": "pattern",
+      "category": "feedback",
+      "requiredStates": [
+        "default",
+        "success",
+        "warning",
+        "danger",
+        "loading",
+        "multiple"
+      ]
+    },
+    {
+      "id": "spinner",
+      "name": "Spinner",
+      "layer": "primitive",
+      "category": "feedback",
+      "requiredStates": ["default"]
+    },
+    {
+      "id": "progress",
+      "name": "Progress",
+      "layer": "primitive",
+      "category": "feedback",
+      "requiredStates": ["default", "indeterminate", "complete", "error"]
+    },
+    {
+      "id": "skeleton",
+      "name": "Skeleton",
+      "layer": "primitive",
+      "category": "feedback",
+      "requiredStates": ["default", "reduced-motion"]
+    },
+    {
+      "id": "empty-state",
+      "name": "EmptyState",
+      "layer": "pattern",
+      "category": "feedback",
+      "requiredStates": ["default", "with-action", "narrow"]
+    },
+    {
+      "id": "error-state",
+      "name": "ErrorState",
+      "layer": "pattern",
+      "category": "feedback",
+      "requiredStates": ["default", "with-retry", "narrow"]
+    },
+    {
+      "id": "permission-denied",
+      "name": "PermissionDenied",
+      "layer": "pattern",
+      "category": "feedback",
+      "requiredStates": ["default", "with-action", "narrow"]
+    },
+
+    {
+      "id": "tooltip",
+      "name": "Tooltip",
+      "layer": "primitive",
+      "category": "overlays",
+      "requiredStates": ["default", "open", "focus", "long-text"]
+    },
+    {
+      "id": "popover",
+      "name": "Popover",
+      "layer": "primitive",
+      "category": "overlays",
+      "requiredStates": ["default", "open", "focus", "narrow"]
+    },
+    {
+      "id": "dialog",
+      "name": "Dialog",
+      "layer": "primitive",
+      "category": "overlays",
+      "requiredStates": ["default", "open", "focus", "loading", "narrow"]
+    },
+    {
+      "id": "confirm-dialog",
+      "name": "ConfirmDialog",
+      "layer": "pattern",
+      "category": "overlays",
+      "requiredStates": ["default", "open", "focus", "loading", "destructive"]
+    },
+    {
+      "id": "drawer",
+      "name": "Drawer",
+      "layer": "pattern",
+      "category": "overlays",
+      "requiredStates": ["default", "open", "focus", "narrow"]
+    },
+
+    {
+      "id": "app-shell",
+      "name": "AppShell",
+      "layer": "layout",
+      "category": "cross-page",
+      "requiredStates": ["default", "collapsed", "narrow"]
+    },
+    {
+      "id": "page-header",
+      "name": "PageHeader",
+      "layer": "pattern",
+      "category": "cross-page",
+      "requiredStates": ["default", "with-actions", "long-text", "narrow"]
+    },
+    {
+      "id": "section-header",
+      "name": "SectionHeader",
+      "layer": "pattern",
+      "category": "cross-page",
+      "requiredStates": ["default", "with-actions", "long-text", "narrow"]
+    },
+    {
+      "id": "form-section",
+      "name": "FormSection",
+      "layer": "pattern",
+      "category": "cross-page",
+      "requiredStates": ["default", "invalid", "disabled", "narrow"]
+    },
+    {
+      "id": "filter-bar",
+      "name": "FilterBar",
+      "layer": "pattern",
+      "category": "cross-page",
+      "requiredStates": ["default", "active", "loading", "narrow"]
+    },
+    {
+      "id": "data-toolbar",
+      "name": "DataToolbar",
+      "layer": "pattern",
+      "category": "cross-page",
+      "requiredStates": ["default", "loading", "overflow", "narrow"]
+    },
+    {
+      "id": "bulk-action-bar",
+      "name": "BulkActionBar",
+      "layer": "pattern",
+      "category": "cross-page",
+      "requiredStates": ["default", "active", "loading", "narrow"]
+    },
+    {
+      "id": "search-results",
+      "name": "SearchResults",
+      "layer": "pattern",
+      "category": "cross-page",
+      "requiredStates": ["default", "loading", "empty", "error", "narrow"]
+    },
+    {
+      "id": "list-page-layout",
+      "name": "ListPageLayout",
+      "layer": "layout",
+      "category": "cross-page",
+      "requiredStates": ["default", "loading", "empty", "narrow"]
+    },
+    {
+      "id": "detail-page-layout",
+      "name": "DetailPageLayout",
+      "layer": "layout",
+      "category": "cross-page",
+      "requiredStates": ["default", "loading", "error", "narrow"]
+    },
+    {
+      "id": "form-page-layout",
+      "name": "FormPageLayout",
+      "layer": "layout",
+      "category": "cross-page",
+      "requiredStates": ["default", "invalid", "loading", "narrow"]
+    },
+    {
+      "id": "settings-layout",
+      "name": "SettingsLayout",
+      "layer": "layout",
+      "category": "cross-page",
+      "requiredStates": ["default", "selected", "narrow"]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+
+@source "../app/**/*.{ts,tsx,mdx}";
+@source "../components/**/*.{ts,tsx}";
+@source "../content/**/*.{md,mdx}";
+@source "../lib/highlight-code.ts";
+@source "../mdx-components.tsx";
+@source "../registry/new-york/**/*.{ts,tsx}";
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+
+@import "./themes.css";
+@import "./globals-tokens.css";
+@import "./globals-base.css";
+@import "./globals-code.css";
+@import "./globals-motion.css";

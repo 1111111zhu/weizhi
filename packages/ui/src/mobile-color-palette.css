@@ -1,0 +1,19 @@
+@import "./material3-tokens.css";
+@import "./material3-components.css";
+
+/* Mobile-only presentation. Never replace desktop palettes or primitive defaults. */
+@media (width < 48rem) {
+  .pw-mobile-theme {
+    --pw-mobile-font-family: var(--md-sys-typeface);
+    --pw-mobile-type-title: var(--md-sys-type-title-large);
+    --pw-mobile-type-section: var(--md-sys-type-title-medium);
+    --pw-mobile-type-body: var(--md-sys-type-body-large);
+    --pw-mobile-type-label: var(--md-sys-type-label-large);
+    --pw-mobile-type-secondary: var(--md-sys-type-body-medium);
+    --pw-mobile-leading-body: var(--md-sys-type-leading-body);
+    --pw-mobile-navigation-active: var(--md-sys-color-primary);
+  }
+  .pw-mobile-theme:root {
+    font-family: var(--md-sys-typeface);
+  }
+}

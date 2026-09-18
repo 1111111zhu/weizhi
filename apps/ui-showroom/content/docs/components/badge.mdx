@@ -1,0 +1,32 @@
+---
+title: Badge
+description: Displays a status badge or indicator using Base UI render props.
+---
+
+import { BadgeDemo } from "@/registry/new-york/badge-demo";
+
+<ComponentPreview name="badge">
+  <BadgeDemo />
+</ComponentPreview>
+
+## Installation
+
+<RegistryInstallCommand name="badge" />
+
+## Usage
+
+```tsx
+import { Badge } from "@/components/ui/badge";
+
+export function Example() {
+  return <Badge variant="default">Status</Badge>;
+}
+```
+
+## Variants
+
+- `default` - Primary badge
+- `secondary` - Secondary subtle badge
+- `outline` - Bordered badge
+- `destructive` - Destructive / alert badge
+- `ghost` - Ghost badge

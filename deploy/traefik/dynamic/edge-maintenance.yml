@@ -1,0 +1,13 @@
+http:
+  services:
+    projectwing-maintenance:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: "http://maintenance:8080"
+
+  routers:
+    projectwing-maintenance:
+      rule: "Host(`wing.superfx.cn`) || Host(`emp.superfx.cn`) || Host(`auth.superfx.cn`) || Host(`cmp.superfx.cn`) || Host(`showroom.superfx.cn`) || Host(`tms.superfx.cn`) || Host(`intranet.superfx.cn`) || Host(`ib.superfx.cn`) || Host(`db.superfx.cn`)"
+      priority: 1000
+      service: projectwing-maintenance

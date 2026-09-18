@@ -1,0 +1,528 @@
+name: Desktop Agent
+
+on:
+  schedule:
+    - cron: "0 20 * * *"
+  workflow_dispatch:
+    inputs:
+      force_build:
+        description: Build Desktop Agent platform packages
+        required: true
+        default: true
+        type: boolean
+      release_version:
+        description: Existing version to use for the release
+        required: false
+        type: string
+      publish_release:
+        description: Publish Windows and macOS releases to OSS and create the GitHub Release
+        required: true
+        default: true
+        type: boolean
+      release_channel:
+        description: Release channel (preview creates a GitHub pre-release without OSS publishing)
+        required: true
+        default: stable
+        type: choice
+        options:
+          - preview
+          - stable
+
+concurrency:
+  group: desktop-agent-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  prepare:
+    name: Resolve release
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    outputs:
+      changed: ${{ steps.scope.outputs.changed }}
+      release-version: ${{ steps.version.outputs.release-version }}
+      asset-tag-prefix: ${{ steps.asset-key.outputs.prefix }}
+      release-note: ${{ steps.version.outputs.release-note }}
+      publish-release: ${{ steps.publish.outputs.enabled }}
+      release-channel: ${{ steps.channel.outputs.channel }}
+      windows-assets-available: ${{ steps.asset-cache.outputs.windows }}
+      macos-assets-available: ${{ steps.asset-cache.outputs.macos }}
+      github-hosted-available: ${{ steps.hosted-capacity.outputs.available }}
+      github-hosted-reason: ${{ steps.hosted-capacity.outputs.reason }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - id: scope
+        name: Detect Desktop Agent changes
+        shell: bash
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            echo "changed=${{ inputs.force_build }}" >> "$GITHUB_OUTPUT"
+          else
+            scheduled_before="$(date -u -d 'yesterday 20:00:00' --iso-8601=seconds)"
+            before="$(git rev-list -1 --before="$scheduled_before" "$GITHUB_SHA")"
+            if [ -z "$before" ]; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            else
+              node scripts/ci/detect-desktop-agent-changes.mjs \
+                --before "$before" --after "$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      - id: version
+        name: Resolve release version and changelog
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DESKTOP_AGENT_RELEASE_VERSION_OVERRIDE: ${{ inputs.release_version }}
+        run: node scripts/desktop-agent/resolve-release-version.mjs
+      - id: publish
+        name: Resolve publishing
+        shell: bash
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            if [ "${{ inputs.release_channel }}" = "preview" ]; then
+              echo "enabled=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "enabled=${{ inputs.publish_release }}" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+      - id: asset-key
+        name: Resolve commit-scoped GHCR cache key
+        shell: bash
+        run: echo "prefix=${{ steps.version.outputs.release-version }}-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+      - id: channel
+        name: Resolve release channel
+        shell: bash
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            echo "channel=${{ inputs.release_channel }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "channel=stable" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: oras-project/setup-oras@v1
+        if: steps.scope.outputs.changed == 'true'
+      - id: asset-cache
+        name: Check reusable GHCR release bundles
+        if: steps.scope.outputs.changed == 'true'
+        env:
+          DESKTOP_AGENT_ASSET_TAG_PREFIX: ${{ steps.asset-key.outputs.prefix }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          echo "windows=$(node scripts/desktop-agent/transfer-release-asset.mjs exists windows)" >> "$GITHUB_OUTPUT"
+          echo "macos=$(node scripts/desktop-agent/transfer-release-asset.mjs exists macos)" >> "$GITHUB_OUTPUT"
+      - id: hosted-capacity
+        name: Check shared GitHub-hosted capacity
+        if: steps.scope.outputs.changed == 'true' && (steps.asset-cache.outputs.windows != 'true' || steps.asset-cache.outputs.macos != 'true')
+        env:
+          GH_BILLING_READ_TOKEN: ${{ secrets.GH_BILLING_READ_TOKEN }}
+          # Linux-equivalent included minutes, with headroom above each hosted job timeout.
+          WINDOWS_HOSTED_INCLUDED_MINUTES: "50"
+          MACOS_HOSTED_INCLUDED_MINUTES: "334"
+        shell: bash
+        run: |
+          required_minutes=0
+          if [ "${{ steps.asset-cache.outputs.windows }}" != "true" ]; then
+            required_minutes=$((required_minutes + WINDOWS_HOSTED_INCLUDED_MINUTES))
+          fi
+          if [ "${{ steps.asset-cache.outputs.macos }}" != "true" ]; then
+            required_minutes=$((required_minutes + MACOS_HOSTED_INCLUDED_MINUTES))
+          fi
+          export GH_BILLING_REQUIRED_INCLUDED_MINUTES="$required_minutes"
+          node scripts/desktop-agent/resolve-github-hosted-capacity.mjs
+
+  verify:
+    name: Verify contracts
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    needs: prepare
+    if: needs.prepare.outputs.changed == 'true'
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet
+        with:
+          dotnet-version: "8.0.x"
+      - name: Install Desktop Agent dependencies
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.5.0 --activate
+          pnpm --filter @project-wing/desktop-agent-desktop... \
+            --filter @project-wing/desktop-agent... \
+            --config.verify-deps-before-run=false \
+            install --frozen-lockfile --ignore-scripts --reporter=append-only
+      - name: Verify Desktop Agent packages
+        run: |
+          corepack pnpm format:dotnet:check
+          node --test scripts/ci/detect-desktop-agent-changes.test.mjs
+          node --test scripts/format-dotnet.test.mjs
+          node --test scripts/desktop-agent/obfuscate-dotnet-publish.test.mjs
+          node --test scripts/desktop-agent/resolve-release-version.test.mjs
+          node --test scripts/desktop-agent/resolve-github-hosted-capacity.test.mjs
+          node --test scripts/desktop-agent/resolve-macos-app-bundle.test.mjs
+          node --test scripts/desktop-agent/transfer-release-asset.test.mjs
+          node --test scripts/desktop-agent/run-external-release-build.test.mjs
+          node --test scripts/desktop-agent/release-fallback-policy.test.mjs
+          node --test scripts/desktop-agent/run-azure-electron-build.test.mjs
+          node --test scripts/desktop-agent/download-ghcr-asset.test.mjs
+          node --test scripts/desktop-agent/publish-installer-to-oss.test.mjs
+          node --test scripts/desktop-agent/publish-macos-to-oss.test.mjs
+          node apps/desktop-agent/scripts/verify-native-hosts.mjs
+          node apps/desktop-agent/scripts/verify-release-publisher.mjs
+          node --test scripts/desktop-agent/merge-dotnet-publish.test.mjs
+          node --test scripts/desktop-agent/report-package-size.test.mjs
+          node --test scripts/desktop-agent/verify-windows-signing-report.test.mjs
+          node --test scripts/desktop-agent/publish-preview-release.test.mjs
+          node --test scripts/desktop-agent/release-storage-policy.test.mjs
+          node --test scripts/desktop-agent/release-output-root.test.mjs
+          pnpm --filter @project-wing/desktop-agent-desktop test scripts/runtime-integrity.test.mjs
+          node --check apps/desktop-agent-desktop/scripts/package-macos.mjs
+          pnpm --filter @project-wing/desktop-agent-desktop test
+          pnpm --filter @project-wing/desktop-agent-desktop lint
+          pnpm --filter @project-wing/desktop-agent-desktop build
+
+      - name: Verify isolated native recovery and file safety
+        env:
+          PROJECT_WING_RUN_ADVERSARIAL_PROCESS_AUDIT: "1"
+          PROJECT_WING_BODY_AUDIT_DLL: ${{ github.workspace }}/apps/desktop-agent/test-fixtures/PartialHealthWorker/bin/Debug/net8.0/PartialHealthWorker.dll
+        run: |
+          node apps/desktop-agent/scripts/verify-manager-runtime.mjs
+          dotnet run --project apps/desktop-agent/runtime/RecoverySafety.Tests/RecoverySafety.Tests.csproj
+          dotnet run --project apps/desktop-agent/manager/RecoveryControl.Tests/RecoveryControl.Tests.csproj
+          dotnet build apps/desktop-agent/test-fixtures/PartialHealthWorker/PartialHealthWorker.csproj --nologo
+          pnpm --filter @project-wing/desktop-agent-desktop test src/main/adversarial-process-review.test.ts
+
+  github-windows:
+    name: Windows · GitHub
+    runs-on: windows-2025-vs2026
+    needs: [prepare, verify]
+    if: needs.prepare.outputs.changed == 'true' && needs.verify.result == 'success' && needs.prepare.outputs.windows-assets-available != 'true' && needs.prepare.outputs.github-hosted-available == 'true'
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      packages: write
+    env:
+      DESKTOP_AGENT_ASSET_TAG_PREFIX: ${{ needs.prepare.outputs.asset-tag-prefix }}
+      PROJECT_WING_DESKTOP_RELEASE_CHANNEL: ${{ needs.prepare.outputs.release-channel }}
+      PROJECT_WING_DESKTOP_UPDATE_URL: ${{ needs.prepare.outputs.release-channel == 'preview' && vars.DESKTOP_AGENT_VELOPACK_PREVIEW_UPDATE_URL || (needs.prepare.outputs.release-channel == 'stable' && vars.DESKTOP_AGENT_VELOPACK_UPDATE_URL || '') }}
+      PROJECT_WING_DESKTOP_RELEASE_REQUIRE_UPDATE_URL: ${{ needs.prepare.outputs.release-channel == 'stable' }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Desktop Agent dependencies
+        shell: pwsh
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.5.0 --activate
+          pnpm --filter @project-wing/desktop-agent-desktop... --config.verify-deps-before-run=false install --frozen-lockfile --ignore-scripts --reporter=append-only
+      - name: Build Windows package and update feed
+        shell: pwsh
+        run: corepack pnpm build:desktop-agent:win
+        env:
+          PROJECT_WING_DESKTOP_VERSION: ${{ needs.prepare.outputs.release-version }}
+          PROJECT_WING_DESKTOP_RELEASE_ROOT: output/desktop-agent/windows
+      - uses: oras-project/setup-oras@v1
+      - name: Push Windows release assets to GHCR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/desktop-agent/transfer-release-asset.mjs push windows output/desktop-agent/windows/releases
+
+  azure-windows:
+    name: Windows · Azure fallback
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    needs: [prepare, verify, github-windows]
+    if: always() && needs.prepare.outputs.changed == 'true' && needs.verify.result == 'success' && needs.prepare.outputs.windows-assets-available != 'true' && needs.github-windows.result != 'success'
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      packages: write
+    env:
+      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+      AZURE_DEVOPS_ORGANIZATION: https://dev.azure.com/fin-agent-lab
+      AZURE_DEVOPS_PROJECT: ProjectWing
+      AZURE_WINDOWS_PIPELINE_ID: ${{ vars.AZURE_WINDOWS_PIPELINE_ID || '1' }}
+      DESKTOP_AGENT_ASSET_TAG_PREFIX: ${{ needs.prepare.outputs.asset-tag-prefix }}
+      DESKTOP_AGENT_VELOPACK_UPDATE_URL: ${{ vars.DESKTOP_AGENT_VELOPACK_UPDATE_URL }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oras-project/setup-oras@v1
+      - name: Build Windows package through Azure and cache it in GHCR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/desktop-agent/run-external-release-build.mjs azure windows "${{ needs.prepare.outputs.release-version }}" "${{ needs.prepare.outputs.release-channel }}"
+      - name: Verify Azure published the Windows bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: test "$(node scripts/desktop-agent/transfer-release-asset.mjs exists windows)" = true
+
+  github-macos:
+    name: macOS · GitHub
+    runs-on: macos-15
+    needs: [prepare, verify]
+    if: needs.prepare.outputs.changed == 'true' && needs.verify.result == 'success' && needs.prepare.outputs.macos-assets-available != 'true' && needs.prepare.outputs.github-hosted-available == 'true'
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    env:
+      DESKTOP_AGENT_ASSET_TAG_PREFIX: ${{ needs.prepare.outputs.asset-tag-prefix }}
+      PROJECT_WING_DESKTOP_RELEASE_CHANNEL: ${{ needs.prepare.outputs.release-channel }}
+      PROJECT_WING_DESKTOP_UPDATE_URL: ""
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "8.0.x"
+      - name: Install Desktop Agent dependencies
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.5.0 --activate
+          pnpm --filter @project-wing/desktop-agent-desktop... --config.verify-deps-before-run=false install --frozen-lockfile --ignore-scripts --reporter=append-only
+      - name: Build macOS ARM64 package
+        run: corepack pnpm build:desktop-agent:mac
+        env:
+          PROJECT_WING_DESKTOP_VERSION: ${{ needs.prepare.outputs.release-version }}
+          PROJECT_WING_DESKTOP_MACOS_RUNTIME: osx-arm64
+          PROJECT_WING_DESKTOP_RELEASE_ROOT: output/desktop-agent/macos/arm64
+      - uses: oras-project/setup-oras@v1
+      - name: Push macOS release assets to GHCR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/desktop-agent/transfer-release-asset.mjs push macos output/desktop-agent/macos/arm64/releases
+
+  codemagic-macos:
+    name: macOS · Codemagic fallback
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    needs: [prepare, verify, github-macos]
+    if: always() && needs.prepare.outputs.changed == 'true' && needs.verify.result == 'success' && needs.prepare.outputs.macos-assets-available != 'true' && needs.github-macos.result != 'success'
+    timeout-minutes: 55
+    permissions:
+      contents: read
+      packages: write
+    env:
+      CODEMAGIC_API_TOKEN: ${{ secrets.CODEMAGIC_API_TOKEN }}
+      CODEMAGIC_APP_ID: ${{ vars.CODEMAGIC_APP_ID || '6a607bc4cba9bfbe70b8b966' }}
+      DESKTOP_AGENT_ASSET_TAG_PREFIX: ${{ needs.prepare.outputs.asset-tag-prefix }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oras-project/setup-oras@v1
+      - name: Build macOS package through Codemagic and cache it in GHCR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/desktop-agent/run-external-release-build.mjs codemagic macos "${{ needs.prepare.outputs.release-version }}" "${{ needs.prepare.outputs.release-channel }}"
+      - name: Verify Codemagic published the macOS bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: test "$(node scripts/desktop-agent/transfer-release-asset.mjs exists macos)" = true
+
+  azure-macos:
+    name: macOS · Azure fallback
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    needs: [prepare, verify, github-macos, codemagic-macos]
+    if: always() && needs.prepare.outputs.changed == 'true' && needs.verify.result == 'success' && needs.prepare.outputs.macos-assets-available != 'true' && needs.github-macos.result != 'success' && needs.codemagic-macos.result != 'success'
+    timeout-minutes: 55
+    permissions:
+      contents: read
+      packages: write
+    env:
+      AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+      AZURE_DEVOPS_ORGANIZATION: https://dev.azure.com/fin-agent-lab
+      AZURE_DEVOPS_PROJECT: ProjectWing
+      AZURE_MACOS_PIPELINE_ID: ${{ vars.AZURE_MACOS_PIPELINE_ID || '2' }}
+      DESKTOP_AGENT_ASSET_TAG_PREFIX: ${{ needs.prepare.outputs.asset-tag-prefix }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oras-project/setup-oras@v1
+      - name: Build macOS package through Azure and cache it in GHCR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/desktop-agent/run-external-release-build.mjs azure macos "${{ needs.prepare.outputs.release-version }}" "${{ needs.prepare.outputs.release-channel }}"
+      - name: Verify Azure published the macOS bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: test "$(node scripts/desktop-agent/transfer-release-asset.mjs exists macos)" = true
+
+  release-assets:
+    name: Verify reusable release bundles
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    needs:
+      [
+        prepare,
+        verify,
+        github-windows,
+        azure-windows,
+        github-macos,
+        azure-macos,
+        codemagic-macos,
+      ]
+    if: always() && needs.prepare.outputs.changed == 'true' && needs.verify.result == 'success'
+    outputs:
+      windows-builder: ${{ steps.builders.outputs.windows }}
+      macos-builder: ${{ steps.builders.outputs.macos }}
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oras-project/setup-oras@v1
+      - name: Require Windows and macOS GHCR bundles
+        env:
+          DESKTOP_AGENT_ASSET_TAG_PREFIX: ${{ needs.prepare.outputs.asset-tag-prefix }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          test "$(node scripts/desktop-agent/transfer-release-asset.mjs exists windows)" = true
+          test "$(node scripts/desktop-agent/transfer-release-asset.mjs exists macos)" = true
+      - id: builders
+        name: Resolve release bundle sources
+        env:
+          WINDOWS_ASSETS_CACHED: ${{ needs.prepare.outputs.windows-assets-available }}
+          WINDOWS_GITHUB_RESULT: ${{ needs.github-windows.result }}
+          MACOS_ASSETS_CACHED: ${{ needs.prepare.outputs.macos-assets-available }}
+          MACOS_GITHUB_RESULT: ${{ needs.github-macos.result }}
+          MACOS_CODEMAGIC_RESULT: ${{ needs.codemagic-macos.result }}
+        shell: bash
+        run: |
+          if [ "$WINDOWS_ASSETS_CACHED" = "true" ]; then
+            echo "windows=ghcr-cache" >> "$GITHUB_OUTPUT"
+          elif [ "$WINDOWS_GITHUB_RESULT" = "success" ]; then
+            echo "windows=github" >> "$GITHUB_OUTPUT"
+          else
+            echo "windows=azure" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "$MACOS_ASSETS_CACHED" = "true" ]; then
+            echo "macos=ghcr-cache" >> "$GITHUB_OUTPUT"
+          elif [ "$MACOS_GITHUB_RESULT" = "success" ]; then
+            echo "macos=github" >> "$GITHUB_OUTPUT"
+          elif [ "$MACOS_CODEMAGIC_RESULT" = "success" ]; then
+            echo "macos=codemagic" >> "$GITHUB_OUTPUT"
+          else
+            echo "macos=azure" >> "$GITHUB_OUTPUT"
+          fi
+
+  publish:
+    name: Publish Desktop Agent release
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    needs: [prepare, release-assets]
+    if: always() && needs.release-assets.result == 'success' && (needs.prepare.outputs.release-channel == 'preview' || needs.prepare.outputs.publish-release == 'true')
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      packages: write
+    env:
+      RELEASE_VERSION: ${{ needs.prepare.outputs.release-version }}
+      RELEASE_NOTE: ${{ needs.prepare.outputs.release-note }}
+      WINDOWS_BUILDER: ${{ needs.release-assets.outputs.windows-builder }}
+      MACOS_BUILDER: ${{ needs.release-assets.outputs.macos-builder }}
+      DESKTOP_AGENT_ASSET_TAG_PREFIX: ${{ needs.prepare.outputs.asset-tag-prefix }}
+      RELEASE_RELAY_IMAGE: ghcr.io/${{ github.repository_owner }}/projectwing-desktop-agent-release:${{ needs.prepare.outputs.release-version }}
+      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+      OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+      OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
+      DESKTOP_AGENT_MINIMUM_VERSION: ${{ vars.NEXT_PUBLIC_DESKTOP_AGENT_MINIMUM_VERSION || '0.2.0' }}
+      DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION: ${{ vars.NEXT_PUBLIC_DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION || '0.2.10' }}
+      DESKTOP_AGENT_WINDOWS_SIGNATURE_POLICY: "optional"
+      PROJECTWING_WARP_PROXY_PORT: "40000"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oras-project/setup-oras@v1
+      - name: Pull preview installers from GHCR
+        if: needs.prepare.outputs.release-channel == 'preview'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          mkdir -p release-assets/windows release-assets/macos preview-assets
+          node scripts/desktop-agent/transfer-release-asset.mjs pull windows release-assets/windows
+          node scripts/desktop-agent/transfer-release-asset.mjs pull macos release-assets/macos
+          cp release-assets/windows/com.superfx.projectwing.desktop-agent-win-Setup.exe \
+            "preview-assets/desktop-agent-win-x64-${RELEASE_VERSION}.exe"
+          cp release-assets/macos/com.superfx.projectwing.desktop-agent-osx-Setup.pkg \
+            "preview-assets/desktop-agent-macos-arm64-${RELEASE_VERSION}.pkg"
+      - name: Publish GitHub preview release
+        if: needs.prepare.outputs.release-channel == 'preview'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/desktop-agent/publish-preview-release.sh preview-assets
+      - name: Pack and push release relay image
+        if: needs.prepare.outputs.release-channel == 'stable'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/desktop-agent/publish-release-via-ghcr.sh relay release-assets
+      - name: Stage OSS release environment
+        if: needs.prepare.outputs.release-channel == 'stable'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          for name in OSS_ACCESS_KEY_ID OSS_ACCESS_KEY_SECRET OSS_BUCKET OSS_ENDPOINT GH_TOKEN; do
+            test -n "${!name:-}" || { echo "Required environment variable is missing: $name" >&2; exit 1; }
+          done
+          release_env="${RUNNER_TEMP}/desktop-agent-release-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.env"
+          {
+            printf 'RELEASE_VERSION=%s\n' "${RELEASE_VERSION}"
+            printf 'GHCR_REPOSITORY_OWNER=%s\n' "${GITHUB_REPOSITORY_OWNER,,}"
+            printf 'GHCR_USERNAME=%s\n' "${GITHUB_ACTOR}"
+            printf 'GHCR_TOKEN=%s\n' "${GH_TOKEN}"
+            printf 'GHCR_ASSET_TAG_PREFIX=%s\n' "${DESKTOP_AGENT_ASSET_TAG_PREFIX}"
+            printf 'OSS_ACCESS_KEY_ID=%s\n' "${OSS_ACCESS_KEY_ID}"
+            printf 'OSS_ACCESS_KEY_SECRET=%s\n' "${OSS_ACCESS_KEY_SECRET}"
+            printf 'OSS_BUCKET=%s\n' "${OSS_BUCKET}"
+            printf 'OSS_ENDPOINT=%s\n' "${OSS_ENDPOINT}"
+            printf 'DESKTOP_AGENT_MINIMUM_VERSION=%s\n' "${DESKTOP_AGENT_MINIMUM_VERSION}"
+            printf 'DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION=%s\n' "${DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION}"
+            printf 'DESKTOP_AGENT_WINDOWS_SIGNATURE_POLICY=%s\n' "${DESKTOP_AGENT_WINDOWS_SIGNATURE_POLICY}"
+          } > "$release_env"
+          chmod 600 "$release_env"
+          echo "DESKTOP_AGENT_RELEASE_ENV=$release_env" >> "$GITHUB_ENV"
+      - name: Connect the Utopia WARP SOCKS proxy
+        if: needs.prepare.outputs.release-channel == 'stable'
+        env:
+          PROJECTWING_WARP_CHECK_URL: ${{ secrets.OSS_ENDPOINT }}
+        run: scripts/ci/ensure-warp-proxy.sh
+      - name: Upload Windows and macOS release assets from Utopia to OSS
+        if: needs.prepare.outputs.release-channel == 'stable'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROJECTWING_WARP_CHECK_URL: ${{ secrets.OSS_ENDPOINT }}
+        shell: bash
+        run: |
+          cleanup() {
+            docker logout ghcr.io >/dev/null 2>&1 || true
+            rm -f "${DESKTOP_AGENT_RELEASE_ENV}"
+          }
+          trap cleanup EXIT
+          printf '%s' "${GH_TOKEN}" | docker login ghcr.io --username "${GITHUB_ACTOR}" --password-stdin
+          docker pull "${RELEASE_RELAY_IMAGE}"
+          checkpoint_dir="${HOME}/.cache/projectwing-oss-checkpoints/desktop-agent-oss-checkpoints"
+          mkdir -p "${checkpoint_dir}"
+          published=false
+          for relay_attempt in 1 2 3; do
+            if docker run --rm --network host \
+              --env-file "${DESKTOP_AGENT_RELEASE_ENV}" \
+              --env "ALL_PROXY=socks5h://127.0.0.1:${PROJECTWING_WARP_PROXY_PORT}" \
+              --env "NO_PROXY=127.0.0.1,localhost" \
+              --volume "${checkpoint_dir}:/root/.cache/projectwing-oss-checkpoints" \
+              "${RELEASE_RELAY_IMAGE}"; then
+              published=true
+              break
+            fi
+            if [ "${relay_attempt}" -lt 3 ]; then
+              echo "Release relay failed; reconnecting WARP before attempt $((relay_attempt + 1))/3." >&2
+              scripts/ci/ensure-warp-proxy.sh
+            fi
+          done
+          [ "${published}" = true ] || { echo "Release relay failed after 3 WARP sessions." >&2; exit 1; }
+      - name: Create GitHub Release notes
+        if: needs.prepare.outputs.release-channel == 'stable'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/desktop-agent/publish-release-via-ghcr.sh notes

@@ -1,0 +1,3087 @@
+{
+  "$schema": "./design-system-registry.schema.json",
+  "schemaVersion": 1,
+  "project": {
+    "name": "ProjectWing",
+    "scale": "long-lived",
+    "archetype": "Bilingual CPA firm operations workbench",
+    "designSystemRoot": "packages/ui/src",
+    "publicEntry": "packages/ui/src/index.ts",
+    "showroomRoot": "apps/ui-showroom"
+  },
+  "approval": {
+    "status": "proposed",
+    "approvedBy": null,
+    "approvedAt": null,
+    "provenanceHash": null
+  },
+  "components": [
+    {
+      "id": "responsive-dialog-surface",
+      "name": "ResponsiveDialogSurface",
+      "layer": "primitive",
+      "category": "overlays",
+      "status": "experimental",
+      "publicExport": "ResponsiveDialogSurface",
+      "sourcePath": "packages/ui/src/responsive-dialog-surface.tsx",
+      "showroomPath": "/specimens/MobileMaterialSystem",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-material-system.tsx",
+      "requiredStates": [
+        "default",
+        "narrow",
+        "wide",
+        "keyboard",
+        "disabled",
+        "error"
+      ],
+      "coveredStates": ["default", "narrow", "wide", "keyboard"],
+      "tests": {
+        "interaction": ["packages/ui/src/responsive-dialog-surface.test.tsx"],
+        "keyboard": ["packages/ui/src/mobile-keyboard-viewport.test.tsx"],
+        "accessibility": ["packages/ui/src/responsive-dialog-surface.test.tsx"],
+        "responsive": ["packages/ui/src/mobile-color-palette.test.ts"],
+        "visual": []
+      },
+      "replacement": null,
+      "notes": "Dialog owner retains focus trapping, labels, dismissal and disabled/error actions. This ref-forwarding surface adapts placement and keyboard inset only below 48rem. Used by CMP/TMS/Intranet adapters; desktop dialog defaults are retained."
+    },
+    {
+      "id": "material-surface",
+      "name": "MaterialSurface",
+      "layer": "layout",
+      "category": "mobile-material",
+      "status": "experimental",
+      "publicExport": "MaterialSurface",
+      "sourcePath": "packages/ui/src/material-controls.tsx",
+      "showroomPath": "/specimens/MobileMaterialSystem",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-material-system.tsx",
+      "requiredStates": ["default", "light", "dark", "narrow"],
+      "coveredStates": ["default", "light", "dark", "narrow"],
+      "tests": {
+        "interaction": ["packages/ui/src/material-controls.test.tsx"],
+        "keyboard": [],
+        "accessibility": [
+          "packages/ui/src/material-controls.test.tsx",
+          "packages/ui/src/mobile-color-palette.test.ts"
+        ],
+        "visual": [],
+        "responsive": ["packages/ui/src/mobile-color-palette.test.ts"]
+      },
+      "replacement": null,
+      "notes": "Mobile-only Material 3 presentation below 48rem. Desktop defaults are unchanged. Local showroom and mock-app verification do not constitute backend acceptance or global Ready approval."
+    },
+    {
+      "id": "segmented-button-group",
+      "name": "SegmentedButtonGroup",
+      "layer": "primitive",
+      "category": "mobile-material",
+      "status": "experimental",
+      "publicExport": "SegmentedButtonGroup",
+      "sourcePath": "packages/ui/src/material-controls.tsx",
+      "showroomPath": "/specimens/MobileMaterialSystem",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-material-system.tsx",
+      "requiredStates": [
+        "default",
+        "selected",
+        "disabled",
+        "loading",
+        "error",
+        "keyboard",
+        "narrow"
+      ],
+      "coveredStates": [
+        "default",
+        "selected",
+        "disabled",
+        "loading",
+        "error",
+        "keyboard",
+        "narrow"
+      ],
+      "tests": {
+        "interaction": ["packages/ui/src/material-controls.test.tsx"],
+        "keyboard": ["packages/ui/src/material-controls.test.tsx"],
+        "accessibility": [
+          "packages/ui/src/material-controls.test.tsx",
+          "packages/ui/src/mobile-color-palette.test.ts"
+        ],
+        "visual": [],
+        "responsive": ["packages/ui/src/mobile-color-palette.test.ts"]
+      },
+      "replacement": null,
+      "notes": "Mobile-only Material 3 presentation below 48rem. Desktop defaults are unchanged. Local showroom and mock-app verification do not constitute backend acceptance or global Ready approval."
+    },
+    {
+      "id": "floating-action-button",
+      "name": "FloatingActionButton",
+      "layer": "primitive",
+      "category": "mobile-material",
+      "status": "experimental",
+      "publicExport": "FloatingActionButton",
+      "sourcePath": "packages/ui/src/material-controls.tsx",
+      "showroomPath": "/specimens/MobileMaterialSystem",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-material-system.tsx",
+      "requiredStates": ["default", "disabled", "loading", "focus", "narrow"],
+      "coveredStates": ["default", "disabled", "narrow"],
+      "tests": {
+        "interaction": ["packages/ui/src/material-controls.test.tsx"],
+        "keyboard": [],
+        "accessibility": [
+          "packages/ui/src/material-controls.test.tsx",
+          "packages/ui/src/mobile-color-palette.test.ts"
+        ],
+        "visual": [],
+        "responsive": ["packages/ui/src/mobile-color-palette.test.ts"]
+      },
+      "replacement": null,
+      "notes": "Mobile-only Material 3 presentation below 48rem. Desktop defaults are unchanged. Local showroom and mock-app verification do not constitute backend acceptance or global Ready approval."
+    },
+    {
+      "id": "smart-form-mobile-projection",
+      "name": "SmartFormMobileProjection",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/emp/src/components/smart-form-v2-mobile-records.tsx",
+      "showroomPath": "/zh-CN/dev/smart-form-v2/mobile-structure",
+      "showroomSource": "apps/emp/src/app/[locale]/dev/smart-form-v2/mobile-structure/page.tsx",
+      "requiredStates": [
+        "fixed-rows",
+        "grouped-headers",
+        "conditions",
+        "overrides",
+        "editing",
+        "review-target",
+        "narrow",
+        "desktop",
+        "repeatable-rows"
+      ],
+      "coveredStates": [
+        "fixed-rows",
+        "grouped-headers",
+        "conditions",
+        "overrides",
+        "editing",
+        "review-target",
+        "narrow",
+        "desktop"
+      ],
+      "tests": {
+        "interaction": [
+          "apps/emp/src/components/smart-form-v2-mobile-records.test.tsx",
+          "apps/emp/src/components/smart-form-v2-editor.test.tsx"
+        ],
+        "keyboard": [],
+        "accessibility": [
+          "apps/emp/src/components/smart-form-v2-review-questions.test.tsx"
+        ],
+        "visual": [
+          "docs/evidence/mobile-app-experience/smartform-semantic-flat-reading.png",
+          "docs/evidence/mobile-app-experience/smartform-mixed-schema.png",
+          "docs/evidence/mobile-app-experience/smartform-mobile-final-header.png",
+          "docs/evidence/mobile-app-experience/smartform-mobile-final-richtext-sheet.png",
+          "docs/evidence/mobile-app-experience/smartform-mobile-final-reference-sheet.png",
+          "docs/evidence/mobile-app-experience/smartform-mobile-final-dark.png"
+        ],
+        "responsive": [
+          "apps/emp/src/components/smart-form-v2-mobile-records.test.tsx"
+        ]
+      },
+      "replacement": null,
+      "notes": "AST-driven fixed-sheet reading/filling projection. Preserves field identity, ancestor headers, visibility and content overrides. Uses explicit responsive scroll/cards metadata; never guesses column meaning from labels/IDs. Mobile content is always expanded and left aligned; desktop disclosure state survives viewport changes. Existing repeatable-row editing and nested rich-text-table limitations are not resolved by this iteration. No Ready claim."
+    },
+    {
+      "id": "mobile-message",
+      "name": "MobileMessage",
+      "layer": "pattern",
+      "category": "data-display",
+      "status": "experimental",
+      "publicExport": "MobileMessage",
+      "sourcePath": "packages/ui/src/mobile-message.tsx",
+      "showroomPath": "/mobile#messages",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": ["default", "narrow", "keyboard", "dark"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-message.test.tsx"],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared conversation presentation. Initial question, replies, rich text, file and image attachments are demonstrated together; production integration and full device acceptance remain open."
+    },
+    {
+      "id": "mobile-attachment-link",
+      "name": "MobileAttachmentLink",
+      "layer": "pattern",
+      "category": "data-display",
+      "status": "experimental",
+      "publicExport": "MobileAttachmentLink",
+      "sourcePath": "packages/ui/src/mobile-message.tsx",
+      "showroomPath": "/mobile#messages",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": ["default", "narrow", "keyboard", "dark"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-message.test.tsx"],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared conversation presentation. Initial question, replies, rich text, file and image attachments are demonstrated together; production integration and full device acceptance remain open."
+    },
+    {
+      "id": "mobile-image-attachment",
+      "name": "MobileImageAttachment",
+      "layer": "pattern",
+      "category": "data-display",
+      "status": "experimental",
+      "publicExport": "MobileImageAttachment",
+      "sourcePath": "packages/ui/src/mobile-message.tsx",
+      "showroomPath": "/mobile#messages",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": ["default", "narrow", "keyboard", "dark"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-message.test.tsx"],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared conversation presentation. Initial question, replies, rich text, file and image attachments are demonstrated together; production integration and full device acceptance remain open."
+    },
+    {
+      "id": "review-note-rich-text",
+      "name": "ReviewNoteRichText",
+      "layer": "pattern",
+      "category": "data-display",
+      "status": "experimental",
+      "publicExport": "ReviewNoteRichText",
+      "sourcePath": "packages/ui/src/review-note-rich-text.tsx",
+      "showroomPath": "/mobile#messages",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": ["default", "narrow", "keyboard", "dark"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-message.test.tsx"],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared conversation presentation. Initial question, replies, rich text, file and image attachments are demonstrated together; production integration and full device acceptance remain open."
+    },
+    {
+      "id": "project-wing-file-type-icon",
+      "name": "ProjectWingFileTypeIcon",
+      "layer": "primitive",
+      "category": "data-display",
+      "status": "experimental",
+      "publicExport": "ProjectWingFileTypeIcon",
+      "sourcePath": "packages/ui/src/project-wing-file-type-icon.tsx",
+      "showroomPath": "/mobile#file-icons",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": ["default", "small", "smart-form", "unknown", "narrow"],
+      "coveredStates": ["default", "small", "smart-form", "unknown", "narrow"],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/project-wing-file-type-icon.test.tsx",
+          "apps/emp/src/components/project-file-type-icon.test.tsx"
+        ],
+        "keyboard": [],
+        "accessibility": [
+          "packages/ui/src/project-wing-file-type-icon.test.tsx"
+        ],
+        "visual": [
+          "docs/evidence/mobile-app-experience/mobile-shared-file-icons.png"
+        ],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared Fluent artwork and .sf glyph; EMP wrapper delegates with small sizing, mobile reuses the same resource at touch-list display size. Image failure falls back to a generic glyph. No Ready claim."
+    },
+    {
+      "id": "mobile-text-area",
+      "name": "MobileTextArea",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "experimental",
+      "publicExport": "MobileTextArea",
+      "sourcePath": "packages/ui/src/mobile-workspace.tsx",
+      "showroomPath": "/mobile#multiline",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": [
+        "default",
+        "disabled",
+        "invalid",
+        "keyboard",
+        "narrow",
+        "dark"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-workspace.test.tsx"],
+        "keyboard": [],
+        "accessibility": ["packages/ui/src/mobile-workspace.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared multiline input for mobile composer and confirmation notes. Experimental; physical-device keyboard acceptance and production integration remain open."
+    },
+    {
+      "id": "mobile-selection-row",
+      "name": "MobileSelectionRow",
+      "layer": "pattern",
+      "category": "data",
+      "status": "experimental",
+      "publicExport": "MobileSelectionRow",
+      "sourcePath": "packages/ui/src/mobile-workspace.tsx",
+      "showroomPath": "/mobile#selection-composer",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": ["default", "selected", "keyboard", "narrow", "dark"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-workspace.test.tsx"],
+        "keyboard": [],
+        "accessibility": ["packages/ui/src/mobile-workspace.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Explicit checkbox selection mode; prototype only, not a completed mobile business workflow."
+    },
+    {
+      "id": "mobile-composer",
+      "name": "MobileComposer",
+      "layer": "pattern",
+      "category": "forms",
+      "status": "experimental",
+      "publicExport": "MobileComposer",
+      "sourcePath": "packages/ui/src/mobile-workspace.tsx",
+      "showroomPath": "/mobile#selection-composer",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": [
+        "default",
+        "disabled",
+        "multiline",
+        "keyboard",
+        "narrow",
+        "dark"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-workspace.test.tsx"],
+        "keyboard": [],
+        "accessibility": ["packages/ui/src/mobile-workspace.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Controlled multiline input and explicit send. Rich-text business editor integration remains required."
+    },
+    {
+      "id": "mobile-scaffold",
+      "name": "MobileScaffold",
+      "layer": "layout",
+      "category": "layouts",
+      "status": "experimental",
+      "publicExport": "MobileScaffold",
+      "sourcePath": "packages/ui/src/mobile-workspace.tsx",
+      "showroomPath": "/specimens/MobileWorkspace",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-workspace-specimen.tsx",
+      "requiredStates": ["default", "narrow", "dark", "keyboard"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-workspace.test.tsx"],
+        "keyboard": [],
+        "accessibility": ["packages/ui/src/mobile-color-palette.test.ts"],
+        "visual": [
+          "docs/evidence/mobile-app-experience/android-neutral-confirmation-light.png",
+          "docs/evidence/mobile-app-experience/android-neutral-confirmation-dark.png"
+        ],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Opt-in proposal. Neutral mobile appearance lives in packages/ui/src/mobile-color-palette.css with document-scoped portal inheritance and route-exit restoration. No product adoption or Ready claim; see docs/mobile-app-experience-proposal.md and docs/mobile-walkthrough-log.md."
+    },
+    {
+      "id": "mobile-page-header",
+      "name": "MobilePageHeader",
+      "layer": "pattern",
+      "category": "navigation",
+      "status": "experimental",
+      "publicExport": "MobilePageHeader",
+      "sourcePath": "packages/ui/src/mobile-workspace.tsx",
+      "showroomPath": "/mobile#navigation",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": ["default", "narrow", "dark", "keyboard"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-workspace.test.tsx"],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Explicit back destination and readable context. Experimental."
+    },
+    {
+      "id": "mobile-navigation",
+      "name": "MobileNavigation",
+      "layer": "pattern",
+      "category": "navigation",
+      "status": "experimental",
+      "publicExport": "MobileNavigation",
+      "sourcePath": "packages/ui/src/mobile-workspace.tsx",
+      "showroomPath": "/mobile#navigation",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": ["default", "selected", "narrow", "dark", "keyboard"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-workspace.test.tsx"],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Stable real-link destinations; domain owns active identity. Experimental."
+    },
+    {
+      "id": "mobile-list-item",
+      "name": "MobileListItem",
+      "layer": "pattern",
+      "category": "data",
+      "status": "experimental",
+      "publicExport": "MobileListItem",
+      "sourcePath": "packages/ui/src/mobile-workspace.tsx",
+      "showroomPath": "/mobile#lists",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": ["default", "long-text", "narrow", "dark", "keyboard"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": ["packages/ui/src/mobile-workspace.test.tsx"],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Full-row link; optional action and secondaryAction slots remain outside the link. showChevron=false supports compact file rows with P/R below the note action. Existing callers retain their original layout. Experimental; see docs/mobile-walkthrough-log.md."
+    },
+    {
+      "id": "mobile-action-sheet",
+      "name": "MobileActionSheet",
+      "layer": "pattern",
+      "category": "overlays",
+      "status": "experimental",
+      "publicExport": "MobileActionSheet",
+      "sourcePath": "packages/ui/src/mobile-workspace.tsx",
+      "showroomPath": "/mobile#overlays",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-pattern-catalog.tsx",
+      "requiredStates": [
+        "default",
+        "open",
+        "disabled",
+        "narrow",
+        "dark",
+        "keyboard"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Controlled bottom modal with visible close, open-change completion callback, reduced-motion-aware entrance, visual-viewport keyboard inset and bounded scrolling. Mobile Material refinement keeps heading/close outside the scrolling body. Android docked-keyboard evidence and limitations are recorded in docs/mobile-material3-refinement.md. Used by SmartForm field/reference/rich-text editors and More actions. No drag-dismiss gesture promise. Experimental; physical-device coverage remains incomplete."
+    },
+    {
+      "id": "guided-form-entry-actions",
+      "name": "GuidedFormEntryActions",
+      "layer": "pattern",
+      "category": "forms",
+      "status": "experimental",
+      "publicExport": "GuidedFormEntryActions",
+      "sourcePath": "packages/ui/src/guided-form.tsx",
+      "showroomPath": "/specimens/GuidedForm#creation-proposal",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/guided-form-specimen.tsx",
+      "requiredStates": ["default", "disabled", "keyboard", "narrow", "dark"],
+      "coveredStates": ["default", "disabled", "keyboard"],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/guided-form.test.tsx",
+          "apps/emp/src/views/new-project.test.tsx"
+        ],
+        "keyboard": ["packages/ui/src/guided-form.test.tsx"],
+        "accessibility": ["packages/ui/src/guided-form.test.tsx"],
+        "visual": ["docs/project-creation-enterprise-proposal.md"],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Explicit user-requested iteration of the adopted entrance: neutral action cards, no Next, CMP selection and quick activation enter setup. Button semantics prevent navigation on radio focus/arrow changes. Existing mock product and showroom use this iteration; new family remains experimental pending its own dedicated narrow/dark acceptance. No global readiness or deployment claim."
+    },
+    {
+      "id": "guided-form-intro",
+      "name": "GuidedFormIntro",
+      "layer": "layout",
+      "category": "layouts",
+      "status": "ready",
+      "publicExport": "GuidedFormIntro",
+      "sourcePath": "packages/ui/src/guided-form.tsx",
+      "showroomPath": "/specimens/GuidedForm#creation-proposal",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/guided-form-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "disabled-action",
+        "keyboard",
+        "narrow",
+        "dark"
+      ],
+      "coveredStates": [
+        "default",
+        "disabled-action",
+        "keyboard",
+        "narrow",
+        "dark"
+      ],
+      "tests": {
+        "interaction": ["packages/ui/src/guided-form.test.tsx"],
+        "keyboard": ["docs/project-creation-enterprise-proposal.md"],
+        "accessibility": ["packages/ui/src/guided-form.test.tsx"],
+        "visual": ["docs/project-creation-enterprise-proposal.md"],
+        "responsive": ["docs/project-creation-enterprise-proposal.md"]
+      },
+      "replacement": null,
+      "notes": "User approved the rendered entrance on 2026-09-06 ('不错，放到那边去'). Adopted in EMP with personalized Welcome back copy and a neutral identity fallback. Latest refinements use action cards: Regular focuses CMP search; selecting a valid business enters setup; Quick enters setup directly. No Next action remains. Actual mock quick/CMP paths and dark/narrow evidence are recorded in the proposal. No global approval or remote deployment is claimed."
+    },
+    {
+      "id": "guided-form",
+      "name": "GuidedForm",
+      "layer": "layout",
+      "category": "layouts",
+      "status": "ready",
+      "publicExport": "GuidedForm",
+      "sourcePath": "packages/ui/src/guided-form.tsx",
+      "showroomPath": "/specimens/GuidedForm",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/guided-form-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "step-navigation",
+        "disabled",
+        "narrow",
+        "dark",
+        "appearance-plain",
+        "appearance-grouped"
+      ],
+      "coveredStates": [
+        "default",
+        "step-navigation",
+        "disabled",
+        "narrow",
+        "dark",
+        "appearance-plain",
+        "appearance-grouped"
+      ],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/guided-form.test.tsx",
+          "apps/emp/src/views/new-project.test.tsx"
+        ],
+        "keyboard": ["docs/project-creation-enterprise-proposal.md"],
+        "accessibility": ["packages/ui/src/guided-form.test.tsx"],
+        "visual": ["docs/project-creation-enterprise-proposal.md"],
+        "responsive": ["docs/project-creation-enterprise-proposal.md"]
+      },
+      "replacement": null,
+      "notes": "User approved GuidedForm for EMP project-creation adoption on 2026-09-06 (接入生产页面). Scoped approval only. Setup and review now use the grouped appearance; contained and plain remain supported. Grouped setup retains its summary rail; grouped review uses equal desktop columns with responsive stacking. Latest review/avatar/status evidence and commands are recorded in docs/project-creation-review-verification.md. Production-backend acceptance remains unrun."
+    },
+    {
+      "id": "guided-form-section",
+      "name": "GuidedFormSection",
+      "layer": "pattern",
+      "category": "forms",
+      "status": "ready",
+      "publicExport": "GuidedFormSection",
+      "sourcePath": "packages/ui/src/guided-form.tsx",
+      "showroomPath": "/specimens/GuidedForm",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/guided-form-specimen.tsx",
+      "requiredStates": ["default", "long-content", "narrow", "dark"],
+      "coveredStates": ["default", "long-content", "narrow", "dark"],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/guided-form.test.tsx",
+          "apps/emp/src/views/new-project.test.tsx"
+        ],
+        "keyboard": ["docs/project-creation-enterprise-proposal.md"],
+        "accessibility": ["packages/ui/src/guided-form.test.tsx"],
+        "visual": ["docs/project-creation-enterprise-proposal.md"],
+        "responsive": ["docs/project-creation-enterprise-proposal.md"]
+      },
+      "replacement": null,
+      "notes": "User approved the rendered GuidedForm family for EMP project-creation adoption on 2026-09-06 by requesting 接入生产页面. Implementation is integrated in apps/emp/src/views/new-project.tsx. This is scoped approval, not project-wide approval. Targeted shared/EMP tests and manual real-application mock browser evidence are recorded in docs/project-creation-enterprise-proposal.md; real-backend acceptance and deployment remain unrun."
+    },
+    {
+      "id": "guided-form-field",
+      "name": "GuidedFormField",
+      "layer": "pattern",
+      "category": "forms",
+      "status": "ready",
+      "publicExport": "GuidedFormField",
+      "sourcePath": "packages/ui/src/guided-form.tsx",
+      "showroomPath": "/specimens/GuidedForm",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/guided-form-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "focus",
+        "required",
+        "invalid",
+        "read-only",
+        "disabled",
+        "narrow",
+        "dark"
+      ],
+      "coveredStates": [
+        "default",
+        "focus",
+        "required",
+        "invalid",
+        "read-only",
+        "disabled",
+        "narrow",
+        "dark"
+      ],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/guided-form.test.tsx",
+          "apps/emp/src/views/new-project.test.tsx"
+        ],
+        "keyboard": ["docs/project-creation-enterprise-proposal.md"],
+        "accessibility": ["packages/ui/src/guided-form.test.tsx"],
+        "visual": ["docs/project-creation-enterprise-proposal.md"],
+        "responsive": ["docs/project-creation-enterprise-proposal.md"]
+      },
+      "replacement": null,
+      "notes": "User approved the rendered GuidedForm family for EMP project-creation adoption on 2026-09-06 by requesting 接入生产页面. Implementation is integrated in apps/emp/src/views/new-project.tsx. This is scoped approval, not project-wide approval. Targeted shared/EMP tests and manual real-application mock browser evidence are recorded in docs/project-creation-enterprise-proposal.md; real-backend acceptance and deployment remain unrun."
+    },
+    {
+      "id": "guided-form-choices",
+      "name": "GuidedFormChoices",
+      "layer": "pattern",
+      "category": "forms",
+      "status": "ready",
+      "publicExport": "GuidedFormChoices",
+      "sourcePath": "packages/ui/src/guided-form.tsx",
+      "showroomPath": "/specimens/GuidedForm",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/guided-form-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "focus",
+        "selected",
+        "disabled",
+        "keyboard",
+        "narrow",
+        "dark"
+      ],
+      "coveredStates": [
+        "default",
+        "focus",
+        "selected",
+        "disabled",
+        "keyboard",
+        "narrow",
+        "dark"
+      ],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/guided-form.test.tsx",
+          "apps/emp/src/views/new-project.test.tsx"
+        ],
+        "keyboard": ["docs/project-creation-enterprise-proposal.md"],
+        "accessibility": ["packages/ui/src/guided-form.test.tsx"],
+        "visual": ["docs/project-creation-enterprise-proposal.md"],
+        "responsive": ["docs/project-creation-enterprise-proposal.md"]
+      },
+      "replacement": null,
+      "notes": "User approved the rendered GuidedForm family for EMP project-creation adoption on 2026-09-06 by requesting 接入生产页面. Implementation is integrated in apps/emp/src/views/new-project.tsx. This is scoped approval, not project-wide approval. Targeted shared/EMP tests and manual real-application mock browser evidence are recorded in docs/project-creation-enterprise-proposal.md; real-backend acceptance and deployment remain unrun."
+    },
+    {
+      "id": "guided-form-select",
+      "name": "GuidedFormSelect",
+      "layer": "pattern",
+      "category": "forms",
+      "status": "ready",
+      "publicExport": "GuidedFormSelect",
+      "sourcePath": "packages/ui/src/guided-form.tsx",
+      "showroomPath": "/specimens/GuidedForm",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/guided-form-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "focus",
+        "selected",
+        "disabled",
+        "keyboard",
+        "narrow",
+        "dark",
+        "search",
+        "empty",
+        "async",
+        "clear-selection"
+      ],
+      "coveredStates": [
+        "default",
+        "focus",
+        "selected",
+        "disabled",
+        "keyboard",
+        "narrow",
+        "dark",
+        "search",
+        "empty",
+        "async",
+        "clear-selection"
+      ],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/guided-form.test.tsx",
+          "apps/emp/src/views/new-project.test.tsx"
+        ],
+        "keyboard": ["docs/project-creation-enterprise-proposal.md"],
+        "accessibility": ["packages/ui/src/guided-form.test.tsx"],
+        "visual": ["docs/project-creation-enterprise-proposal.md"],
+        "responsive": ["docs/project-creation-enterprise-proposal.md"]
+      },
+      "replacement": null,
+      "notes": "User approved the rendered GuidedForm family for EMP project-creation adoption on 2026-09-06 by requesting 接入生产页面. Implementation is integrated in apps/emp/src/views/new-project.tsx. This is scoped approval, not project-wide approval. Targeted shared/EMP tests and manual real-application mock browser evidence are recorded in docs/project-creation-enterprise-proposal.md; real-backend acceptance and deployment remain unrun."
+    },
+    {
+      "id": "guided-form-summary",
+      "name": "GuidedFormSummary",
+      "layer": "pattern",
+      "category": "data-display",
+      "status": "ready",
+      "publicExport": "GuidedFormSummary",
+      "sourcePath": "packages/ui/src/guided-form.tsx",
+      "showroomPath": "/specimens/GuidedForm",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/guided-form-specimen.tsx",
+      "requiredStates": ["default", "long-content", "narrow", "dark"],
+      "coveredStates": ["default", "long-content", "narrow", "dark"],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/guided-form.test.tsx",
+          "apps/emp/src/views/new-project.test.tsx"
+        ],
+        "keyboard": ["docs/project-creation-enterprise-proposal.md"],
+        "accessibility": ["packages/ui/src/guided-form.test.tsx"],
+        "visual": ["docs/project-creation-enterprise-proposal.md"],
+        "responsive": ["docs/project-creation-enterprise-proposal.md"]
+      },
+      "replacement": null,
+      "notes": "User approved the rendered GuidedForm family for EMP project-creation adoption on 2026-09-06 by requesting 接入生产页面. Implementation is integrated in apps/emp/src/views/new-project.tsx. This is scoped approval, not project-wide approval. Targeted shared/EMP tests and manual real-application mock browser evidence are recorded in docs/project-creation-enterprise-proposal.md; real-backend acceptance and deployment remain unrun."
+    },
+    {
+      "id": "theme-preference-cards",
+      "name": "ThemePreferenceCards",
+      "layer": "pattern",
+      "category": "forms",
+      "status": "experimental",
+      "publicExport": "ThemePreferenceCards",
+      "sourcePath": "packages/ui/src/theme-preference-cards.tsx",
+      "showroomPath": "/specimens/Settings#theme-preferences",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/settings-specimen.tsx",
+      "requiredStates": ["default", "focus", "selected", "disabled", "narrow"],
+      "coveredStates": ["default", "selected", "disabled"],
+      "tests": {
+        "interaction": ["apps/emp/src/views/workbench-settings-panel.test.tsx"],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "User-requested system/light/dark theme preview cards. Controlled native radio group; neutral miniature artwork intentionally represents a fixed theme independent of the surrounding theme. Experimental pending broader showroom review."
+    },
+    {
+      "id": "view-switcher",
+      "name": "ViewSwitcher",
+      "layer": "pattern",
+      "category": "navigation",
+      "status": "experimental",
+      "publicExport": "ViewSwitcher",
+      "sourcePath": "packages/ui/src/view-switcher.tsx",
+      "showroomPath": "/specimens/DataWorkbench",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/data-workbench-specimen.tsx",
+      "requiredStates": ["default", "focus", "selected", "narrow"],
+      "coveredStates": ["default", "focus", "selected", "narrow"],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Controlled compact view/category navigation. Browser verified in confirmations and Intranet; retains wide-layout rails. User authorized autonomous adoption for this UI pass."
+    },
+    {
+      "id": "surface",
+      "name": "Surface",
+      "layer": "primitive",
+      "category": "layout",
+      "status": "experimental",
+      "publicExport": "Surface",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/Surface",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "container",
+      "name": "Container",
+      "layer": "primitive",
+      "category": "layout",
+      "status": "experimental",
+      "publicExport": "Container",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/Container",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "stack",
+      "name": "Stack",
+      "layer": "primitive",
+      "category": "layout",
+      "status": "experimental",
+      "publicExport": "Stack",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/Stack",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "inline",
+      "name": "Inline",
+      "layer": "primitive",
+      "category": "layout",
+      "status": "experimental",
+      "publicExport": "Inline",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/Inline",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "wrap"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "grid",
+      "name": "Grid",
+      "layer": "primitive",
+      "category": "layout",
+      "status": "experimental",
+      "publicExport": "Grid",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/Grid",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "divider",
+      "name": "Divider",
+      "layer": "primitive",
+      "category": "layout",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "scroll-area",
+      "name": "ScrollArea",
+      "layer": "primitive",
+      "category": "layout",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "overflow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "button",
+      "name": "Button",
+      "layer": "primitive",
+      "category": "actions",
+      "status": "ready",
+      "publicExport": "Button",
+      "sourcePath": "packages/ui/src/button.tsx",
+      "showroomPath": "/components/Button",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/button-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "loading",
+        "destructive"
+      ],
+      "coveredStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "loading",
+        "destructive"
+      ],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/button.test.tsx",
+          "apps/ui-showroom/scripts/verify-showroom.mjs",
+          "apps/cmp/src/app/[locale]/dashboard/page-client.test.tsx",
+          "scripts/verify-cmp-dashboard-button.mjs",
+          "apps/cmp/src/components/cmp-form-route-shell.test.tsx",
+          "apps/cmp/scripts/verify-cmp-form-route-buttons.mjs",
+          "apps/cmp/scripts/verify-cmp-data-grid-header-buttons.mjs",
+          "apps/cmp/src/components/cmp-clients-data-grid.test.tsx",
+          "apps/cmp/scripts/verify-cmp-data-grid-actions.mjs",
+          "apps/cmp/src/components/cmp-app-shell.test.tsx",
+          "apps/cmp/scripts/verify-cmp-notification-layout.mjs",
+          "apps/cmp/scripts/verify-cmp-client-preview-action.mjs",
+          "apps/cmp/scripts/verify-cmp-engagement-preview-action.mjs"
+        ],
+        "keyboard": [
+          "apps/ui-showroom/scripts/verify-showroom.mjs",
+          "scripts/verify-cmp-dashboard-button.mjs",
+          "apps/cmp/scripts/verify-cmp-form-route-buttons.mjs",
+          "apps/cmp/scripts/verify-cmp-data-grid-actions.mjs",
+          "apps/cmp/scripts/verify-cmp-notification-layout.mjs",
+          "apps/cmp/scripts/verify-cmp-client-preview-action.mjs",
+          "apps/cmp/scripts/verify-cmp-engagement-preview-action.mjs"
+        ],
+        "accessibility": [
+          "packages/ui/src/button.test.tsx",
+          "apps/ui-showroom/scripts/verify-showroom.mjs",
+          "apps/cmp/src/app/[locale]/dashboard/page-client.test.tsx",
+          "apps/cmp/src/components/cmp-form-route-shell.test.tsx"
+        ],
+        "visual": [
+          "apps/ui-showroom/scripts/verify-showroom.mjs",
+          "scripts/verify-cmp-dashboard-button.mjs",
+          "apps/cmp/scripts/verify-cmp-form-route-buttons.mjs",
+          "apps/cmp/scripts/verify-cmp-data-grid-header-buttons.mjs",
+          "apps/cmp/scripts/verify-cmp-data-grid-actions.mjs",
+          "apps/cmp/scripts/verify-cmp-notification-layout.mjs",
+          "apps/cmp/scripts/verify-cmp-client-preview-action.mjs",
+          "apps/cmp/scripts/verify-cmp-engagement-preview-action.mjs"
+        ],
+        "responsive": [
+          "apps/ui-showroom/scripts/verify-showroom.mjs",
+          "scripts/verify-cmp-dashboard-button.mjs",
+          "apps/cmp/scripts/verify-cmp-form-route-buttons.mjs",
+          "apps/cmp/scripts/verify-cmp-data-grid-header-buttons.mjs",
+          "apps/cmp/scripts/verify-cmp-data-grid-actions.mjs",
+          "apps/cmp/scripts/verify-cmp-notification-layout.mjs",
+          "apps/cmp/scripts/verify-cmp-client-preview-action.mjs",
+          "apps/cmp/scripts/verify-cmp-engagement-preview-action.mjs"
+        ]
+      },
+      "replacement": null,
+      "notes": "Pilot approved by the user on 2026-08-14 after rendered verification at 1440px and 390px. Canonical variants are primary, secondary, outline, quiet, danger, success, warning, success-light and warning-light; canonical sizes are xs, sm, md, and lg. The default/ghost/destructive and default/icon-* names remain temporary compatibility aliases for existing consumers, while link remains a transitional capability pending the Link family. Product adoption covers the CMP Dashboard recovery slice, unavailable form-route navigation, client data-grid Columns/New actions, and the client/engagement preview actions. A follow-up Patch keeps compact compound Button content, including data-grid header labels and sort icons, inline. CMP notification cards now wrap their richer title, body, and metadata regions in one domain-owned vertical container instead of relying on the Button label's internal layout. Product evidence covers pointer and keyboard interaction at 1440px and 390px. Vivid success/warning fills preserve the customer's mandatory green P / orange R signoff convention; graphic colors and readable foregrounds are independently tested. Tinted variants remain available. See ui-bright-harmony-review.md, /specimens/Color and /specimens/Button. Product-wide design-system approval remains proposed."
+    },
+    {
+      "id": "icon-button",
+      "name": "IconButton",
+      "layer": "primitive",
+      "category": "actions",
+      "status": "ready",
+      "publicExport": "IconButton",
+      "sourcePath": "packages/ui/src/button.tsx",
+      "showroomPath": "/components/Button",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/button-specimen.tsx",
+      "requiredStates": ["default", "hover", "focus", "disabled", "loading"],
+      "coveredStates": ["default", "hover", "focus", "disabled", "loading"],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/button.test.tsx",
+          "apps/ui-showroom/scripts/verify-showroom.mjs"
+        ],
+        "keyboard": ["apps/ui-showroom/scripts/verify-showroom.mjs"],
+        "accessibility": [
+          "packages/ui/src/button.test.tsx",
+          "apps/ui-showroom/scripts/verify-showroom.mjs"
+        ],
+        "visual": ["apps/ui-showroom/scripts/verify-showroom.mjs"],
+        "responsive": ["apps/ui-showroom/scripts/verify-showroom.mjs"]
+      },
+      "replacement": null,
+      "notes": "Pilot approved by the user on 2026-08-14 after rendered verification at 1440px and 390px. Product-wide design-system approval remains proposed."
+    },
+    {
+      "id": "button-group",
+      "name": "ButtonGroup",
+      "layer": "primitive",
+      "category": "actions",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "split-button",
+      "name": "SplitButton",
+      "layer": "primitive",
+      "category": "actions",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "hover", "focus", "disabled", "open"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "link",
+      "name": "Link",
+      "layer": "primitive",
+      "category": "actions",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "hover", "focus"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "toggle-button",
+      "name": "ToggleButton",
+      "layer": "primitive",
+      "category": "actions",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "hover", "focus", "selected", "disabled"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "toggle-group",
+      "name": "ToggleGroup",
+      "layer": "primitive",
+      "category": "actions",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "focus", "selected", "disabled"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "field",
+      "name": "Field",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "experimental",
+      "publicExport": "Field",
+      "sourcePath": "packages/ui/src/field.tsx",
+      "showroomPath": "/specimens/FormControls",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/form-controls-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "required",
+        "disabled",
+        "read-only",
+        "invalid"
+      ],
+      "coveredStates": [
+        "default",
+        "required",
+        "disabled",
+        "read-only",
+        "invalid"
+      ],
+      "tests": {
+        "interaction": ["packages/ui/src/form-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/form-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/form-primitives.test.tsx"],
+        "visual": [
+          "docs/evidence/mobile-app-experience/closeout-form-controls-mobile-fixed.png",
+          "docs/evidence/mobile-app-experience/closeout-form-controls-wide-fixed.png"
+        ],
+        "responsive": [
+          "docs/evidence/mobile-app-experience/closeout-form-controls-mobile-fixed.png",
+          "docs/evidence/mobile-app-experience/closeout-form-controls-wide-fixed.png"
+        ]
+      },
+      "replacement": null,
+      "notes": "Implemented family and observed verification, not global Ready approval. Business validation and persistence remain app-owned. Only the listed covered states are claimed; remaining family-wide verification is explicit. See docs/mobile-release-premerge-evidence-2026-09-13.md."
+    },
+    {
+      "id": "input",
+      "name": "Input",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "experimental",
+      "publicExport": "Input",
+      "sourcePath": "packages/ui/src/input.tsx",
+      "showroomPath": "/specimens/FormControls",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/form-controls-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "focus",
+        "disabled",
+        "read-only",
+        "invalid"
+      ],
+      "coveredStates": ["default", "focus", "disabled", "read-only", "invalid"],
+      "tests": {
+        "interaction": ["packages/ui/src/form-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/form-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/form-primitives.test.tsx"],
+        "visual": [
+          "docs/evidence/mobile-app-experience/closeout-form-controls-mobile-fixed.png",
+          "docs/evidence/mobile-app-experience/closeout-form-controls-wide-fixed.png"
+        ],
+        "responsive": [
+          "docs/evidence/mobile-app-experience/closeout-form-controls-mobile-fixed.png",
+          "docs/evidence/mobile-app-experience/closeout-form-controls-wide-fixed.png"
+        ]
+      },
+      "replacement": null,
+      "notes": "Implemented family and observed verification, not global Ready approval. Business validation and persistence remain app-owned. Only the listed covered states are claimed; remaining family-wide verification is explicit. See docs/mobile-release-premerge-evidence-2026-09-13.md."
+    },
+    {
+      "id": "text-area",
+      "name": "TextArea",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "experimental",
+      "publicExport": "Textarea",
+      "sourcePath": "packages/ui/src/textarea.tsx",
+      "showroomPath": "/specimens/FormControls",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/form-controls-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "focus",
+        "disabled",
+        "read-only",
+        "invalid"
+      ],
+      "coveredStates": ["default", "read-only"],
+      "tests": {
+        "interaction": ["packages/ui/src/form-primitives.test.tsx"],
+        "keyboard": [],
+        "accessibility": ["packages/ui/src/form-primitives.test.tsx"],
+        "visual": [
+          "docs/evidence/mobile-app-experience/closeout-form-controls-mobile-fixed.png",
+          "docs/evidence/mobile-app-experience/closeout-form-controls-wide-fixed.png"
+        ],
+        "responsive": [
+          "docs/evidence/mobile-app-experience/closeout-form-controls-mobile-fixed.png",
+          "docs/evidence/mobile-app-experience/closeout-form-controls-wide-fixed.png"
+        ]
+      },
+      "replacement": null,
+      "notes": "Implemented family and observed verification, not global Ready approval. Business validation and persistence remain app-owned. Only the listed covered states are claimed; remaining family-wide verification is explicit. See docs/mobile-release-premerge-evidence-2026-09-13.md."
+    },
+    {
+      "id": "search-input",
+      "name": "SearchInput",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "focus", "filled", "disabled", "invalid"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "number-input",
+      "name": "NumberInput",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "focus",
+        "disabled",
+        "read-only",
+        "invalid"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "select",
+      "name": "Select",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "experimental",
+      "publicExport": "Select",
+      "sourcePath": "packages/ui/src/select.tsx",
+      "showroomPath": "/specimens/MobileMaterialSystem",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-material-system.tsx",
+      "requiredStates": [
+        "default",
+        "focus",
+        "open",
+        "selected",
+        "disabled",
+        "invalid"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "combobox",
+      "name": "ComboboxField",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "experimental",
+      "publicExport": "ComboboxField",
+      "sourcePath": "packages/ui/src/combobox-field.tsx",
+      "showroomPath": "/specimens/MobileMaterialSystem",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-material-system.tsx",
+      "requiredStates": [
+        "default",
+        "focus",
+        "open",
+        "selected",
+        "empty",
+        "disabled",
+        "invalid"
+      ],
+      "coveredStates": [
+        "default",
+        "selected",
+        "disabled",
+        "read-only",
+        "loading",
+        "invalid",
+        "focus",
+        "open",
+        "keyboard"
+      ],
+      "tests": {
+        "interaction": ["packages/ui/src/combobox-field.test.tsx"],
+        "keyboard": ["packages/ui/src/combobox-field.test.tsx"],
+        "accessibility": ["packages/ui/src/combobox-field.test.tsx"],
+        "responsive": [],
+        "visual": []
+      },
+      "replacement": null,
+      "notes": "Controlled string selection with local search, disabled options, native form values, read-only and loading behavior. Reuses the existing EMP picker interaction behind the shared boundary. Rendered narrow/wide evidence and global registry approval remain pending."
+    },
+    {
+      "id": "checkbox",
+      "name": "Checkbox",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "focus",
+        "selected",
+        "indeterminate",
+        "disabled",
+        "invalid"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "radio-group",
+      "name": "RadioGroup",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "focus", "selected", "disabled", "invalid"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "switch",
+      "name": "Switch",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "focus", "selected", "disabled"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "slider",
+      "name": "Slider",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "focus", "disabled", "read-only"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "date-time-picker",
+      "name": "DateTimePicker",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "focus",
+        "open",
+        "selected",
+        "disabled",
+        "read-only",
+        "invalid"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "file-upload",
+      "name": "FileUpload",
+      "layer": "primitive",
+      "category": "forms",
+      "status": "experimental",
+      "publicExport": "FileUpload",
+      "sourcePath": "packages/ui/src/file-upload.tsx",
+      "showroomPath": "/specimens/FormControls",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/form-controls-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "focus",
+        "drag-active",
+        "loading",
+        "disabled",
+        "invalid"
+      ],
+      "coveredStates": ["default", "loading", "disabled", "invalid"],
+      "tests": {
+        "interaction": ["packages/ui/src/form-primitives.test.tsx"],
+        "keyboard": [],
+        "accessibility": ["packages/ui/src/form-primitives.test.tsx"],
+        "visual": [
+          "docs/evidence/mobile-app-experience/closeout-form-controls-mobile-fixed.png",
+          "docs/evidence/mobile-app-experience/closeout-form-controls-wide-fixed.png"
+        ],
+        "responsive": [
+          "docs/evidence/mobile-app-experience/closeout-form-controls-mobile-fixed.png",
+          "docs/evidence/mobile-app-experience/closeout-form-controls-wide-fixed.png"
+        ]
+      },
+      "replacement": null,
+      "notes": "Implemented family and observed verification, not global Ready approval. Business validation and persistence remain app-owned. Only the listed covered states are claimed; remaining family-wide verification is explicit. See docs/mobile-release-premerge-evidence-2026-09-13.md."
+    },
+    {
+      "id": "tabs",
+      "name": "Tabs",
+      "layer": "primitive",
+      "category": "navigation",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "focus", "selected", "disabled", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "breadcrumbs",
+      "name": "Breadcrumbs",
+      "layer": "primitive",
+      "category": "navigation",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "menu",
+      "name": "Menu",
+      "layer": "primitive",
+      "category": "navigation",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "open",
+        "focus",
+        "selected",
+        "disabled",
+        "destructive",
+        "nested"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "context-menu",
+      "name": "ContextMenu",
+      "layer": "primitive",
+      "category": "navigation",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "open", "focus", "disabled", "destructive"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "side-nav",
+      "name": "SideNav",
+      "layer": "pattern",
+      "category": "navigation",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "focus", "selected", "collapsed", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "pagination",
+      "name": "Pagination",
+      "layer": "primitive",
+      "category": "navigation",
+      "status": "experimental",
+      "publicExport": "ProjectWingPaginationFooter",
+      "sourcePath": "packages/ui/src/data-grid/master-data-grid.tsx",
+      "showroomPath": "/specimens/DataWorkbench",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/data-workbench-specimen.tsx",
+      "requiredStates": ["default", "focus", "selected", "disabled", "narrow"],
+      "coveredStates": ["default", "selected", "disabled"],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "2026-09-05 autonomous consolidation; see docs/ui-consistency-review-2026-09-05.md. No project-wide Ready/approval claim."
+    },
+    {
+      "id": "toolbar",
+      "name": "Toolbar",
+      "layer": "pattern",
+      "category": "navigation",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "focus", "disabled", "overflow", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "command-palette",
+      "name": "CommandPalette",
+      "layer": "pattern",
+      "category": "navigation",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "open", "focus", "empty", "loading"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "card",
+      "name": "Card",
+      "layer": "primitive",
+      "category": "data-content",
+      "status": "experimental",
+      "publicExport": "Card",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/Card",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "hover", "focus", "selected", "disabled"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "badge",
+      "name": "Badge",
+      "layer": "primitive",
+      "category": "data-content",
+      "status": "experimental",
+      "publicExport": "Badge",
+      "sourcePath": "packages/ui/src/badge.tsx",
+      "showroomPath": "/specimens/Color",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/color-specimen.tsx",
+      "requiredStates": ["default", "success", "warning", "danger", "info"],
+      "coveredStates": ["default", "success", "warning", "danger", "info"],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": ["packages/ui/src/color-palette.test.ts"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "User-requested project-wide bright harmony refinement (docs/ui-bright-harmony-review.md): neutral white/light surfaces and charcoal text; graphic status accents stay vivid. Filled badges use independently tested accent foregrounds. Subtle badges retain readable neutral labels with colored dots, or colored icons when an icon is supplied. /specimens/Color demonstrates the exact editing/draft comparison and a shared data grid; /specimens/Badge retains size/state examples. No Ready/blanket approval claim."
+    },
+    {
+      "id": "tag",
+      "name": "Tag",
+      "layer": "primitive",
+      "category": "data-content",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "focus",
+        "selected",
+        "removable",
+        "disabled"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "avatar",
+      "name": "Avatar",
+      "layer": "primitive",
+      "category": "data-content",
+      "status": "experimental",
+      "publicExport": "ProjectWingTopBarAvatar",
+      "sourcePath": "packages/ui/src/project-wing-top-bar-avatar.tsx",
+      "showroomPath": "/specimens/Color",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/color-specimen.tsx",
+      "requiredStates": ["default", "fallback", "loading"],
+      "coveredStates": ["default", "fallback"],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [
+          "packages/ui/src/project-wing-top-bar-avatar.test.tsx"
+        ],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "User-requested avatar refinement: preserve Microsoft persona name hashing and tone order. After the 10% tint was judged too pale, light backgrounds use 24% identity color; initials use 75% identity color mixed with black rather than gray text, preserving chroma. No shadow. Separate dark-mode treatment; all 20 pairs tested at 4.5:1 or better. /specimens/Color and /specimens/DataWorkbench show real shared avatars. No project-wide Ready/approval claim."
+    },
+    {
+      "id": "list",
+      "name": "List",
+      "layer": "primitive",
+      "category": "data-content",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "focus",
+        "selected",
+        "disabled",
+        "empty",
+        "loading"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "data-table",
+      "name": "DataTable",
+      "layer": "pattern",
+      "category": "data-content",
+      "status": "experimental",
+      "publicExport": "ProjectWingMasterDataGrid",
+      "sourcePath": "packages/ui/src/data-grid/master-data-grid.tsx",
+      "showroomPath": "/specimens/DataWorkbench",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/data-workbench-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "selected",
+        "sorting",
+        "overflow",
+        "narrow"
+      ],
+      "coveredStates": ["default", "empty", "selected", "sorting"],
+      "tests": {
+        "interaction": ["packages/ui/src/data-grid/master-data-grid.test.tsx"],
+        "keyboard": [
+          "packages/ui/src/data-grid/data-grid-row-interactions.test.tsx"
+        ],
+        "accessibility": [],
+        "visual": [],
+        "responsive": [
+          "packages/ui/src/data-grid/data-grid-column-preferences.test.ts",
+          "packages/ui/src/data-grid/data-grid-auto-size.test.ts",
+          "packages/ui/src/mobile-color-palette.test.ts"
+        ]
+      },
+      "replacement": null,
+      "notes": "2026-09-05 autonomous consolidation; see docs/ui-consistency-review-2026-09-05.md. No project-wide Ready/approval claim. Sustained pass: keyboard row activation, disabled selection semantics, explicit selection reset, reversible column settings, locale-aware controls and non-overriding compact preferences. 2026-09-11 mobile layout patch: readable authored widths with internal scrolling, bottom action sheet and separated persistent filters; see docs/mobile-layout-audit.md."
+    },
+    {
+      "id": "tree-view",
+      "name": "TreeView",
+      "layer": "pattern",
+      "category": "data-content",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "focus",
+        "selected",
+        "expanded",
+        "disabled",
+        "loading"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "accordion",
+      "name": "Accordion",
+      "layer": "primitive",
+      "category": "data-content",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "focus", "expanded", "disabled"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "description-list",
+      "name": "DescriptionList",
+      "layer": "pattern",
+      "category": "data-content",
+      "status": "experimental",
+      "publicExport": "DescriptionList",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/DescriptionList",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "long-text", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "alert",
+      "name": "Alert",
+      "layer": "primitive",
+      "category": "feedback",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "success", "warning", "danger", "info"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "toast",
+      "name": "Toast",
+      "layer": "pattern",
+      "category": "feedback",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "success",
+        "warning",
+        "danger",
+        "loading",
+        "multiple"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "spinner",
+      "name": "Spinner",
+      "layer": "primitive",
+      "category": "feedback",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "progress",
+      "name": "Progress",
+      "layer": "primitive",
+      "category": "feedback",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "indeterminate", "complete", "error"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "skeleton",
+      "name": "Skeleton",
+      "layer": "primitive",
+      "category": "feedback",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "reduced-motion"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "empty-state",
+      "name": "EmptyState",
+      "layer": "pattern",
+      "category": "feedback",
+      "status": "experimental",
+      "publicExport": "CollectionState",
+      "sourcePath": "packages/ui/src/collection-state.tsx",
+      "showroomPath": "/specimens/DataWorkbench",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/data-workbench-specimen.tsx",
+      "requiredStates": ["default", "with-action", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": [
+          "apps/emp/src/views/admin-users.test.tsx",
+          "apps/emp/src/views/confirmations.test.tsx",
+          "apps/intranet/src/app/page-client.test.tsx"
+        ],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Second autonomous UI pass: shared loading/error/empty/filtered presentation, localized recovery actions. No blanket readiness claim. 2026-09-11 mobile layout patch removes full-height decorative empty frames, verified in MobileMaterialSystem and Intranet; see docs/mobile-layout-audit.md."
+    },
+    {
+      "id": "error-state",
+      "name": "ErrorState",
+      "layer": "pattern",
+      "category": "feedback",
+      "status": "experimental",
+      "publicExport": "CollectionState",
+      "sourcePath": "packages/ui/src/collection-state.tsx",
+      "showroomPath": "/specimens/DataWorkbench",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/data-workbench-specimen.tsx",
+      "requiredStates": ["default", "with-retry", "narrow"],
+      "coveredStates": ["default", "retry"],
+      "tests": {
+        "interaction": [
+          "apps/emp/src/views/admin-users.test.tsx",
+          "apps/emp/src/views/confirmations.test.tsx",
+          "apps/intranet/src/app/page-client.test.tsx"
+        ],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Second autonomous UI pass: shared loading/error/empty/filtered presentation, localized recovery actions. No blanket readiness claim."
+    },
+    {
+      "id": "permission-denied",
+      "name": "PermissionDenied",
+      "layer": "pattern",
+      "category": "feedback",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "with-action", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "tooltip",
+      "name": "Tooltip",
+      "layer": "primitive",
+      "category": "overlays",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "open", "focus", "long-text"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "popover",
+      "name": "Popover",
+      "layer": "primitive",
+      "category": "overlays",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "open", "focus", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "dialog",
+      "name": "Dialog",
+      "layer": "primitive",
+      "category": "overlays",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "open", "focus", "loading", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "confirm-dialog",
+      "name": "ConfirmDialog",
+      "layer": "pattern",
+      "category": "overlays",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "open", "focus", "loading", "destructive"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "drawer",
+      "name": "Drawer",
+      "layer": "pattern",
+      "category": "overlays",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "open", "focus", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "app-shell",
+      "name": "AppShell",
+      "layer": "layout",
+      "category": "cross-page",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "collapsed", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "page-header",
+      "name": "PageHeader",
+      "layer": "pattern",
+      "category": "cross-page",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "with-actions", "long-text", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "section-header",
+      "name": "SectionHeader",
+      "layer": "pattern",
+      "category": "cross-page",
+      "status": "experimental",
+      "publicExport": "SectionHeader",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/SectionHeader",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "with-actions", "long-text", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "form-section",
+      "name": "FormSection",
+      "layer": "pattern",
+      "category": "cross-page",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "invalid", "disabled", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "filter-bar",
+      "name": "FilterBar",
+      "layer": "pattern",
+      "category": "cross-page",
+      "status": "experimental",
+      "publicExport": "FilterBar",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/FilterBar",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "active", "loading", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "data-toolbar",
+      "name": "DataToolbar",
+      "layer": "pattern",
+      "category": "cross-page",
+      "status": "experimental",
+      "publicExport": "ProjectWingDataGridToolbar",
+      "sourcePath": "packages/ui/src/data-grid/data-grid-toolbar.tsx",
+      "showroomPath": "/specimens/DataWorkbench",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/data-workbench-specimen.tsx",
+      "requiredStates": ["default", "loading", "overflow", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/data-grid/master-data-grid.test.tsx"],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "2026-09-05 autonomous consolidation; see docs/ui-consistency-review-2026-09-05.md. No project-wide Ready/approval claim. Sustained pass: visible selected-count fallback and explicit cancel-selection action; reset does not mutate records."
+    },
+    {
+      "id": "bulk-action-bar",
+      "name": "BulkActionBar",
+      "layer": "pattern",
+      "category": "cross-page",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "active", "loading", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "search-results",
+      "name": "SearchResults",
+      "layer": "pattern",
+      "category": "cross-page",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "loading", "empty", "error", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": ""
+    },
+    {
+      "id": "list-page-layout",
+      "name": "ListPageLayout",
+      "layer": "layout",
+      "category": "cross-page",
+      "status": "experimental",
+      "publicExport": "ListPageLayout",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/ListPageLayout",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "loading", "empty", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "detail-page-layout",
+      "name": "DetailPageLayout",
+      "layer": "layout",
+      "category": "cross-page",
+      "status": "experimental",
+      "publicExport": "DetailPageLayout",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/DetailPageLayout",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "loading", "error", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "form-page-layout",
+      "name": "FormPageLayout",
+      "layer": "layout",
+      "category": "cross-page",
+      "status": "experimental",
+      "publicExport": "FormPageLayout",
+      "sourcePath": "packages/ui/src/layout-primitives.tsx",
+      "showroomPath": "/specimens/FormPageLayout",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/layout-primitives-specimen.tsx",
+      "requiredStates": ["default", "invalid", "loading", "narrow"],
+      "coveredStates": ["default"],
+      "tests": {
+        "interaction": ["packages/ui/src/layout-primitives.test.tsx"],
+        "keyboard": ["packages/ui/src/layout-primitives.test.tsx"],
+        "accessibility": ["packages/ui/src/layout-primitives.test.tsx"],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Shared token-based composition. Native refs, form semantics, keyed content and caller-owned actions are verified. Remaining component-specific state and rendered evidence must be completed before Ready."
+    },
+    {
+      "id": "settings-layout",
+      "name": "SettingsLayout",
+      "layer": "layout",
+      "category": "cross-page",
+      "status": "experimental",
+      "publicExport": "SettingsDialogShell",
+      "sourcePath": "packages/ui/src/settings-dialog-shell.tsx",
+      "showroomPath": "/specimens/Settings",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/settings-specimen.tsx",
+      "requiredStates": [
+        "default",
+        "selected",
+        "narrow",
+        "header-actions",
+        "keyboard",
+        "dark"
+      ],
+      "coveredStates": ["default", "narrow", "keyboard", "dark"],
+      "tests": {
+        "interaction": [
+          "packages/ui/src/settings-dialog-shell.test.tsx",
+          "packages/ui/src/settings-mobile-navigation.test.tsx",
+          "apps/emp/src/components/project-wing-top-bar-controls.test.tsx"
+        ],
+        "keyboard": ["packages/ui/src/settings-mobile-navigation.test.tsx"],
+        "accessibility": [
+          "packages/ui/src/settings-mobile-navigation.test.tsx"
+        ],
+        "visual": [
+          "docs/evidence/mobile-app-experience/settings-mobile-index.png",
+          "docs/evidence/mobile-app-experience/settings-mobile-dark-320.png"
+        ],
+        "responsive": [
+          "docs/evidence/mobile-app-experience/settings-desktop-preserved.png"
+        ]
+      },
+      "replacement": null,
+      "notes": "2026-09-10 user approved shared business logic with adaptive Web presentations. Opt-in mobileNavigation=pages supplies category/detail navigation, focus restoration and mounted-content retention across return/resize. EMP global/project settings opt in; existing desktop and other consumers retain their layout. Contextual initial destinations and repeated review requests are supported. Browser showroom verified; backend-attached acceptance was blocked by execution policy and remains required. 2026-09-08 compatible headerActions slot and separate navigation badges retained. No Ready or whole-system approval claim."
+    },
+    {
+      "id": "workbench-shell",
+      "name": "WorkbenchShell",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/emp/src/components/workbench-content.tsx",
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "compact", "loading", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Existing EMP implementation is reference evidence only; it is not yet a public or ready design-system component."
+    },
+    {
+      "id": "dense-data-workbench",
+      "name": "DenseDataWorkbench",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/cmp/src/components/cmp-master-data-grid.tsx",
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "selected",
+        "long-content",
+        "horizontal-overflow",
+        "narrow"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Existing CMP implementation is reference evidence only; it is not yet a public or ready design-system component."
+    },
+    {
+      "id": "master-detail-workspace",
+      "name": "MasterDetailWorkspace",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/tms/src/components/approval-workspace.tsx",
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": ["default", "loading", "empty", "selected", "narrow"],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Existing TMS implementation is reference evidence only; it is not yet a public or ready design-system component."
+    },
+    {
+      "id": "workflow-tree",
+      "name": "WorkflowTree",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/emp/src/components/workbench-directory-tree.tsx",
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "selected",
+        "expanded",
+        "collapsed",
+        "disabled",
+        "loading",
+        "empty",
+        "keyboard",
+        "narrow"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Existing EMP implementation is reference evidence only; it is not yet a public or ready design-system component."
+    },
+    {
+      "id": "approval-progress",
+      "name": "ApprovalProgress",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/cmp/src/components/cmp-acceptance-view.tsx",
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "active",
+        "complete",
+        "returned",
+        "error",
+        "narrow"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Existing CMP implementation is reference evidence only; it is not yet a public or ready design-system component."
+    },
+    {
+      "id": "change-comparison",
+      "name": "ChangeComparison",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/cmp/src/components/cmp-acceptance-change-comparison.tsx",
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "changed",
+        "unchanged",
+        "empty",
+        "long-content",
+        "narrow"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Existing CMP implementation is reference evidence only; it is not yet a public or ready design-system component."
+    },
+    {
+      "id": "document-workspace",
+      "name": "DocumentWorkspace",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "packages/document-viewer/src/index.ts",
+      "showroomPath": "/specimens/MobileWorkspace#document?project=orchid&file=bank-reply",
+      "showroomSource": "apps/ui-showroom/components/showroom/specimens/mobile-document-preview.tsx",
+      "requiredStates": [
+        "loading",
+        "default",
+        "error",
+        "unsupported",
+        "narrow"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Experimental PDF integration uses the existing document-viewer package with opt-in autoFitWidth and renderToolbar capabilities. Two synthetic PDFs and the canonical Deferred Income SmartForm production-exported PDF exercise rendering. Live project sources, native annotation integration, Office previews, interactive SmartForm editing and physical touch acceptance remain pending. Evidence: docs/mobile-walkthrough-log.md. No Ready claim."
+    },
+    {
+      "id": "smart-form-pdf-workpaper",
+      "name": "SmartFormPdfWorkpaper",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/api/src/smart-forms/smart-form-v2-pdf.service.ts",
+      "showroomPath": "/blocks#smart-form-pdf-workpaper",
+      "showroomSource": "apps/ui-showroom/components/showroom/smart-form-pdf-workpaper-proposal.tsx",
+      "requiredStates": [
+        "audit-programme",
+        "mixed-fields",
+        "section-group",
+        "rich-text",
+        "seven-field-kinds",
+        "active-conditional",
+        "fixed-table",
+        "repeatable-table",
+        "attachment-reference",
+        "complete",
+        "incomplete",
+        "long-content",
+        "bilingual",
+        "page-continuation",
+        "signed-signoff",
+        "pending-signoff",
+        "multi-signoff"
+      ],
+      "coveredStates": [
+        "audit-programme",
+        "mixed-fields",
+        "section-group",
+        "rich-text",
+        "seven-field-kinds",
+        "active-conditional",
+        "fixed-table",
+        "repeatable-table",
+        "attachment-reference",
+        "complete",
+        "incomplete",
+        "long-content",
+        "bilingual",
+        "page-continuation",
+        "signed-signoff",
+        "pending-signoff",
+        "multi-signoff"
+      ],
+      "tests": {
+        "interaction": [
+          "apps/ui-showroom/scripts/verify-smart-form-pdf-workpaper.mjs"
+        ],
+        "keyboard": [
+          "apps/ui-showroom/scripts/verify-smart-form-pdf-workpaper.mjs"
+        ],
+        "accessibility": [
+          "apps/ui-showroom/scripts/verify-smart-form-pdf-workpaper.mjs"
+        ],
+        "visual": [
+          "apps/ui-showroom/scripts/verify-smart-form-pdf-workpaper.mjs"
+        ],
+        "responsive": [
+          "apps/ui-showroom/scripts/verify-smart-form-pdf-workpaper.mjs"
+        ]
+      },
+      "replacement": null,
+      "notes": "Approved by the user on 2026-09-04 after rendered review. The EasyPaper 0.2.2 adapter removes default visible heading numbering, replaces Windows-only fonts with deployable Noto/Liberation families, maps every legal SmartForm AST node to formal content and three-line tables, and preserves native review annotations. The showroom covers Chinese and English documents, matched/otherwise/unanswered conditional states, rich text, seven field kinds, repeated table headers, and complete, pending, and multi-person sign-off groups. Signatories appear once in the author position; muted print text uses a darker neutral range for legibility. Product adoption covers live preview, project archives, and project-file export snapshots."
+    },
+    {
+      "id": "pdf-template-designer",
+      "name": "PdfTemplateDesigner",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": "PdfTemplateDesigner",
+      "sourcePath": "packages/pdf-template-designer/src/index.ts",
+      "showroomPath": "/blocks#pdf-template-designer",
+      "showroomSource": "apps/ui-showroom/components/showroom/pdf-template-designer-proposal.tsx",
+      "requiredStates": [
+        "loading",
+        "designer",
+        "form",
+        "formatting",
+        "ribbon",
+        "inspector-collapsed",
+        "inspector-open",
+        "seven-field-kinds",
+        "changed",
+        "saved",
+        "error",
+        "narrow"
+      ],
+      "coveredStates": [
+        "loading",
+        "designer",
+        "form",
+        "formatting",
+        "ribbon",
+        "inspector-collapsed",
+        "inspector-open",
+        "seven-field-kinds",
+        "changed",
+        "saved"
+      ],
+      "tests": {
+        "interaction": [
+          "packages/pdf-template-designer/src/pdf-template-designer.test.tsx",
+          "apps/ui-showroom/scripts/verify-pdf-template-designer.mjs"
+        ],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": ["apps/ui-showroom/scripts/verify-pdf-template-designer.mjs"],
+        "responsive": [
+          "apps/ui-showroom/scripts/verify-pdf-template-designer.mjs"
+        ]
+      },
+      "replacement": null,
+      "notes": "The user approved WYSIWYG product adoption on 2026-08-29 for open-source font family, point size, bold, italic, underline, text color, background color, and alignment. The Office-style single-row Ribbon and collapsed-by-default inspector were explicitly approved and migrated to EMP. The Ribbon has functional history, clipboard, insertion, font, alignment, page, and operations groups; Noto and Liberation are the only selectable font families. Field formatting and alignment apply to both the design prompt and entered value and persist into exports. The insertion group exposes single-line text, multiline text, static text, radio, number, and date; checkbox and dropdown remain backward-compatible only. A unified cascaded Default fill control supports editable snapshots from base information, the confirmation information library, type-safe custom values, and the current date. Static text never creates a field value. The ephemeral author preview suppresses defaults and never saves preview input. Radio fields use a neutral single-select dropdown that preserves exact field geometry; only enabled status uses the semantic success badge. Ribbon groups use visible slate separators. The workbench preserves proportional glyphs outside the non-uniform SVG geometry layer and exposes drawing, idle, and selected field frames. The pdfme 6.1 adapter remains experimental pending final EMP visual verification."
+    },
+    {
+      "id": "file-lifecycle-actions",
+      "name": "FileLifecycleActions",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/emp/src/components/workbench-paper-section.tsx",
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "disabled",
+        "loading",
+        "destructive",
+        "conflict",
+        "narrow"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Existing EMP implementation is reference evidence only; it is not yet a public or ready design-system component."
+    },
+    {
+      "id": "review-thread",
+      "name": "ReviewThread",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/emp/src/components/project-review-questions-dialog.tsx",
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "default",
+        "loading",
+        "empty",
+        "active",
+        "resolved",
+        "error",
+        "narrow"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Existing EMP implementation is reference evidence only; it is not yet a public or ready design-system component."
+    },
+    {
+      "id": "async-job-progress",
+      "name": "AsyncJobProgress",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "experimental",
+      "publicExport": null,
+      "sourcePath": "apps/emp/src/components/project-confirmations-panel.tsx",
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "queued",
+        "running",
+        "complete",
+        "failed",
+        "retrying",
+        "canceled"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "Existing EMP implementation is reference evidence only; it is not yet a public or ready design-system component."
+    },
+    {
+      "id": "audit-trail-view",
+      "name": "AuditTrailView",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "loading",
+        "default",
+        "empty",
+        "error",
+        "long-content"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "The existing EMP audit-log screen is reference material; the shared archetype remains planned."
+    },
+    {
+      "id": "external-request-workspace",
+      "name": "ExternalRequestWorkspace",
+      "layer": "archetype",
+      "category": "projectwing-workbench",
+      "status": "planned",
+      "publicExport": null,
+      "sourcePath": null,
+      "showroomPath": null,
+      "showroomSource": null,
+      "requiredStates": [
+        "loading",
+        "default",
+        "empty",
+        "error",
+        "submitted",
+        "narrow"
+      ],
+      "coveredStates": [],
+      "tests": {
+        "interaction": [],
+        "keyboard": [],
+        "accessibility": [],
+        "visual": [],
+        "responsive": []
+      },
+      "replacement": null,
+      "notes": "The current IB shell is reference material; the shared external-request archetype remains planned."
+    }
+  ],
+  "exceptions": [
+    {
+      "capabilityId": "command-palette",
+      "status": "approved",
+      "reason": "User explicitly approved deferring unused whole-site capabilities from the mobile release on 2026-09-13. No product consumer is introduced. See docs/mobile-release-scope-approval-2026-09-13.md. Revisit at first adoption or by 2026-10-13.",
+      "futureCost": "Implement the public API, complete state coverage and obtain rendered design approval before future product adoption. This does not waive tests, security, business behavior or boundary checks.",
+      "disposition": "deferred",
+      "approvedBy": "User",
+      "approvedAt": "2026-09-13T10:02:04Z"
+    },
+    {
+      "capabilityId": "audit-trail-view",
+      "status": "approved",
+      "reason": "User explicitly approved deferring unused whole-site capabilities from the mobile release on 2026-09-13. No product consumer is introduced. See docs/mobile-release-scope-approval-2026-09-13.md. Revisit at first adoption or by 2026-10-13.",
+      "futureCost": "Implement the public API, complete state coverage and obtain rendered design approval before future product adoption. This does not waive tests, security, business behavior or boundary checks.",
+      "disposition": "deferred",
+      "approvedBy": "User",
+      "approvedAt": "2026-09-13T10:02:04Z"
+    },
+    {
+      "capabilityId": "external-request-workspace",
+      "status": "approved",
+      "reason": "User explicitly approved deferring unused whole-site capabilities from the mobile release on 2026-09-13. No product consumer is introduced. See docs/mobile-release-scope-approval-2026-09-13.md. Revisit at first adoption or by 2026-10-13.",
+      "futureCost": "Implement the public API, complete state coverage and obtain rendered design approval before future product adoption. This does not waive tests, security, business behavior or boundary checks.",
+      "disposition": "deferred",
+      "approvedBy": "User",
+      "approvedAt": "2026-09-13T10:02:04Z"
+    }
+  ]
+}

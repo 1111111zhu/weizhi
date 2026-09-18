@@ -1,0 +1,63 @@
+import type { CmpLocale } from "./settings";
+
+export function getCmpMobileCopy(locale: CmpLocale) {
+  return locale === "zh-CN"
+    ? {
+        navigation: "功能导航",
+        more: "列表操作",
+        details: "记录详情",
+        select: "选择记录",
+        done: "完成",
+        all: "全部",
+        sort: "排序",
+        ascending: "升序",
+        descending: "降序",
+        clear: "清除筛选",
+        selected: "已选",
+        back: "返回",
+        close: "关闭",
+        search: "搜索",
+        billingSearch: "搜索账单、业务或客户",
+        loadMore: "加载更多",
+        archiveBilling: {
+          period: "期次",
+          plannedDate: "计划开票日期",
+          plannedAmount: "计划金额",
+          number: "收费单编号",
+          issueDate: "开票日期",
+          amount: "开票金额",
+          received: "已收金额",
+          outstanding: "未收余额",
+          status: "状态",
+        },
+      }
+    : {
+        navigation: "Workspace navigation",
+        more: "List actions",
+        details: "Record details",
+        select: "Select records",
+        done: "Done",
+        all: "All",
+        sort: "Sort by",
+        ascending: "Ascending",
+        descending: "Descending",
+        clear: "Clear filters",
+        selected: "Selected",
+        back: "Back",
+        close: "Close",
+        search: "Search",
+        billingSearch: "Search bills, engagements or clients",
+        loadMore: "Load more",
+        archiveBilling: {
+          period: "Period",
+          plannedDate: "Planned issue date",
+          plannedAmount: "Planned amount",
+          number: "Fee note number",
+          issueDate: "Issue date",
+          amount: "Billed amount",
+          received: "Received",
+          outstanding: "Outstanding",
+          status: "Status",
+        },
+      };
+}

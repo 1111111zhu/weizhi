@@ -1,0 +1,314 @@
+{
+  "kind": "smartFormResponse",
+  "schemaVersion": 2,
+  "definitionVersionId": "audit-programme-deferred-income-v2",
+  "responseLocale": "zh-CN",
+  "updatedAt": "2026-07-31T00:00:00.000Z",
+  "fields": {
+    "deferred-income-final-conclusion-confirmation": {
+      "type": "choice",
+      "selectedOptionIds": ["confirmed"]
+    },
+    "deferred-income-final-conclusion-details": {
+      "type": "localized",
+      "values": {
+        "zh-CN": {
+          "type": "richText",
+          "document": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+              {
+                "type": "paragraph",
+                "id": "deferred-income-final-conclusion-answer-zh",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "未发现需要在最终结论中说明的例外事项。"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "en-US": {
+          "type": "richText",
+          "document": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+              {
+                "type": "paragraph",
+                "id": "deferred-income-final-conclusion-answer-en",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "No exceptions were identified for inclusion in the final conclusion."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "sheets": {
+    "deferred-income-general-procedures": {
+      "rows": [
+        {
+          "id": "deferred-income-procedure-1-response",
+          "sourceRowId": "deferred-income-procedure-1",
+          "order": 0,
+          "cells": {
+            "test-required": {
+              "type": "choice",
+              "selectedOptionIds": ["yes"]
+            },
+            "result": {
+              "type": "choice",
+              "selectedOptionIds": ["satisfactory"]
+            },
+            "working-paper-reference": {
+              "type": "reference",
+              "references": [
+                {
+                  "targetType": "projectWing.workingPaper",
+                  "targetId": "working-paper-deferred-income-lead-schedule",
+                  "labelSnapshot": "3200.1 Deferred income lead schedule"
+                }
+              ]
+            },
+            "comments": {
+              "type": "localized",
+              "values": {
+                "zh-CN": {
+                  "type": "richText",
+                  "document": {
+                    "type": "doc",
+                    "version": 1,
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "id": "deferred-income-procedure-1-comment-zh",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "主表已与总账核对，无差异。"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "en-US": {
+                  "type": "richText",
+                  "document": {
+                    "type": "doc",
+                    "version": 1,
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "id": "deferred-income-procedure-1-comment-en",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "The lead schedule was agreed to the general ledger with no differences."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "deferred-income-procedure-2-a-response",
+          "sourceRowId": "deferred-income-procedure-2-a",
+          "order": 1,
+          "cells": {
+            "test-required": {
+              "type": "choice",
+              "selectedOptionIds": ["yes"]
+            },
+            "result": {
+              "type": "choice",
+              "selectedOptionIds": ["satisfactory"]
+            },
+            "working-paper-reference": {
+              "type": "reference",
+              "references": [
+                {
+                  "targetType": "projectWing.workingPaper",
+                  "targetId": "working-paper-deferred-income-analytics",
+                  "labelSnapshot": "3200.2 Deferred income analytics"
+                }
+              ]
+            },
+            "comments": {
+              "type": "localized",
+              "values": {
+                "zh-CN": {
+                  "type": "richText",
+                  "document": {
+                    "type": "doc",
+                    "version": 1,
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "id": "deferred-income-procedure-2-a-comment-zh",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "本期余额较上期增加 8.4%，变动与新增合同一致。"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "en-US": {
+                  "type": "richText",
+                  "document": {
+                    "type": "doc",
+                    "version": 1,
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "id": "deferred-income-procedure-2-a-comment-en",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "The balance increased by 8.4%; the movement is consistent with new contracts."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "deferred-income-procedure-2-b-response",
+          "sourceRowId": "deferred-income-procedure-2-b",
+          "order": 2,
+          "cells": {
+            "test-required": {
+              "type": "choice",
+              "selectedOptionIds": ["yes"]
+            },
+            "result": {
+              "type": "choice",
+              "selectedOptionIds": ["satisfactory"]
+            },
+            "comments": {
+              "type": "localized",
+              "values": {
+                "zh-CN": {
+                  "type": "richText",
+                  "document": {
+                    "type": "doc",
+                    "version": 1,
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "id": "deferred-income-procedure-2-b-comment-zh",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "关键比率与预期一致。"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "en-US": {
+                  "type": "richText",
+                  "document": {
+                    "type": "doc",
+                    "version": 1,
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "id": "deferred-income-procedure-2-b-comment-en",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "Key ratios were consistent with expectations."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "deferred-income-procedure-3-response",
+          "sourceRowId": "deferred-income-procedure-3",
+          "order": 3,
+          "cells": {
+            "test-required": {
+              "type": "choice",
+              "selectedOptionIds": ["yes"]
+            },
+            "result": {
+              "type": "choice",
+              "selectedOptionIds": ["not-applicable"]
+            },
+            "comments": {
+              "type": "localized",
+              "values": {
+                "zh-CN": {
+                  "type": "richText",
+                  "document": {
+                    "type": "doc",
+                    "version": 1,
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "id": "deferred-income-procedure-3-comment-zh",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "未发现超过执行重要性水平的异常项目。"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "en-US": {
+                  "type": "richText",
+                  "document": {
+                    "type": "doc",
+                    "version": 1,
+                    "content": [
+                      {
+                        "type": "paragraph",
+                        "id": "deferred-income-procedure-3-comment-en",
+                        "content": [
+                          {
+                            "type": "text",
+                            "text": "No unusual items above performance materiality were identified."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

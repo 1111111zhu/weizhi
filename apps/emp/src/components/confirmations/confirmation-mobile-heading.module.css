@@ -1,0 +1,36 @@
+@media (width < 48rem) {
+  .heading {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    min-height: var(--pw-control-target);
+    gap: var(--md-sys-space-2);
+  }
+  .heading h2 {
+    margin: 0;
+    min-width: 0;
+    font-size: var(--md-sys-type-title-medium);
+    font-weight: var(--md-sys-type-weight-emphasis);
+    line-height: var(--md-sys-type-leading-title);
+    overflow-wrap: anywhere;
+  }
+  .heading .directory,
+  .directory {
+    flex: none;
+    width: var(--pw-control-target);
+    height: var(--pw-control-target);
+    min-width: var(--pw-control-target);
+    padding: 0;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  .count {
+    flex: none;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: var(--md-sys-type-body-medium);
+    font-variant-numeric: tabular-nums;
+  }
+  .action {
+    margin-inline-start: auto;
+    flex: none;
+  }
+}

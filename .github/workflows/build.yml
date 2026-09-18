@@ -1,0 +1,136 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  actions: read
+  contents: read
+  packages: write
+
+concurrency:
+  group: projectwing-main-build
+  cancel-in-progress: false
+
+jobs:
+  resolve-image-source:
+    name: Resolve immutable image source
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 10
+    outputs:
+      image-source-sha: ${{ steps.source.outputs.sha }}
+      build-images: ${{ steps.source.outputs.build_images }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - id: source
+        name: Reuse or create an image generation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          build_images=false
+          before='${{ github.event.before }}'
+          if [[ -z "${before}" || "${before}" =~ ^0+$ ]]; then
+            build_images=true
+          else
+            while IFS= read -r path; do
+              case "${path}" in
+                deploy/docker/Dockerfile.gotenberg|deploy/fonts/projectwing-font-substitutions.conf|deploy/images/foundations.env|scripts/ci/build-registry-images.sh)
+                  build_images=true
+                  ;;
+                .github/workflows/*|docs/*|AGENTS.md|docker-compose.development.yml|deploy/blue-green/*|deploy/traefik/*|deploy/downloads/*|scripts/ci/*)
+                  ;;
+                apps/desktop-agent/*) ;;
+                *) build_images=true ;;
+              esac
+              [[ "${build_images}" == true ]] && break
+            done < <(git diff --name-only "${before}" "${GITHUB_SHA}")
+          fi
+
+          if [[ "${build_images}" == true ]]; then
+            source_sha="${GITHUB_SHA}"
+            echo "Image inputs changed; building ${source_sha}."
+          else
+            source_sha=""
+            temp_dir="${RUNNER_TEMP}/previous-build-source"
+            mkdir -p "${temp_dir}"
+            while IFS= read -r run_id; do
+              rm -rf "${temp_dir:?}"/*
+              if gh run download "${run_id}" --name projectwing-image-source --dir "${temp_dir}" >/dev/null 2>&1; then
+                source_sha="$(sed -n 's/^image_source_sha=//p' "${temp_dir}/image-source.env" | head -n 1)"
+                [[ "${source_sha}" =~ ^[a-f0-9]{40}$ ]] && break
+              fi
+            done < <(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/build.yml/runs?branch=main&status=success&per_page=20" --jq '.workflow_runs[].id')
+            if [[ "${source_sha}" =~ ^[a-f0-9]{40}$ ]]; then
+              echo "Deployment-only change; reusing immutable image generation ${source_sha}."
+            else
+              source_sha="${GITHUB_SHA}"
+              build_images=true
+              echo "No retained image-source artifact exists; safely rebuilding ${source_sha}."
+            fi
+          fi
+          {
+            echo "sha=${source_sha}"
+            echo "build_images=${build_images}"
+          } >> "${GITHUB_OUTPUT}"
+          printf 'image_source_sha=%s\n' "${source_sha}" > "${RUNNER_TEMP}/image-source.env"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: projectwing-image-source
+          path: ${{ runner.temp }}/image-source.env
+          if-no-files-found: error
+          retention-days: 7
+
+  build-images:
+    name: Build immutable GHCR images
+    needs: resolve-image-source
+    if: needs.resolve-image-source.outputs.build-images == 'true'
+    runs-on: ${{ vars.PROJECTWING_LINUX_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 120
+    env:
+      PROJECTWING_DEPLOY_SYSTEMS: api,emp,cmp,showroom,tms,intranet,ib,ib-api,reverse-proxy
+      PROJECTWING_IMAGE_EXPORT: push
+      PROJECTWING_NODE_IMAGE: ${{ secrets.PROJECTWING_NODE_IMAGE || vars.PROJECTWING_NODE_IMAGE || 'node:22-bookworm-slim' }}
+      PROJECTWING_API_IMAGE: ghcr.io/${{ github.repository_owner }}/projectwing-api:${{ needs.resolve-image-source.outputs.image-source-sha }}
+      PROJECTWING_EMP_IMAGE: ghcr.io/${{ github.repository_owner }}/projectwing-emp:${{ needs.resolve-image-source.outputs.image-source-sha }}
+      PROJECTWING_CMP_IMAGE: ghcr.io/${{ github.repository_owner }}/projectwing-cmp:${{ needs.resolve-image-source.outputs.image-source-sha }}
+      PROJECTWING_SHOWROOM_IMAGE: ghcr.io/${{ github.repository_owner }}/projectwing-showroom:${{ needs.resolve-image-source.outputs.image-source-sha }}
+      PROJECTWING_TMS_IMAGE: ghcr.io/${{ github.repository_owner }}/projectwing-tms:${{ needs.resolve-image-source.outputs.image-source-sha }}
+      PROJECTWING_INTRANET_IMAGE: ghcr.io/${{ github.repository_owner }}/projectwing-intranet:${{ needs.resolve-image-source.outputs.image-source-sha }}
+      PROJECTWING_IB_IMAGE: ghcr.io/${{ github.repository_owner }}/projectwing-ib:${{ needs.resolve-image-source.outputs.image-source-sha }}
+      PROJECTWING_IB_API_IMAGE: ghcr.io/${{ github.repository_owner }}/projectwing-ib-api:${{ needs.resolve-image-source.outputs.image-source-sha }}
+      NEXT_PUBLIC_DESKTOP_AGENT_MINIMUM_VERSION: '0.2.0'
+      NEXT_PUBLIC_DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION: ${{ vars.NEXT_PUBLIC_DESKTOP_AGENT_SELF_UPDATE_MINIMUM_VERSION || '0.1.10' }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Resolve public build settings
+        run: PROJECTWING_ENVIRONMENT=development bash scripts/ci/resolve-deploy-env.sh
+
+      - name: Resolve immutable Gotenberg tag
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          set -a
+          . deploy/images/foundations.env
+          set +a
+          fingerprint="$({ printf '%s\n' "${PROJECTWING_GOTENBERG_BASE_IMAGE}"; sha256sum deploy/docker/Dockerfile.gotenberg deploy/fonts/projectwing-font-substitutions.conf; } | sha256sum | cut -d ' ' -f1)"
+          echo "PROJECTWING_GOTENBERG_BASE_IMAGE=${PROJECTWING_GOTENBERG_BASE_IMAGE}" >> "${GITHUB_ENV}"
+          echo "PROJECTWING_GOTENBERG_IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER}/projectwing-gotenberg:${fingerprint}" >> "${GITHUB_ENV}"
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build and publish image generation
+        env:
+          PROJECTWING_REGISTRY_BUILD_CONCURRENCY: ${{ vars.PROJECTWING_REGISTRY_BUILD_CONCURRENCY || '1' }}
+        run: bash scripts/ci/build-registry-images.sh
